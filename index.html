@@ -1,0 +1,98 @@
+<DOCTYPE html>
+<html lang="en">
+<head>
+<title>The Preprocessor Iceberg Meme</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base target="_blank">
+</head>
+<body>
+<h1>The Preprocessor Iceberg Meme</h1>
+
+<div class="iceblock">
+<h2>Above the iceberg</h2>
+<ul>
+<li><a href="">macros just replace text</a></li>
+<li><a href="">header guards</a></li>
+<li><a href="">#pragma once</a></li>
+<li><a href="">make sure to parenthesize arguments</a></li>
+<li><a href="">do { } while (0)</a></li>
+</ul>
+</div>
+
+<div class="iceblock">
+<h2>On the iceberg</h2>
+<ul>
+<li><a href="">#undef</a></li>
+<li><a href="">#error</a></li>
+<li><a href="">defined is unary</a></li>
+<li><a href="">macros expansion isn't recursive</a></li>
+<li><a href="">__VA_ARGS__</a></li>
+<li><a href="">#b</a></li>
+<li><a href="">a##b</a></li>
+</ul>
+</div>
+
+<div class="iceblock">
+<h2>Below the water</h2>
+<ul>
+<li><a href="">function like macros only see parentheses</a></li>
+<li><a href="">__VA_OPT__</a></li>
+<li><a href="">__FILE__/__LINE__</a></li>
+<li><a href="">__DATE__/__TIME__</a></li>
+<li><a href="">#line</a></li>
+</ul>
+</div>
+
+<div class="iceblock">
+<h2>Middle of the iceberg</h2>
+<ul>
+<li><a href="">X macros</a></li>
+<li><a href="">#define CAT(a,b) CAT_(a,b)/#define CAT_(a,b) a##b</a></li>
+<li><a href="">__COUNTER__</a></li>
+<li><a href="">#pragma STDC</a></li>
+</ul>
+</div>
+
+<div class="iceblock">
+<h2>Bottom of the iceberg</h2>
+<ul>
+<li><a href="https://netcologne.dl.sourceforge.net/project/mcpp/mcpp/V.2.7.2/mcpp-summary-272.pdf">mcpp</a></li>
+<li><a href="https://docs.microsoft.com/en-us/cpp/preprocessor/preprocessor-experimental-overview?view=msvc-170">Microsoft took 30 years to implement a standard complient preprocessor</a></li>
+<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2645.pdf">#elifdef/#elifndef</a></li>
+<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2967.htm">#embed</a></li>
+</ul>
+</div>
+
+<div class="iceblock">
+<h2>Below the iceberg</h2>
+<ul>
+<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2645.pdf">every standard library function could be a macro</a></li>
+<li><a href="">A(1)(2)(3)(4)(5)</a></li>
+<li><a href="">#assert</a></li>
+<li><a href="">#2""3</a></li>
+<li><a href="">CHECK()</a></li>
+<li><a href="">lazy P arguments</a></li>
+<li><a href="">C89 CHECK()</a></li>
+</ul>
+</div>
+
+<div class="iceblock">
+<h2>Deep water</h2>
+<ul>
+<li><a href="">lazy arguments without P</a></li>
+<li><a href="https://github.com/camel-cdr/execfs">#include custom filesystem</a></li>
+<li><a href="">F(x,y)y)y)y)y)</a></li>
+</ul>
+</div>
+
+<div class="iceblock">
+<h2>The abyss</h2>
+<ul>
+<li><a href="">#include __DATE__</a></li>
+</ul>
+</div>
+
+
+</body>
+</html>
