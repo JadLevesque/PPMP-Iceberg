@@ -60,24 +60,6 @@ Sets a new value for `__FILE__` and `__DATE__`.
 __LINE__:__FILE__ // 42:"I/am/the/capitain.now"
 ```
 
-# `#elifdef`/`#elifndef`
-A pair of directives complementary to `#ifdef` and `#ifndef` that took too long to be added to the standard. 
-
-```C
-#ifdef __COMPATIBILITY_1__
-...
-#elifdef __COMPATIBILITY_2__
-...
-#endif
-
-
-#ifndef __COMPATIBILITY_3__
-...
-#elifndef __COMPATIBILITY_4__
-...
-#endif
-```
-
 # `#2""3`
 The first five characters of a dirty PPMP test file that remove most warnings and shortens the current file name to nothing.
 Under GCC, this is called a linemarker. This one sets the line under it as `2` and the file name as nothing (some systems will
