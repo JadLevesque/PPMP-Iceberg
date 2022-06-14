@@ -15,12 +15,12 @@ LAZY_WITHOUT_P(A NOTHING ()) // A ()
 # `do { } while (0)`
 
 ```C
-#define FOR_EACH(f,a) 
-    do { 
-        int i;
-        for (i = 0; i < sizeof (a) / sizeof *(a); i++) {
-            (f) ((a)[i]);
-        }
+#define FOR_EACH(f,a) \
+    do { \
+        int i; \
+        for (i = 0; i < sizeof (a) / sizeof *(a); i++) { \
+            (f) ((a)[i]); \
+        } \
     } while (0)
 ```
 
