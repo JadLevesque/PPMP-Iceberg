@@ -1,15 +1,80 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <title>The Preprocessor Iceberg Meme</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <base target="_blank">
+<style>
+
+ul { margin: 0; padding: 0; }
+
+body {
+	background: black;
+	text-align: center;
+	max-width: 1280px;
+	margin: auto;
+	color: white;
+	font-family: sans-serif;
+	font-size: 16px;
+}
+
+li {
+	display: inline-block;
+	font-weight: bold;
+	margin: 10px 20px;
+}
+
+@media (max-width: 800px) { body{ font-size: 15px; } li { margin: 9px 19px; } }
+@media (max-width: 600px) { body{ font-size: 14px; } li { margin: 8px 18px; } }
+@media (max-width: 400px) { body{ font-size: 13px; } li { margin: 7px 17px; } }
+
+a { color: white; }
+a:hover { color: #aaa; }
+li a { text-decoration: none; }
+
+li, h2 {
+	text-shadow: 1px 1px 2px black, 1px -1px 2px black, -1px -1px 2px black, -1px 1px 2px black, 1px 1px 2px black, 2px 2px 4px black;
+}
+
+.monospace, .monospace * {
+	font-family: monospace;
+	word-break: break-all;
+}
+
+.iceblock ul {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.iceblock {
+	border: 2px solid purple;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+#aboveTheIceberg    { background-image: url(pics/above.jpg); height: 281px; }
+#onTheIceberg       { background-image: url(pics/oniceberg.jpg); height: 256px; }
+#belowTheWater      { background-image: url(pics/belowwater.jpg); height: 357px; }
+#middleOfTheIceberg { background-image: url(pics/middle.jpg); height: 329px; }
+#bottomOfTheIceberg { background-image: url(pics/bottom.jpg); height: 294px; }
+#belowTheIceberg    { background-image: url(pics/below.jpg); height: 293px;}
+#deepWater          { background-image: url(pics/deep.jpg); height: 334px; }
+#theAbyss           { background-image: url(pics/abyss.jpg); height: 334px; }
+
+</style>
 </head>
 <body>
 <h1>The Preprocessor Iceberg Meme</h1>
 
-<div class="iceblock">
+<p>some text idk<br>line break and stuff<p>
+<p>contributors:<br><a href="https://github.com/JadLevesque">JadLévesque</a><br><a href="https://github.com/camel-cdr">camel-cdr</a></p>
+<p>Based on Blackle Mori's (<a href="https://twitter.com/suricrasia">@suricrasia</a>) <a href="https://suricrasia.online/iceberg/">The Cursed Computer Iceberg Meme</a></p>
+
+<div class="aboveTheIceberg">
+
+<div class="iceblock" id="aboveTheIceberg">
 <h2>Above the iceberg</h2>
 <ul>
 <li><a href="">macros just replace text</a></li>
@@ -20,7 +85,7 @@
 </ul>
 </div>
 
-<div class="iceblock">
+<div class="iceblock" id="onTheIceberg">
 <h2>On the iceberg</h2>
 <ul>
 <li><a href="">#undef</a></li>
@@ -33,7 +98,7 @@
 </ul>
 </div>
 
-<div class="iceblock">
+<div class="iceblock" id="belowTheWater">
 <h2>Below the water</h2>
 <ul>
 <li><a href="">function like macros only see parentheses</a></li>
@@ -45,7 +110,7 @@
 </ul>
 </div>
 
-<div class="iceblock">
+<div class="iceblock" id="middleOfTheIceberg">
 <h2>Middle of the iceberg</h2>
 <ul>
 <li><a href="">X macros</a></li>
@@ -59,7 +124,7 @@
 </ul>
 </div>
 
-<div class="iceblock">
+<div class="iceblock" id="bottomOfTheIceberg">
 <h2>Bottom of the iceberg</h2>
 <ul>
 <li><a href="https://netcologne.dl.sourceforge.net/project/mcpp/mcpp/V.2.7.2/mcpp-summary-272.pdf">mcpp</a></li>
@@ -71,7 +136,7 @@
 </ul>
 </div>
 
-<div class="iceblock">
+<div class="iceblock" id="belowTheIceberg">
 <h2>Below the iceberg</h2>
 <ul>
 <li><a href="">A(1)(2)(3)(4)(5)</a></li>
@@ -90,7 +155,7 @@
 </ul>
 </div>
 
-<div class="iceblock">
+<div class="iceblock" id="deepWater">
 <h2>Deep water</h2>
 <ul>
 <li><a href="">order-pp</a></li>
@@ -107,7 +172,7 @@
 </ul>
 </div>
 
-<div class="iceblock">
+<div class="iceblock" id="theAbyss">
 <h2>The abyss</h2>
 <ul>
 <li><a href="">IS_ICE</a></li>
