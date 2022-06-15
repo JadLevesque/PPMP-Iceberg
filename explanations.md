@@ -117,7 +117,7 @@ CAT(foo,bar) // ~
 
 # file-function table
 
-There are two sides to the interpretation of files being functions. 
+`#include` is a file-function table.
 
 Firstly, a file-function depends on a set of Named External Arguments (NEA), which are macros defined prior to the inclusion of the file. A good example of this are Chaos-pp slots, which take `CHAOS_PP_VALUE` as a NEA. The slot assignemnt file-function then defines 21 macros to produce a memorisation of an integer literal.
 
