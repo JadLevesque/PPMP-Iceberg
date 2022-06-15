@@ -22,12 +22,13 @@ body {
 li {
 	display: inline-block;
 	font-weight: bold;
-	margin: 10px 20px;
+	margin: 18px 35px;
 }
 
-@media (max-width: 800px) { body{ font-size: 15px; } li { margin: 9px 19px; } }
-@media (max-width: 600px) { body{ font-size: 14px; } li { margin: 8px 18px; } }
-@media (max-width: 400px) { body{ font-size: 13px; } li { margin: 7px 17px; } }
+@media (max-width: 1000px) { body{ font-size: 16px; } li { margin: 14px 32px; } }
+@media (max-width:  800px) { body{ font-size: 14px; } li { margin: 12px 30px; } }
+@media (max-width:  600px) { body{ font-size: 13px; } li { margin: 8px 25px; } }
+@media (max-width:  400px) { body{ font-size: 12px; } li { margin: 6px 20px; } }
 
 a { color: white; }
 a:hover { color: #aaa; }
@@ -79,22 +80,22 @@ li, h2 {
 <ul>
 <li><a href="">macros just replace text</a></li>
 <li><a href="">header guards</a></li>
-<li><a href="https://docs.microsoft.com/en-us/cpp/preprocessor/once?view=msvc-170">#pragma once</a></li>
+<li><a href="https://docs.microsoft.com/en-us/cpp/preprocessor/once?view=msvc-170" class="monospace">#pragma once</a></li>
 <li><a href="">make sure to parenthesize arguments</a></li>
-<li><a href="explanation#do---while-0">do { } while (0)</a></li>
+<li><a href="explanation#do---while-0" class="monospace">do { } while (0)</a></li>
 </ul>
 </div>
 
 <div class="iceblock" id="onTheIceberg">
 <h2>On the iceberg</h2>
 <ul>
-<li><a href="">#undef</a></li>
-<li><a href="explanations#error">#error</a></li>
-<li><a href="">defined is unary</a></li>
+<li><a href="" class="monospace">#undef</a></li>
+<li><a href="explanations#error" class="monospace">#error</a></li>
+<li><a href=""><span class="monospace">defined</span> is unary</a></li>
 <li><a href="explanations#macros-expansion-isnt-recursive">macros expansion isn't recursive</a></li>
-<li><a href="">__VA_ARGS__</a></li>
-<li><a href="explanations#b">#b</a></li>
-<li><a href="explanations#ab">a##b</a></li>
+<li><a href="" class="monospace">__VA_ARGS__</a></li>
+<li><a href="explanations#b" class="monospace">#b</a></li>
+<li><a href="explanations#ab" class="monospace">a##b</a></li>
 </ul>
 </div>
 
@@ -102,10 +103,10 @@ li, h2 {
 <h2>Below the water</h2>
 <ul>
 <li><a href="">function like macros only see parentheses</a></li>
-<li><a href="">__VA_OPT__</a></li>
-<li><a href="explanations#__file____line__">__FILE__/__LINE__</a></li>
-<li><a href="explanations#__date____time__">__DATE__/__TIME__</a></li>
-<li><a href="explanations#line">#line</a></li>
+<li><a href="" class="monospace">__VA_OPT__</a></li>
+<li><a href="explanations#__file____line__" class="monospace">__FILE__ __LINE__</a></li>
+<li><a href="explanations#__date____time__" class="monospace">__DATE__ __TIME__</a></li>
+<li><a href="explanations#line" class="monospace">#line</a></li>
 <li><a href="">boilerplate oriented programming</a></li>
 </ul>
 </div>
@@ -114,10 +115,10 @@ li, h2 {
 <h2>Middle of the iceberg</h2>
 <ul>
 <li><a href="">X macros</a></li>
-<li><a href="explanations#p-e">-P -E</a></li>
-<li><a href="explanations#define-catab-cat_abdefine-cat_ab-ab">#define CAT(a,b) CAT_(a,b)/#define CAT_(a,b) a##b</a></li>
-<li><a href="">__COUNTER__</a></li>
-<li><a href="">#pragma STDC</a></li>
+<li><a href="explanations#p-e" class="monospace">-P -E</a></li>
+<li><a href="explanations#define-catab-cat_abdefine-cat_ab-ab" class="monospace">#define CAT(a,b) CAT_(a,b) #define CAT_(a,b) a##b</a></li>
+<li><a href="" class="monospace">__COUNTER__</a></li>
+<li><a href="" class="monospace">#pragma STDC</a></li>
 <li><a href="">overloading macros based on argument count</a></li>
 <li><a href="">default arguments</a></li>
 <li><a href="">literal namespaces</a></li>
@@ -129,8 +130,8 @@ li, h2 {
 <ul>
 <li><a href="https://netcologne.dl.sourceforge.net/project/mcpp/mcpp/V.2.7.2/mcpp-summary-272.pdf">mcpp</a></li>
 <li><a href="https://docs.microsoft.com/en-us/cpp/preprocessor/preprocessor-experimental-overview?view=msvc-170">Microsoft took 30 years to implement a standard complient preprocessor</a></li>
-<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2645.pdf">#elifdef/#elifndef</a></li>
-<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2967.htm">#embed</a></li>
+<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2645.pdf" class="monospace">#elifdef/#elifndef</a></li>
+<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2967.htm" class="monospace">#embed</a></li>
 <li><a href="">Boost preprocesor</a></li>
 <li><a href="">no argument = one argument</a></li>
 </ul>
@@ -139,19 +140,19 @@ li, h2 {
 <div class="iceblock" id="belowTheIceberg">
 <h2>Below the iceberg</h2>
 <ul>
-<li><a href="">A(1)(2)(3)(4)(5)</a></li>
-<li><a href="">EVAL/DEFER</a></li>
-<li><a href="">#assert</a></li>
+<li><a href="" class="monospace">A(1)(2)(3)(4)(5)</a></li>
+<li><a href="" class="monospace">EVAL/DEFER</a></li>
+<li><a href="" class="monospace">#assert</a></li>
 <li><a href="explanations#23">#2""3</a></li>
-<li><a href="">CHECK()</a></li>
-<li><a href="">lazy P arguments</a></li>
-<li><a href="">C89 CHECK()</a></li>
+<li><a href="" class="monospace">CHECK()</a></li>
+<li><a href="">lazy <span class="monospace">P</span> arguments</a></li>
+<li><a href="">C89 <span class="monospace">CHECK()</span></a></li>
 <li><a href="">coffee break</a></li>
 <li><a href="">file iteration</a></li>
 <li><a href="">constants are variables</a></li>
-<li><a href="">INC()/DEC()</a></li>
-<li><a href="">IS_EMPTY()</a></li>
-<li><a href="">__has_include</a></li>
+<li><a href="" class="monospace">INC()/DEC()</a></li>
+<li><a href="" class="monospace">IS_EMPTY()</a></li>
+<li><a href="" class="monospace">__has_include</a></li>
 </ul>
 </div>
 
@@ -178,9 +179,9 @@ li, h2 {
 <li><a href="">IS_ICE</a></li>
 <li><a href="">macro expansion can be recursive</a></li>
 <li><a href="https://github.com/camel-cdr/execfs">#include custom filesystem</a></li>
-<li><a href="">F(x,y)y)y)y)y)</a></li>
+<li><a href="" class="monospace">F(x,y)y)y)y)y)</a></li>
 <li><a href="">random access memory</a></li>
-<li><a href="https://github.com/JadLevesque/my-ppmptd">#include __DATE__</a></li>
+<li><a href="https://github.com/JadLevesque/my-ppmptd" class="monospace">#include __DATE__</a></li>
 <li><a href="">file stack</a></li>
 <li><a href="">file stack overflow</a></li>
 <li><a href="">file stack line accumulator</a></li>
