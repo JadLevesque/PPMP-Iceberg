@@ -1,9 +1,10 @@
+
 # lazy arguments without P
-Comma concatenation is a GCC extension. 
+Comma concatenation is a GCC extension.
 
 ```c
-#define LEFT(P,v...) P##v
-#define LAZY_WITHOUT_P(v...) LEFT(,##v)
+#define LEFT(P,...) P##__VA_ARGS__
+#define LAZY_WITHOUT_P(...) LEFT(,##__VA_ARGS__)
 #define NOTHING
 
 #define A() ~
@@ -46,7 +47,7 @@ C() // C ()
 `__TIME__` expands to a string literal containing the time of compilation.
 
 # `#error`
-Produces an custom error recorded on the buildlog as well as halting compilation.
+Produces a custom error recorded on the buildlog as well as halting compilation.
 
 ```C
 #error "You did something wrong at line something."
@@ -61,12 +62,12 @@ __LINE__:__FILE__ // 42:"I/am/the/capitain.now"
 ```
 
 # `#2""3`
-The first five characters of a dirty PPMP test file that remove most warnings and shortens the current file name to nothing.
-Under GCC, this is called a linemarker. This one sets the line under it as `2` and the file name as nothing (some systems will
+The first five characters of a dirty PPMP test file, that remove most warnings and shortens the current file name to nothing.
+Under GCC, this is called a line marker. This one sets the line under it as `2` and the file name as nothing (some systems will
 transform this as `"<stdin>"` on the buildlog). The `3` tells the compiler to treat the current file as a system header.
 
 This trick is usually used in dirty PPMP tests to shorten the file names, though the system header status becomes a necessity
-when using warning prone features such as GCC's `#assert`. 
+when using warning prone features such as GCC's `#assert`.
 
 Syntax: `#` <*line number*> <*file name*> <*flag*>
 
@@ -87,21 +88,19 @@ buildlog:
 # `a##b`
 
 ```C
-#define CAT_(a,b) a##b
+#define CAT(a,b) a##b
 #define FOOBAR ~
-
-CAT_(FOO,BAR) // ~
+CAT(FOO,BAR) // ~
 ```
 
-# `#b`
+# `#a`
 
 ```C
-#define STR_(b...) #b
-
-STR_ (123, foo, bar) // "123, foo, bar"
+#define STR(a) #a
+STR(123 foo bar) // "123 foo bar"
 ```
 
-# `#define CAT(a,b) CAT_(a,b)`/`#define CAT_(a,b) a##b`
+# `#define CAT(a,b) CAT_(a,b)` `#define CAT_(a,b) a##b`
 
 ```C
 #define CAT(a,b) CAT_(a,b)
@@ -119,7 +118,7 @@ CAT(foo,bar) // ~
 
 `#include` is a file-function table.
 
-Firstly, a file-function depends on a set of Named External Arguments (NEA), which are macros defined prior to the inclusion of the file. A good example of this are Chaos-pp slots, which take `CHAOS_PP_VALUE` as a NEA. The slot assignemnt file-function then defines 21 macros to produce a memorisation of an integer literal.
+Firstly, a file-function depends on a set of Named External Arguments (NEA), which are macros defined prior to the inclusion of the file. A good example of this are Chaos-pp slots, which take `CHAOS_PP_VALUE` as a NEA. The slot assignment file-function then defines 21 macros to produce a memorization of an integer literal.
 
 Secondly, `#include` accepts a macro translation unit (MTU). The of values of the set of macros considered by this MTU is the domain of the function. The codomain is the set of paths the MTU produces. A good (if extreme) example of this is [`#include __DATE__`](https://github.com/JadLevesque/my-ppmptd).
 
@@ -132,4 +131,12 @@ Example with Chaos-pp slots
 CHAOS_PP_SLOT (1)                // 11
 ```
 
+
+# no more than 4095
+
+The [C99 translation limits](https://port70.net/~nsz/c/c99/n1256.html#5.2.4.1) only require an implementation to support 4095 simultaneously defined macros, and crucially only requires to support 4095 characters in a logical source line.
+
+Macros can only be defined in a single logical source line, that sets the limit on the macro replacement list length, for portable programs, to `4085` characters (assuming you use `#define A ...`).
+
+The same is true for C11 and C2x. In C89 the limits are 1024 simultaneously defined macros and 509 characters in a logical source line.
 
