@@ -254,25 +254,66 @@ Lazy evaluation is important for both performance and functionnality.
 
 ## lazy `P` argument
 
-Prominent in Order-pp
+This strategy involves having the first argument of a macro (usually called `P` for historical reasons) be used for prefix concatenation. See bellow for exceptions.
+
+Exceptions: prominent in Order-pp.
+
+```C
+#define ORDER_PP_9BIN_PR(P,b,p) (,ORDER_PP_OPEN p##P,ORDER_PP_OPEN b##P,8BIN_PR,P##p)
+```
 
 ## lazy `__VA_ARGS__`
 
 Used when `__VA_ARGS__` is needed for macro overload to avoid scanning its contents.
 
 ```C
+#define GET_MACRO(_1,_2,_3,x,...) x
+#define FOO(...) GET_MACRO(0##__VA_ARGS__,FOO3,FOO2,FOO1)(__VA_ARGS__)
 
+FOO(1)     // FOO1(1,2,3)
+FOO(1,2)   // FOO2(1,2,3)
+FOO(1,2,3) // FOO3(1,2,3)
 ```
+
+Note: in this example the first arguement must be a concatenable token.
 
 ## tuple open
 
+GCC extension.
+
 Used to open a tuple without rescanning the elements.
 
+```C
+#define R2(x) R(R(R(R(R(R(R(R(R(R(x))))))))))
+#define R(x) x,x,x,x,x,x
+#define OPEN(...) __VA_ARGS__
+#define OPENq(P,...) P##__VA_ARGS__
+
+#define EAT(...) EAT_(__VA_ARGS__)
+#define EAT_(...)
+
+EAT(OPEN(R2(a))) // 4.2 seconds
+EAT(OPENq(,R2(a))) // 3.1 seconds
+```
 
 ## pp-num suffix
 
 Prominent in Order-pp
 
+```C
+ORDER_PP
+(8let ((8X, 8nat (1,2,3))
+       (8Y, 8nat (4,5,6))
+      ,8to_lit (8mul (8X, 8Y))
+      )
+) // 56088
+```
+
 ## defer
+
+See: [http://saadahmad.ca/cc-preprocessor-metaprogramming-evaluating-and-defering-macro-calls/](http://saadahmad.ca/cc-preprocessor-metaprogramming-evaluating-and-defering-macro-calls/)
+
 ## no args
+
+To stop a function-like macro from expanding, don't give it arguments.
 
