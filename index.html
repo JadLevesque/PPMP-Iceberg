@@ -90,10 +90,10 @@ li, h2 {
 <h2>Above the iceberg</h2>
 <ul>
 <li><a href="https://en.cppreference.com/w/c/preprocessor/include">#include</a></li>
-<li><a href="">macros just replace text</a></li>
+<li><a href="macros-just-replace-text">macros just replace text</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Include_guard">header guards</a></li>
 <li><a href="https://en.wikipedia.org/wiki/C_preprocessor#Conditional_compilation" class="monospace">#if #elif</a></li>
-<li><a href="">make sure to parenthesize arguments</a></li>
+<li><a href="make-sure-to-parenthesize-arguments">make sure to parenthesize arguments</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Pragma_once" class="monospace">#pragma once</a></li>
 <li><a href="explanations#do---while-0" class="monospace">do { } while (0)</a></li>
 <li><a href="https://www.ashn.dev/blog/2020-01-06-c-array-length.html" class="monospace">ARRAY_LEN()</a></li>
@@ -104,10 +104,10 @@ li, h2 {
 <h2>On the iceberg</h2>
 <ul>
 <li><a href="explanations#macros-expansion-isnt-recursive">macros expansion isn't recursive</a></li>
-<li><a href="explanations#b" class="monospace">#a</a></li>
+<li><a href="explanations#a" class="monospace">#a</a></li>
 <li><a href="explanations#ab" class="monospace">a##b</a></li>
-<li><a href="" class="monospace">__VA_ARGS__</a></li>
-<li><a href="" class="monospace">#undef</a></li>
+<li><a href="https://stackoverflow.com/questions/26053959/what-does-va-args-in-a-macro-mean" class="monospace">__VA_ARGS__</a></li>
+<li><a href="https://en.cppreference.com/w/c/preprocessor/replace#mw-headline" class="monospace">#undef</a></li>
 <li><a href="explanations#error" class="monospace">#error</a></li>
 <li><a href="https://en.cppreference.com/w/c/preprocessor/conditional#Combined_directives"><span class="monospace">defined</span> is unary</a></li>
 <li><a href="https://en.cppreference.com/w/c/language/operator_alternative#Trigraphs">Trigraph</a></li>
@@ -118,27 +118,27 @@ li, h2 {
 <div class="iceblock" id="belowTheWater">
 <h2>Below the water</h2>
 <ul>
-<li><a href="">function like macros only see parentheses</a></li>
-<li><a href="explanations#__file____line__" class="monospace">__FILE__ __LINE__</a></li>
-<li><a href="explanations#__date____time__" class="monospace">__DATE__ __TIME__</a></li>
+<li><a href="explanations#__file__-__line__" class="monospace">__FILE__ __LINE__</a></li>
+<li><a href="explanations#__date__-__time__" class="monospace">__DATE__ __TIME__</a></li>
 <li><a href="explanations#line" class="monospace">#line</a></li>
-<li><a href="" class="monospace">__VA_OPT__</a></li>
-<li><a href="">#define A(x...)</a></li>
-<li><a href="">,##__VA_ARGS__</a></li>
+<li><a href="explanations#function-like-macros-only-see-parentheses">function like macros only see parentheses</a></li>
+<li><a href="https://en.cppreference.com/w/cpp/preprocessor/replace#Function-like_macros" class="monospace">__VA_OPT__</a></li>
+<li><a href="https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html">#define A(x...)</a></li>
+<li><a href="https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html">,##__VA_ARGS__</a></li>
 <li><a href="">boilerplate oriented programming</a></li>
 <li><a href="explanations#p-e" class="monospace">-P -E</a></li>
 <li><a href="explanations#define-catab-cat_abdefine-cat_ab-ab" class="monospace">#define CAT(a,b) CAT_(a,b) #define CAT_(a,b) a##b</a></li>
-<li><a href="">X macros</a></li>
+<li><a href="https://en.wikibooks.org/wiki/C_Programming/Preprocessor_directives_and_macros#X-Macros=">X macros</a></li>
 </ul>
 </div>
 
 <div class="iceblock" id="middleOfTheIceberg">
 <h2>Middle of the iceberg</h2>
 <ul>
-<li><a href="" class="monospace">__COUNTER__</a></li>
-<li><a href="" class="monospace">#pragma _Pragma()</a></li>
-<li><a href="">overloading macros based on argument count</a></li>
-<li><a href="">default arguments</a></li>
+<li><a href="explanations#__counter__" class="monospace">__COUNTER__</a></li>
+<li><a href="https://port70.net/~nsz/c/c11/n1570.html#6.10.9" class="monospace">#pragma _Pragma()</a></li>
+<li><a href="explanations#overloading-macros-based-on-argument-count">overloading macros based on argument count</a></li>
+<li><a href="explanations#default-arguments">default arguments</a></li>
 <li><a href="">literal namespaces</a></li>
 <li><a href="">SCAN</a></li>
 <li><a href="explanations#no-more-than-4095">no more than 4095</a></li>

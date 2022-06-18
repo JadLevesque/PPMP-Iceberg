@@ -1,3 +1,108 @@
+# macros just replace text
+
+Macros just replace text, they don't know anything about the surrounding C code.
+
+
+# make sure to parenthesize arguments
+
+Often macros are used for code generation purposes, take for example:
+```c
+#define ADD(a, b) a += b
+```
+This will have unexpected behavior in many circumstance:
+```
+ADD(x, y; z);
+w = (2 + ADD(x, y) + z);
+w = (ADD(x, y) + z);
+```
+To solve these problems make sure to parenthesize arguments, and the complete expression: w
+```c
+#define ADD(a, b) ((a) += (b))
+```
+
+# `do { } while (0)`
+
+When writing a more complex code generation macro that isn't a single expression, then you want it to at least fit into a single statement, so it behaves like other language elements.
+
+The naiive implementation doesn't have such properties:
+
+```C
+#define FOR_EACH(f,a) \
+        int i; \
+        for (i = 0; i < sizeof (a) / sizeof *(a); i++) { \
+            (f) ((a)[i]); \
+        }
+// what about this case?
+for (int i = 0; i < 10; ++i)
+    FOR_EACH(f,a[i]);
+```
+
+A somewhat better solution is to enclose the code in a compound-statement:
+
+```C
+#define FOR_EACH(f,a) \
+    { \
+        int i; \
+        for (i = 0; i < sizeof (a) / sizeof *(a); i++) { \
+            (f) ((a)[i]); \
+        } \
+    }
+// this works now!
+for (int i = 0; i < 10; ++i)
+    FOR_EACH(f,a[i]);
+//                  ^ 
+```
+This works, but some compilers warn about the highlighted useless semicolon. The canonical way to get rid of this warning to use a `do {} while (0)` block:
+```C
+#define FOR_EACH(f,a) \
+    do { \
+        int i; \
+        for (i = 0; i < sizeof (a) / sizeof *(a); i++) { \
+            (f) ((a)[i]); \
+        } \
+    } while (0)
+// this still works
+for (int i = 0; i < 10; ++i)
+    FOR_EACH(f,a[i]);
+```
+
+# `__COUNTER__`
+
+clang and gcc offer the language extension `__COUNTER__`, expands to an integer value starting at `0` and incrementing the value after every expansion:
+```c
+__COUNTER__ // 0
+__COUNTER__ // 1
+__COUNTER__ // 2
+```
+
+# overloading macros based on argument count
+
+```c
+void foo(int a, int b, int c);
+
+#define GET_MACRO(_1,_2,_3,x,...) x
+#define foo(...) GET_MACRO(__VA_ARGS__, \
+                           foo(__VA_ARGS__), \
+                           foo(__VA_ARGS__,3), \
+                           foo(__VA_ARGS__,2,3))
+
+foo(1,2,3) // foo(1,2,3)
+foo(1,2)   // foo(1,2,3)
+foo(1)     // foo(1,2,3)
+```
+
+# default arguments
+
+By [overloading macros based on argument count](#overloading-macros-based-on-argument-count) it's posible to implement default arguments for functions:
+
+```c
+void foo(int a, int b, float c);
+#define GET_ARGS(_1,_2,_3,...) __VA_ARGS__
+#define foo(...) GET_MACRO(__VA_ARGS__,foo(__VA_ARGS__),foo(__VA_ARGS__,2),foo(__VA_ARGS__,2,3.0))
+foo(1,2,3)   // foo(1,2,3)
+foo(1,2)     // foo(1,2)
+foo(1)       // foo(1)
+```
 
 # lazy arguments without P
 Comma concatenation is a GCC extension.
@@ -13,17 +118,6 @@ LAZY_WITHOUT_P(A ()) // ~
 LAZY_WITHOUT_P(A NOTHING ()) // A ()
 ```
 
-# `do { } while (0)`
-
-```C
-#define FOR_EACH(f,a) \
-    do { \
-        int i; \
-        for (i = 0; i < sizeof (a) / sizeof *(a); i++) { \
-            (f) ((a)[i]); \
-        } \
-    } while (0)
-```
 
 # macros expansion isn't recursive
 
@@ -38,11 +132,11 @@ A (A) (0) // A (0)
 C() // C ()
 ```
 
-# `__FILE__`/`__LINE__`
+# `__FILE__` `__LINE__`
 `__FILE__` expands to a string literal containing the name of the current file.
 `__LINE__` expands to an integer literal of the value of the line where it is expanded.
 
-# `__DATE__`/`__TIME__`
+# `__DATE__`  `__TIME__`
 `__DATE__` expands to a string literal containing the date of compilation.
 `__TIME__` expands to a string literal containing the time of compilation.
 
@@ -138,5 +232,15 @@ The [C99 translation limits](https://port70.net/~nsz/c/c99/n1256.html#5.2.4.1) o
 
 Macros can only be defined in a single logical source line, that sets the limit on the macro replacement list length, for portable programs, to `4085` characters (assuming you use `#define A ...`).
 
-The same is true for C11 and C2x. In C89 the limits are 1024 simultaneously defined macros and 509 characters in a logical source line.
+The same is true for [C11](https://port70.net/~nsz/c/c11/n1570.html#5.2.4.1) and [C2x](https://port70.net/~nsz/c/c2x/n2434.pdf#subsubsection.5.2.4.1). In [C89](https://port70.net/~nsz/c/c89/c89-draft.html#2.2.4.1) the limits are 1024 simultaneously defined macros and 509 characters in a logical source line.
+
+
+# function like macros only see parentheses
+
+Function like macros only see parentheses when it comes to splitting up the arguments, e.g. `FOO({1,3})` calls `FOO` with the arguments `{1` and `3}`.
+
+This problem often occurs when passing a compound literal, e.g. `(struct Vec3){1,2,3}`, to a function like macro.
+
+To circumvent this, always pass compound literal enclosed in parentheses.
+
 
