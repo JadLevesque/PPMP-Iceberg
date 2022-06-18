@@ -19,6 +19,9 @@
 <style>
 
 ul { margin: 0; padding: 0; }
+a { color: white; }
+li a { text-decoration: none; }
+a:hover { color: #aaa; }
 
 body {
 	background: black;
@@ -31,6 +34,7 @@ body {
 }
 
 li {
+	position: relative;
 	display: inline-block;
 	font-weight: bold;
 	margin: 18px 35px;
@@ -41,15 +45,33 @@ li {
 @media (max-width:  600px) { body{ font-size: 13px; } li { margin: 8px 25px; } }
 @media (max-width:  400px) { body{ font-size: 12px; } li { margin: 6px 20px; } }
 
-a { color: white; }
-a:hover { color: #aaa; }
-li a { text-decoration: none; }
+li > span {
+	visibility: hidden;
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	padding: 5px;
+	border-radius: 4px;
+	white-space: nowrap;
+	opacity: 0.0;
+
+	/* Position the tooltip */
+	position: absolute;
+	z-index: 1;
+	top: -5px;
+	left: 105%;
+	transition: opacity 0.15s ease-in-out, visibility 0.15s ease-in-out;
+}
+
+li:hover > span { opacity: 0.8; visibility: visible; }
+
+
 
 li, h2 {
 	text-shadow: 1px 1px 2px black, 1px -1px 2px black, -1px -1px 2px black, -1px 1px 2px black, 1px 1px 2px black, 2px 2px 4px black;
 }
 
-.monospace, .monospace * {
+.ms, .ms * {
 	font-family: monospace;
 	word-break: break-all;
 }
@@ -89,14 +111,14 @@ li, h2 {
 <div class="iceblock" id="aboveTheIceberg">
 <h2>Above the iceberg</h2>
 <ul>
-<li><a href="https://en.cppreference.com/w/c/preprocessor/include">#include</a></li>
+<li><a href="https://en.cppreference.com/w/c/preprocessor/include" class="c cpp">#include</a></li>
 <li><a href="macros-just-replace-text">macros just replace text</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Include_guard">header guards</a></li>
-<li><a href="https://en.wikipedia.org/wiki/C_preprocessor#Conditional_compilation" class="monospace">#if #elif</a></li>
+<li><a href="https://en.wikipedia.org/wiki/C_preprocessor#Conditional_compilation" class="ms">#if #elif</a></li>
 <li><a href="make-sure-to-parenthesize-arguments">make sure to parenthesize arguments</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Pragma_once" class="monospace">#pragma once</a></li>
-<li><a href="explanations#do---while-0" class="monospace">do { } while (0)</a></li>
-<li><a href="https://www.ashn.dev/blog/2020-01-06-c-array-length.html" class="monospace">ARRAY_LEN()</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Pragma_once" class="ms">#pragma once</a><span>extension</span></li>
+<li><a href="explanations#do---while-0" class="ms">do { } while (0)</a></li>
+<li><a href="https://www.ashn.dev/blog/2020-01-06-c-array-length.html" class="ms">ARRAY_LEN()</a></li>
 </ul>
 </div>
 
@@ -104,12 +126,12 @@ li, h2 {
 <h2>On the iceberg</h2>
 <ul>
 <li><a href="explanations#macros-expansion-isnt-recursive">macros expansion isn't recursive</a></li>
-<li><a href="explanations#a" class="monospace">#a</a></li>
-<li><a href="explanations#ab" class="monospace">a##b</a></li>
-<li><a href="https://stackoverflow.com/questions/26053959/what-does-va-args-in-a-macro-mean" class="monospace">__VA_ARGS__</a></li>
-<li><a href="https://en.cppreference.com/w/c/preprocessor/replace#mw-headline" class="monospace">#undef</a></li>
-<li><a href="explanations#error" class="monospace">#error</a></li>
-<li><a href="https://en.cppreference.com/w/c/preprocessor/conditional#Combined_directives"><span class="monospace">defined</span> is unary</a></li>
+<li><a href="explanations#a" class="ms">#a</a></li>
+<li><a href="explanations#ab" class="ms">a##b</a></li>
+<li><a href="https://stackoverflow.com/questions/26053959/what-does-va-args-in-a-macro-mean" class="ms">__VA_ARGS__</a></li>
+<li><a href="https://en.cppreference.com/w/c/preprocessor/replace#mw-headline" class="ms">#undef</a></li>
+<li><a href="explanations#error" class="ms">#error</a></li>
+<li><a href="https://en.cppreference.com/w/c/preprocessor/conditional#Combined_directives"><span class="ms">defined</span> is unary</a></li>
 <li><a href="https://en.cppreference.com/w/c/language/operator_alternative#Trigraphs">Trigraph</a></li>
 <li><a href="https://en.cppreference.com/w/c/language/translation_phases#Phase_2">physical vs logical source lines</a></li>
 </ul>
@@ -118,16 +140,16 @@ li, h2 {
 <div class="iceblock" id="belowTheWater">
 <h2>Below the water</h2>
 <ul>
-<li><a href="explanations#__file__-__line__" class="monospace">__FILE__ __LINE__</a></li>
-<li><a href="explanations#__date__-__time__" class="monospace">__DATE__ __TIME__</a></li>
-<li><a href="explanations#line" class="monospace">#line</a></li>
+<li><a href="explanations#__file__-__line__" class="ms">__FILE__ __LINE__</a></li>
+<li><a href="explanations#__date__-__time__" class="ms">__DATE__ __TIME__</a></li>
+<li><a href="explanations#line" class="ms">#line</a></li>
 <li><a href="explanations#function-like-macros-only-see-parentheses">function like macros only see parentheses</a></li>
-<li><a href="https://en.cppreference.com/w/cpp/preprocessor/replace#Function-like_macros" class="monospace">__VA_OPT__</a></li>
-<li><a href="https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html">#define A(x...)</a></li>
-<li><a href="https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html">,##__VA_ARGS__</a></li>
+<li><a href="https://en.cppreference.com/w/cpp/preprocessor/replace#Function-like_macros" class="ms">__VA_OPT__</a><span>C++20 and extension</span></li>
+<li><a href="https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html">#define A(x...)</a><span>extension</span></li>
+<li><a href="https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html">,##__VA_ARGS__</a><span>extension</span></li>
 <li><a href="">boilerplate oriented programming</a></li>
-<li><a href="explanations#p-e" class="monospace">-P -E</a></li>
-<li><a href="explanations#define-catab-cat_abdefine-cat_ab-ab" class="monospace">#define CAT(a,b) CAT_(a,b) #define CAT_(a,b) a##b</a></li>
+<li><a href="explanations#p-e" class="ms">-P -E</a><span>not standardized</span></li>
+<li><a href="explanations#define-catab-cat_abdefine-cat_ab-ab" class="ms">#define CAT(a,b) CAT_(a,b) #define CAT_(a,b) a##b</a></li>
 <li><a href="https://en.wikibooks.org/wiki/C_Programming/Preprocessor_directives_and_macros#X-Macros=">X macros</a></li>
 </ul>
 </div>
@@ -135,25 +157,25 @@ li, h2 {
 <div class="iceblock" id="middleOfTheIceberg">
 <h2>Middle of the iceberg</h2>
 <ul>
-<li><a href="explanations#__counter__" class="monospace">__COUNTER__</a></li>
-<li><a href="https://port70.net/~nsz/c/c11/n1570.html#6.10.9" class="monospace">#pragma _Pragma()</a></li>
+<li><a href="explanations#__counter__" class="ms">__COUNTER__</a><span>extension</span></li>
+<li><a href="https://port70.net/~nsz/c/c11/n1570.html#6.10.9" class="ms">#pragma _Pragma()</a></li>
 <li><a href="explanations#overloading-macros-based-on-argument-count">overloading macros based on argument count</a></li>
 <li><a href="explanations#default-arguments">default arguments</a></li>
 <li><a href="">literal namespaces</a></li>
 <li><a href="">SCAN</a></li>
-<li><a href="explanations#no-more-than-4095">no more than 4095</a></li>
+<li><a href="explanations#no-more-than-4095">no more than 4095</a><span>C C++</span></li>
 </ul>
 </div>
 
 <div class="iceblock" id="bottomOfTheIceberg">
 <h2>Bottom of the iceberg</h2>
 <ul>
-<li><a href="" class="monospace">__has_include</a></li>
+<li><a href="" class="ms">__has_include</a><span>C++17</span></li>
 <li><a href="">saturated overloading</a></li>
 <li><a href="https://netcologne.dl.sourceforge.net/project/mcpp/mcpp/V.2.7.2/mcpp-summary-272.pdf">mcpp</a></li>
 <li><a href="https://docs.microsoft.com/en-us/cpp/preprocessor/preprocessor-experimental-overview?view=msvc-170">Microsoft took 30 years to implement a standard complient preprocessor</a></li>
-<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2645.pdf" class="monospace">#elifdef #elifndef</a></li>
-<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2967.htm" class="monospace">#embed</a></li>
+<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2645.pdf" class="ms">#elifdef #elifndef</a><span>C2x</span></li>
+<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2967.htm" class="ms">#embed</a><span>C2x proposal</span></li>
 <li><a href="">Boost preprocesor</a></li>
 <li><a href="">no argument = one argument</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Painted_blue">blue paint</a></li>
@@ -163,19 +185,19 @@ li, h2 {
 <div class="iceblock" id="belowTheIceberg">
 <h2>Below the iceberg</h2>
 <ul>
-<li><a href="" class="monospace">A(1)(2)(3)(4)(5)</a></li>
-<li><a href="" class="monospace">EVAL/DEFER</a></li>
-<li><a href="" class="monospace">#assert</a></li>
-<li><a href="explanations#23">#2""3</a></li>
-<li><a href="" class="monospace">CHECK()</a></li>
-<li><a href="">lazy <span class="monospace">P</span> arguments</a></li>
+<li><a href="" class="ms">A(1)(2)(3)(4)(5)</a></li>
+<li><a href="" class="ms">EVAL/DEFER</a></li>
+<li><a href="" class="ms">#assert</a><span>extension</span></li>
+<li><a href="explanations#23">#2""3</a><span>extension</span></li>
+<li><a href="" class="ms">CHECK()</a></li>
+<li><a href="">lazy <span class="ms">P</span> arguments</a></li>
 <li><a href="">lazy SCAN</a></li>
-<li><a href="">C89 <span class="monospace">CHECK()</span></a></li>
+<li><a href="">C89 <span class="ms">CHECK()</span></a></li>
 <li><a href="">coffee break</a></li>
 <li><a href="">file iteration</a></li>
 <li><a href="">constants are variables</a></li>
-<li><a href="" class="monospace">INC()/DEC()</a></li>
-<li><a href="" class="monospace">IS_EMPTY()</a></li>
+<li><a href="" class="ms">INC()/DEC()</a></li>
+<li><a href="" class="ms">IS_EMPTY()</a></li>
 <li><a href="https://marc.info/?l=boost&m=118835769257658">OBJECT disabling context</a></li>
 </ul>
 </div>
@@ -188,7 +210,7 @@ li, h2 {
 <li><a href="">Metalang99</a></li>
 <li><a href="">Continuation machine</a></li>
 <li><a href="">sequence datastructure</a></li>
-<li><a href="explanations#lazy-arguments-without-p">lazy arguments without P</a></li>
+<li><a href="explanations#lazy-arguments-without-p">lazy arguments without P</a><span>extension</span></li>
 <li><a href="explanations#file-function table">file-function table</a></li>
 <li><a href="">macro stack</a></li>
 <li><a href="">variadic sequence</a></li>
@@ -202,12 +224,12 @@ li, h2 {
 <h2>The abyss</h2>
 <ul>
 <li><a href="">IS_ICE</a></li>
-<li><a href="">macro expansion can be recursive</a></li>
+<li><a href="">macro expansion can be recursive</a><span>extension</span></li>
 <li><a href="https://github.com/camel-cdr/execfs">#include custom filesystem</a></li>
-<li><a href="" class="monospace">F(x,y)y)y)y)y)</a></li>
-<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n1410.pdf" class=""monospace">#for #endfor</a></li>
+<li><a href="" class="ms">F(x,y)y)y)y)y)</a></li>
+<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n1410.pdf" class="ms">#for #endfor</a><span>rejected C proposal</span></li>
 <li><a href="">random access memory</a></li>
-<li><a href="https://github.com/JadLevesque/my-ppmptd" class="monospace">#include __DATE__</a></li>
+<li><a href="https://github.com/JadLevesque/my-ppmptd" class="ms">#include __DATE__</a></li>
 <li><a href="">tcc's magic non recurisve recursive sequence iteration</a></li>
 <li><a href="">file stack</a></li>
 <li><a href="">file stack line accumulator</a></li>

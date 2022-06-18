@@ -238,6 +238,8 @@ Macros can only be defined in a single logical source line, that sets the limit 
 
 The same is true for [C11](https://port70.net/~nsz/c/c11/n1570.html#5.2.4.1) and [C2x](https://port70.net/~nsz/c/c2x/n2434.pdf#subsubsection.5.2.4.1). In [C89](https://port70.net/~nsz/c/c89/c89-draft.html#2.2.4.1) the limits are 1024 simultaneously defined macros and 509 characters in a logical source line.
 
+For C++ both minimal limits are defined as 65536.
+
 
 # function like macros only see parentheses
 
