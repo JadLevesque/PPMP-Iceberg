@@ -117,7 +117,7 @@ LAZY_WITHOUT_P(A NOTHING ()) // A ()
 ```
 
 
-# macros expansion isn't recursive
+# macro expansion isn't recursive
 
 ```C
 #define A(x) x
@@ -144,6 +144,12 @@ Produces a custom error recorded on the buildlog as well as halting compilation.
 ```C
 #error "You did something wrong at line something."
 ```
+
+# tcc's non recurisve expansion is recursive
+
+
+# gcc's macro's can be recursive
+
 
 # `#line`
 Sets a new value for `__FILE__` and `__DATE__`.
@@ -241,4 +247,32 @@ This problem often occurs when passing a compound literal, e.g. `(struct Vec3){1
 
 To circumvent this, always pass compound literal enclosed in parentheses.
 
+
+# lazy evaluation
+
+Lazy evaluation is important for both performance and functionnality. 
+
+## lazy `P` argument
+
+Prominent in Order-pp
+
+## lazy `__VA_ARGS__`
+
+Used when `__VA_ARGS__` is needed for macro overload to avoid scanning its contents.
+
+```C
+
+```
+
+## tuple open
+
+Used to open a tuple without rescanning the elements.
+
+
+## pp-num suffix
+
+Prominent in Order-pp
+
+## defer
+## no args
 
