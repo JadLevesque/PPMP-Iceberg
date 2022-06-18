@@ -78,17 +78,12 @@ __COUNTER__ // 2
 # overloading macros based on argument count
 
 ```c
-void foo(int a, int b, int c);
-
 #define GET_MACRO(_1,_2,_3,x,...) x
-#define foo(...) GET_MACRO(__VA_ARGS__, \
-                           foo(__VA_ARGS__), \
-                           foo(__VA_ARGS__,3), \
-                           foo(__VA_ARGS__,2,3))
+#define FOO(...) GET_MACRO(__VA_ARGS__,FOO3,FOO2,FOO1)(__VA_ARGS__)
 
-foo(1,2,3) // foo(1,2,3)
-foo(1,2)   // foo(1,2,3)
-foo(1)     // foo(1,2,3)
+FOO(1)     // FOO1(1,2,3)
+FOO(1,2)   // FOO2(1,2,3)
+FOO(1,2,3) // FOO3(1,2,3)
 ```
 
 # default arguments
@@ -98,10 +93,13 @@ By [overloading macros based on argument count](#overloading-macros-based-on-arg
 ```c
 void foo(int a, int b, float c);
 #define GET_ARGS(_1,_2,_3,...) __VA_ARGS__
-#define foo(...) GET_MACRO(__VA_ARGS__,foo(__VA_ARGS__),foo(__VA_ARGS__,2),foo(__VA_ARGS__,2,3.0))
-foo(1,2,3)   // foo(1,2,3)
-foo(1,2)     // foo(1,2)
-foo(1)       // foo(1)
+#define foo(...) GET_MACRO(__VA_ARGS__, \
+                           foo(__VA_ARGS__), \
+                           foo(__VA_ARGS__,2), \
+                           foo(__VA_ARGS__,2,3.0))
+foo(1,2,3) // foo(1,2,3)
+foo(1,2)   // foo(1,2)
+foo(1)     // foo(1)
 ```
 
 # lazy arguments without P
