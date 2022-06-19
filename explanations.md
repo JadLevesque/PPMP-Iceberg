@@ -297,6 +297,10 @@ ONE_ARGUMENT(x)
 ```
 
 
+# tcc's non recurisve expansion is recursive
+
+
+
 
 
 
@@ -325,7 +329,6 @@ LAZY_WITHOUT_P(A NOTHING ()) // A ()
 
 
 
-# tcc's non recurisve expansion is recursive
 
 
 # gcc's macro's can be recursive
@@ -485,3 +488,26 @@ See: [http://saadahmad.ca/cc-preprocessor-metaprogramming-evaluating-and-deferin
 
 To stop a function-like macro from expanding, don't give it arguments.
 
+
+# ICE_P
+
+You can overload a function depending on one of the argument being a constant expression.
+
+It works by abusing the fact that the return type of the ternary expression `1 ? (void*)1 : (int*)1` has the type `int*`, but `1 ? (void*)0 : (int*)1` has the type `void*`:
+
+> [...] if one operand is a null pointer constant, the result has the type of the other operand; otherwise, one operand is a pointer to void or a qualified version of void, in which case the result type is a pointer to an appropriately qualified version of void.
+
+(https://port70.net/~nsz/c/c11/n1570.html#6.5.15p6)
+
+Since any constant expression that evaluates to zero is a null pointer constant, you can e.g. do the following:
+
+```c
+#define ICE_P(x) _Generic((1 ? ((void*)!(x)) : &(int){1}), int*: 1, void*: 0)
+#define pow(x,p) (ICE_P(p==1 || p==2) ? (p==1 ? x : (p==2 ? x*x : 0)) : pow(x, p))
+
+pow(x,1); // (x)
+pow(x,2); // (x*x)
+pow(x,y); // pow(x,y)
+```
+
+(https://godbolt.org/z/bjo5TcnbT)
