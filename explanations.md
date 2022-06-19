@@ -178,8 +178,8 @@ __COUNTER__ // 2
 #define GET_MACRO(_1,_2,_3,x,...) x
 #define FOO(...) GET_MACRO(__VA_ARGS__,FOO3,FOO2,FOO1)(__VA_ARGS__)
 
-FOO(1)     // FOO1(1,2,3)
-FOO(1,2)   // FOO2(1,2,3)
+FOO(1)     // FOO1(1)
+FOO(1,2)   // FOO2(1,2)
 FOO(1,2,3) // FOO3(1,2,3)
 ```
 
@@ -193,10 +193,10 @@ void foo(int a, int b, float c);
 #define foo(...) GET_MACRO(__VA_ARGS__, \
                            foo(__VA_ARGS__), \
                            foo(__VA_ARGS__,2), \
-                           foo(__VA_ARGS__,2,3.0))
+                           foo(__VA_ARGS__,2,3))
 foo(1,2,3) // foo(1,2,3)
-foo(1,2)   // foo(1,2)
-foo(1)     // foo(1)
+foo(1,2)   // foo(1,2,3)
+foo(1)     // foo(1,2,3)
 ```
 
 # `SCAN`
