@@ -297,8 +297,24 @@ ONE_ARGUMENT(x)
 ```
 
 
-# tcc's non recurisve expansion is recursive
+# tcc's non-recursive expansion is recursive
 
+
+```c
+#define A(x) x B
+#define B(x) x A
+A(1)(1)(1)(1)
+```
+
+The standard say that it's implementation defined if in the above code the macro expansions are nested or not. (see https://port70.net/~nsz/c/c11/n1570.html#6.10.3.4p4 and "When a fully expanded..." in Annex J)
+So an implementation could expand the above either to "1 1 A(1)(1)..." or "1 1 1 1 A".
+
+gcc, clang, tcc and all otherwise valid preprocessor implementation I know of expand it to "1 1 1 1 A", which is great for preprocessor meta programming.
+
+But the problem is, whiles tcc expands the macros as though the expansion isn't nested, this isn't reflected in the tcc code.
+Meaning, if instead of 4 iterations you have e.g. 20000 of them tcc segfaults, and the backtrace indicates that it's a stack overflow because of too many recursive calls.
+
+So tcc implements non-recursive expansion recursively.
 
 
 
