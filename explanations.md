@@ -1,6 +1,6 @@
 # macros just replace text
 
-Macros just replace text, they don't know anything about the surrounding C code.
+Macros just replace text, they don't know anything about the surrounding C code. TODO
 
 
 # make sure to parenthesize arguments
@@ -19,6 +19,7 @@ To solve these problems make sure to parenthesize arguments, and the complete ex
 ```c
 #define ADD(a, b) ((a) += (b))
 ```
+
 
 # `do { } while (0)`
 
@@ -65,6 +66,79 @@ This works, but some compilers warn about the highlighted useless semicolon. The
 for (int i = 0; i < 10; ++i)
     FOR_EACH(f,a[i]);
 ```
+
+
+# macro expansion isn't recursive
+
+```C
+#define A(x) A(x x)
+A(x) // A(x x)
+
+#define B(x) C(x x)
+#define C(x) B(x x)
+B(x) // B(x x x x)
+```
+
+# `#a`
+
+```C
+#define STR(a) #a
+STR(123 foo bar) // "123 foo bar"
+```
+
+# `a##b`
+
+```C
+#define CAT(a,b) a##b
+#define FOOBAR ~
+CAT(FOO,BAR) // ~
+```
+
+# `#error`
+Produces a custom error recorded on the buildlog as well as halting compilation.
+
+```C
+#error "You did something wrong at line something."
+```
+
+# `__FILE__` `__LINE__`
+`__FILE__` expands to a string literal containing the name of the current file.
+`__LINE__` expands to an integer literal of the value of the line where it is expanded.
+
+# `__DATE__`  `__TIME__`
+`__DATE__` expands to a string literal containing the date of compilation.
+`__TIME__` expands to a string literal containing the time of compilation.
+
+# `#line`
+Sets a new value for `__FILE__` and `__DATE__`.
+
+```C
+#line "I/am/the/capitain.now" 42
+__LINE__:__FILE__ // 42:"I/am/the/capitain.now"
+```
+
+# function like macros only see parentheses
+
+Function like macros only see parentheses when it comes to splitting up the arguments, e.g. `FOO({1,3})` calls `FOO` with the arguments `{1` and `3}`.
+
+This problem often occurs when passing a compound literal, e.g. `(struct Vec3){1,2,3}`, to a function like macro.
+
+To circumvent this, always pass compound literal enclosed in parentheses.
+
+# `#if static_cast<bool>(-1)`
+
+The `#if` statement replaces, after macro expansion, every remaining identifier with the pp-number 0.
+So `#if static_cast<bool>(-1)` is equivalent to `#if 0<0>(-1)`, `#if 0 > -1`, and `#if 1`.
+
+
+# preprocessing directives can't be inside of macros
+
+
+
+
+
+
+
 
 # `__COUNTER__`
 
@@ -117,47 +191,12 @@ LAZY_WITHOUT_P(A NOTHING ()) // A ()
 ```
 
 
-# macro expansion isn't recursive
-
-```C
-#define A(x) x
-#define B(x) x
-#define C() C ()
-
-A (B) (0) // 0
-A (A) (0) // A (0)
-
-C() // C ()
-```
-
-# `__FILE__` `__LINE__`
-`__FILE__` expands to a string literal containing the name of the current file.
-`__LINE__` expands to an integer literal of the value of the line where it is expanded.
-
-# `__DATE__`  `__TIME__`
-`__DATE__` expands to a string literal containing the date of compilation.
-`__TIME__` expands to a string literal containing the time of compilation.
-
-# `#error`
-Produces a custom error recorded on the buildlog as well as halting compilation.
-
-```C
-#error "You did something wrong at line something."
-```
 
 # tcc's non recurisve expansion is recursive
 
 
 # gcc's macro's can be recursive
 
-
-# `#line`
-Sets a new value for `__FILE__` and `__DATE__`.
-
-```C
-#line "I/am/the/capitain.now" 42
-__LINE__:__FILE__ // 42:"I/am/the/capitain.now"
-```
 
 # `#2""3`
 The first five characters of a dirty PPMP test file, that remove most warnings and shortens the current file name to nothing.
@@ -183,20 +222,7 @@ buildlog:
 */
 ```
 
-# `a##b`
 
-```C
-#define CAT(a,b) a##b
-#define FOOBAR ~
-CAT(FOO,BAR) // ~
-```
-
-# `#a`
-
-```C
-#define STR(a) #a
-STR(123 foo bar) // "123 foo bar"
-```
 
 # `#define CAT(a,b) CAT_(a,b)` `#define CAT_(a,b) a##b`
 
@@ -241,20 +267,47 @@ The same is true for [C11](https://port70.net/~nsz/c/c11/n1570.html#5.2.4.1) and
 For C++ both minimal limits are defined as 65536.
 
 
-# function like macros only see parentheses
-
-Function like macros only see parentheses when it comes to splitting up the arguments, e.g. `FOO({1,3})` calls `FOO` with the arguments `{1` and `3}`.
-
-This problem often occurs when passing a compound literal, e.g. `(struct Vec3){1,2,3}`, to a function like macro.
-
-To circumvent this, always pass compound literal enclosed in parentheses.
 
 
-# `#if static_cast<bool>(-1)`
 
-The `#if` statement replaces, after macro expansion, every remaining identifier with the pp-number 0.
-So `#if static_cast<bool>(-1)` is equivalent to `#if 0<0>(-1)`, `#if 0 > -1`, and `#if 1`.
+# Single Instruction/Continuation Multiple Data
 
+Some algorithms can be sped up a lot by processing multiple elements of data in a single continuation, since continuations have a comparatively large overhead.
+
+Reversing tuple for example can be easily done 8 elements at a time:
+
+```c
+#define E4(...) E3(E3(E3(E3(E3(E3(E3(E3(E3(E3(__VA_ARGS__))))))))))
+#define E3(...) E2(E2(E2(E2(E2(E2(E2(E2(E2(E2(__VA_ARGS__))))))))))
+#define E2(...) E1(E1(E1(E1(E1(E1(E1(E1(E1(E1(__VA_ARGS__))))))))))
+#define E1(...) __VA_ARGS__
+
+#define EMPTY()
+#define CAT(a,b) CAT_(a,b)
+#define CAT_(a,b) a##b
+#define FX(f,x) f(x)
+#define TUPLE_TAIL(x,...) (__VA_ARGS__)
+#define TUPLE_AT_2(x,y,...) y
+#define CHECK(...) TUPLE_AT_2(__VA_ARGS__,0,)
+#define EQ_END_END ,1
+
+// reverse 8 arguments at a time, defer to LOOP is there are less then 8 arguments
+#define SIMD_() SIMD
+#define SIMD(a,b,c,d,e,f,g,h,...) CAT(SIMD, CHECK(EQ_END_##h))(a,b,c,d,e,f,g,h,__VA_ARGS__)
+#define SIMD1 LOOP
+#define SIMD0(a,b,c,d,e,f,g,h,...) SIMD_ EMPTY() ()(__VA_ARGS__),h,g,f,e,d,c,b,a
+
+// reverse 1 argument at a time
+#define LOOP_() LOOP
+#define LOOP(x,...) CAT(LOOP, CHECK(EQ_END_##x))(x,__VA_ARGS__)
+#define LOOP1(x,...) 
+#define LOOP0(x,...) LOOP_ EMPTY() ()(__VA_ARGS__),x
+
+#define REVERSE(...) FX(TUPLE_TAIL,E4(SIMD(__VA_ARGS__,END,END,END,END,END,END,END,END)))
+
+REVERSE(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
+//     (15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)
+```
 
 # lazy evaluation
 
