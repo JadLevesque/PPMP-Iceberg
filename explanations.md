@@ -250,6 +250,12 @@ This problem often occurs when passing a compound literal, e.g. `(struct Vec3){1
 To circumvent this, always pass compound literal enclosed in parentheses.
 
 
+# `#if static_cast<bool>(-1)`
+
+The `#if` statement replaces, after macro expansion, every remaining identifier with the pp-number 0.
+So `#if static_cast<bool>(-1)` is equivalent to `#if 0<0>(-1)`, `#if 0 > -1`, and `#if 1`.
+
+
 # lazy evaluation
 
 Lazy evaluation is important for both performance and functionnality. 
