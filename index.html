@@ -45,15 +45,20 @@ li {
 @media (max-width:  600px) { body{ font-size: 13px; } li { margin: 8px 25px; } }
 @media (max-width:  400px) { body{ font-size: 12px; } li { margin: 6px 20px; } }
 
+
 li > span {
 	visibility: hidden;
 	background-color: black;
-	color: #fff;
+	color: white;
 	text-align: center;
 	padding: 5px;
-	border-radius: 4px;
 	white-space: nowrap;
 	opacity: 0.0;
+
+	border-radius: 4px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: white;
 
 	/* Position the tooltip */
 	position: absolute;
@@ -62,6 +67,7 @@ li > span {
 	left: 105%;
 	transition: opacity 0.15s ease-in-out, visibility 0.15s ease-in-out;
 }
+
 
 li:hover > span { opacity: 1.0; visibility: visible; }
 
