@@ -249,10 +249,64 @@ Expansion of SCAN finished, resulting tokens are rescanned
 Done
 ```
 
+# no more than 4095
+
+The [C99 translation limits](https://port70.net/~nsz/c/c99/n1256.html#5.2.4.1) only require an implementation to support 4095 simultaneously defined macros, and crucially only requires to support 4095 characters in a logical source line.
+
+Macros can only be defined in a single logical source line, that sets the limit on the macro replacement list length, for portable programs, to `4085` characters (assuming you use `#define A ...`).
+
+The same is true for [C11](https://port70.net/~nsz/c/c11/n1570.html#5.2.4.1) and [C2x](https://port70.net/~nsz/c/c2x/n2434.pdf#subsubsection.5.2.4.1). In [C89](https://port70.net/~nsz/c/c89/c89-draft.html#2.2.4.1) the limits are 1024 simultaneously defined macros and 509 characters in a logical source line.
+
+For C++ both minimal limits are defined as 65536.
+
+# saturated overloading
+
+```c
+#define IF(x) IF_(x)
+#define IF_(x) IF_##x
+#define IF_1(a,b) a
+#define IF_0(a,b) b
+
+#define TUPLE_AT_2(x,y,...) y
+#define CHECK(...) TUPLE_AT_2(__VA_ARGS__,0,)
+
+#define GET_MACRO(a1,a2,a3,x,...) x
+#define FOO_NAME(...) GET_MACRO(__VA_ARGS__,FOO3,FOO2,FOO1)
+
+#define FOO_8RESERVE ,1
+#define FOO_(f,a,b,c,d,...) IF(CHECK(FOO_##d))(f,FOOn)
+#define FOO(...) FOO_(FOO_NAME(__VA_ARGS__),__VA_ARGS__,8RESERVE,8RESERVE,8RESERVE,8RESERVE)(__VA_ARGS__)
+
+FOO(1)         // FOO1(1,)
+FOO(1,2)       // FOO2(1,2)
+FOO(1,2,3)     // FOO3(1,2,3)
+FOO(1,2,3,4)   // FOOn(1,2,3,4)
+FOO(1,2,3,4,5) // FOOn(1,2,3,4,5)
+```
+
+# no argument means one argument
+
+```c
+#define NO_ARGUMENT()
+#define ONE_ARGUMENT(x) x
+
+NO_ARGUMENT()
+// NO_ARGUMENT(1) // error
+ONE_ARGUMENT(1) 
+ONE_ARGUMENT(x) 
+```
 
 
 
 
+
+
+# interpreters/compilers
+
+* [bfcpp](https://github.com/camel-cdr/bfcpp) (Optimizing Brainfuck interpreter)
+* [bfi](http://www.kotha.net/bfi/) (Optimizing Brainfuck interpreter)
+* [CPP_COMPLETE](https://github.com/orangeduck/CPP_COMPLETE) (Brainfuck interpreter)
+* [ppasm](https://github.com/notfoundry/ppasm) (x86_64 macro assembler)
 
 
 # lazy arguments without P
@@ -318,17 +372,6 @@ Example with Chaos-pp slots
 #include CHAOS_PP_ASSIGN_SLOT (1) // File-function table indexed at slot number 1
 CHAOS_PP_SLOT (1)                // 11
 ```
-
-
-# no more than 4095
-
-The [C99 translation limits](https://port70.net/~nsz/c/c99/n1256.html#5.2.4.1) only require an implementation to support 4095 simultaneously defined macros, and crucially only requires to support 4095 characters in a logical source line.
-
-Macros can only be defined in a single logical source line, that sets the limit on the macro replacement list length, for portable programs, to `4085` characters (assuming you use `#define A ...`).
-
-The same is true for [C11](https://port70.net/~nsz/c/c11/n1570.html#5.2.4.1) and [C2x](https://port70.net/~nsz/c/c2x/n2434.pdf#subsubsection.5.2.4.1). In [C89](https://port70.net/~nsz/c/c89/c89-draft.html#2.2.4.1) the limits are 1024 simultaneously defined macros and 509 characters in a logical source line.
-
-For C++ both minimal limits are defined as 65536.
 
 
 
