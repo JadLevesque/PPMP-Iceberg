@@ -312,6 +312,11 @@ ONE_ARGUMENT(x)
 * [CPP_COMPLETE](https://github.com/orangeduck/CPP_COMPLETE) (Brainfuck interpreter)
 * [ppasm](https://github.com/notfoundry/ppasm) (x86_64 macro assembler)
 
+# language extensions
+
+* [datatype99](https://github.com/Hirrolot/datatype99) (Algebraic data types)
+* [interface99](https://github.com/Hirrolot/interface99) (Interfaces)
+
 
 # lazy arguments without P
 Comma concatenation is a GCC extension.
