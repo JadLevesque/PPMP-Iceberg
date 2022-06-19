@@ -199,6 +199,11 @@ foo(1,2)   // foo(1,2,3)
 foo(1)     // foo(1,2,3)
 ```
 
+# prefix namespaces
+
+Because macro definitions are global there is no builtin namespace facility, it's recommended for libraries to prefix all the macros they define with a characteristic prefix, e.g.: `LIBRARYNAME_`
+
+
 # `SCAN`
 
 The `SCAN` macro can be used to scan it's arguments twice:
@@ -207,13 +212,13 @@ The `SCAN` macro can be used to scan it's arguments twice:
 #define SCAN(...) __VA_ARGS__
 #define SCAN2(...) SCAN(__VA_ARGS__)
 #define STR(x) #x
-#define A(x) (x*x)
-#define B(x) (x*x)
+#define A(x) (x+x)
+#define B(x) (x+x)
 
-STR A(x)          // STR (x*x)
-SCAN(STR A(x))    // "(x*x)"
-SCAN(STR B A(x))  // STR (x*x*x*x)
-SCAN2(STR B A(x)) // "(x*x*x*x)"
+STR A(1)          // STR (x+x)
+SCAN(STR A(1))    // "(x+x)"
+SCAN(STR B A(1))  // STR (x+x+x+x)
+SCAN2(STR B A(1)) // "(x+x+x+x)"
 ```
 
 
@@ -222,8 +227,8 @@ SCAN2(STR B A(x)) // "(x*x*x*x)"
    ^ no arguments supplied, so it's ignored
 2. STR A(1)
        ^ expands
-Isolated expansion of A's arguments to (1*1)
-3. STR (1*1)
+Isolated expansion of A's arguments to (1+1)
+3. STR (1+1)
 Done
 ```
 
@@ -235,12 +240,12 @@ Isolated expansion of SCAN's arguments
       ^ no arguments supplied, so it's ignored
    3. STR A(1)
           ^ expands
-   Isolated expansion of A's arguments to (1*1)
+   Isolated expansion of A's arguments to (1+1)
 Expansion of SCAN finished, resulting tokens are rescanned
-5. STR (1*1)
+5. STR (1+1)
    ^ expands
-   Isolated expansion of STR's arguments to "1*1"
-6. "(1*1)"
+   Isolated expansion of STR's arguments to "1+1"
+6. "(1+1)"
 Done
 ```
 
