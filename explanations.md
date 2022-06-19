@@ -133,12 +133,35 @@ So `#if static_cast<bool>(-1)` is equivalent to `#if 0<0>(-1)`, `#if 0 > -1`, an
 
 # preprocessing directives can't be inside of macros
 
+> If there are sequences of preprocessing tokens within the list of arguments that would otherwise act as preprocessing directives, the behavior is undefined.
 
+(https://port70.net/~nsz/c/c11/n1570.html#6.10.3p11)
 
+> Each # preprocessing token in the replacement list for a function-like macro shall be followed by a parameter as the next preprocessing token in the replacement list. 
 
+(https://port70.net/~nsz/c/c11/n1570.html#6.10.3.2p1)
 
+Hence, it's not possible to generate preprocessor directives using standard macros.
 
+(The rules are similar in C++)
 
+# `-P -E`
+
+Many compilers (gcc,clang,tcc,...) have the options `-E` for only running the preprocessor and `-E` for not omitting line marks.
+
+# `#define CAT(a,b) CAT_(a,b)` `#define CAT_(a,b) a##b`
+
+```C
+#define CAT(a,b) CAT_(a,b)
+#define CAT_(a,b) a##b
+
+#define foo FOO
+#define bar BAR
+#define FOOBAR ~
+
+CAT_(foo,bar) // foobar
+CAT(foo,bar) // ~
+```
 
 # `__COUNTER__`
 
@@ -175,6 +198,15 @@ foo(1,2,3) // foo(1,2,3)
 foo(1,2)   // foo(1,2)
 foo(1)     // foo(1)
 ```
+
+
+
+
+
+
+
+
+
 
 # lazy arguments without P
 Comma concatenation is a GCC extension.
@@ -222,21 +254,6 @@ buildlog:
 */
 ```
 
-
-
-# `#define CAT(a,b) CAT_(a,b)` `#define CAT_(a,b) a##b`
-
-```C
-#define CAT(a,b) CAT_(a,b)
-#define CAT_(a,b) a##b
-
-#define foo FOO
-#define bar BAR
-#define FOOBAR ~
-
-CAT_(foo,bar) // foobar
-CAT(foo,bar) // ~
-```
 
 # file-function table
 
