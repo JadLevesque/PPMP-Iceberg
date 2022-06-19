@@ -199,8 +199,50 @@ foo(1,2)   // foo(1,2)
 foo(1)     // foo(1)
 ```
 
+# `SCAN`
+
+The `SCAN` macro can be used to scan it's arguments twice:
+
+```c
+#define SCAN(...) __VA_ARGS__
+#define SCAN2(...) SCAN(__VA_ARGS__)
+#define STR(x) #x
+#define A(x) (x*x)
+#define B(x) (x*x)
+
+STR A(x)          // STR (x*x)
+SCAN(STR A(x))    // "(x*x)"
+SCAN(STR B A(x))  // STR (x*x*x*x)
+SCAN2(STR B A(x)) // "(x*x*x*x)"
+```
 
 
+```
+1. STR A(1)
+   ^ no arguments supplied, so it's ignored
+2. STR A(1)
+       ^ expands
+Isolated expansion of A's arguments to (1*1)
+3. STR (1*1)
+Done
+```
+
+```
+1. SCAN(STR A(1))
+   ^ expands
+Isolated expansion of SCAN's arguments
+   2. STR A(1)
+      ^ no arguments supplied, so it's ignored
+   3. STR A(1)
+          ^ expands
+   Isolated expansion of A's arguments to (1*1)
+Expansion of SCAN finished, resulting tokens are rescanned
+5. STR (1*1)
+   ^ expands
+   Isolated expansion of STR's arguments to "1*1"
+6. "(1*1)"
+Done
+```
 
 
 
