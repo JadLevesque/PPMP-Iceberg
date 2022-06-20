@@ -176,7 +176,7 @@ __COUNTER__ // 2
 
 ```c
 #define GET_MACRO(_1,_2,_3,x,...) x
-#define FOO(...) GET_MACRO(0##__VA_ARGS__,FOO3,FOO2,FOO1)(__VA_ARGS__)
+#define FOO(...) GET_MACRO(__VA_ARGS__,FOO3,FOO2,FOO1)(__VA_ARGS__)
 
 FOO(1)     // FOO1(1)
 FOO(1,2)   // FOO2(1,2)
@@ -189,8 +189,8 @@ By [overloading macros based on argument count](#overloading-macros-based-on-arg
 
 ```c
 void foo(int a, int b, float c);
-#define GET_MACRO(_1,_2,_3,x,...) x
-#define foo(...) GET_MACRO(0##__VA_ARGS__, \
+#define GET_ARGS(_1,_2,_3,...) __VA_ARGS__
+#define foo(...) GET_MACRO(__VA_ARGS__, \
                            foo(__VA_ARGS__), \
                            foo(__VA_ARGS__,2), \
                            foo(__VA_ARGS__,2,3))
@@ -271,11 +271,11 @@ For C++ both minimal limits are defined as 65536.
 #define CHECK(...) TUPLE_AT_2(__VA_ARGS__,0,)
 
 #define GET_MACRO(a1,a2,a3,x,...) x
-#define FOO_NAME(...) GET_MACRO(0##__VA_ARGS__,FOO3,FOO2,FOO1)
+#define FOO_NAME(...) GET_MACRO(__VA_ARGS__,FOO3,FOO2,FOO1)
 
 #define FOO_8RESERVE ,1
 #define FOO_(f,a,b,c,d,...) IF(CHECK(FOO_##d))(f,FOOn)
-#define FOO(...) FOO_(FOO_NAME(__VA_ARGS__),0##__VA_ARGS__,8RESERVE,8RESERVE,8RESERVE,8RESERVE)(__VA_ARGS__)
+#define FOO(...) FOO_(FOO_NAME(__VA_ARGS__),__VA_ARGS__,8RESERVE,8RESERVE,8RESERVE,8RESERVE)(__VA_ARGS__)
 
 FOO(1)         // FOO1(1,)
 FOO(1,2)       // FOO2(1,2)
