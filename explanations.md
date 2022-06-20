@@ -467,7 +467,10 @@ FOO(1,2)   // FOO2(1,2,3)
 FOO(1,2,3) // FOO3(1,2,3)
 ```
 
+Disclaimer: This is only faster if the __VA_ARGS__ is ludicrously long.
+
 Note: in this example the first arguement must be a concatenable token.
+
 
 ## tuple open
 
