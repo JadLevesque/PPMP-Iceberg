@@ -535,3 +535,115 @@ pow(x,y); // pow(x,y)
 ```
 
 (https://godbolt.org/z/bjo5TcnbT)
+
+# Domains
+TLDR: Domains are functions in the mathematical sense. A domain has rules, inputs and an output. There is a domain for each type of translation unit.
+
+The concept of domains is very powerful in PPMP. It allows for a conceptual classification of operations as functions and for describing how those functions 
+can be composed to describe complex operations.
+
+The two main domains are the file-domain and the macro-domain. There are also directive specific domains like the include-domain, the conditional-domain,
+the line-domain and the pragma domain. Certain preprocessor add other implementations 
+
+Two very powerful concepts are the file-domain (FD) and the macro-domain (MD). They are both sets of operations allowed in an FTU and an MTU respectively.
+
+The inputs and output of each domain are the subject of this section. The rules themselves will not be presented (ISO does a good job at that), though the 
+operations they represent will be.
+
+
+## File domain (FD)
+### Inputs
+- Conditional tree
+- `#include`
+- `#line`
+- `#define`
+- `#undef`
+- MTU
+- Diagnostics  ;; `#error` and `#warning`
+- Terminal tokens
+
+### Outputs
+- Tokens
+- Macro environment editing
+- Diagnostics
+
+### Operations
+The FD includes:
+- `#include` 			: affects file domain  ;; sub-FTU
+- `#define` 			: affects macro domain
+- `#undef` 				: affects macro domain
+- `#pragma push_macro` 	: affects macro domain
+- `#pragma pop_macro` 	: affects macro domain
+- `#line` 				: affects macro domain
+- linemakers 			: affects macro domain
+- conditionals 			: affects file domain
+- MTU					: affects file domain
+
+
+## Macro domain (MD)
+### Inputs 
+- Macro environment
+
+### Outputs
+- Tokens
+- Pragmas
+- Macro environment editing
+
+### Operations
+- `_Pragma` 		: affects file domain through the generation of a `#pragma`. The exact pragma can then affect other domains.
+- Sub-MTU 			: affects macro domain local to the sub-MTU  ;; Macro expansion inside a macro expansion
+- `#` 				: affects macro domain
+- `##` 				: affects macro domain
+- `__VA_ARGS__` 	: affects macro domain
+- `__VA_OPT__` 		: affects macro domain
+- Blue paint		: affects macro domain local to the current MTU and following sub-MUTs
+
+
+## Include domain (ID)
+The CD applies to the operand of `#include`.
+
+Syntax: `#include` <*string literal*>
+    or: `#include` `<` <*text*> `>`
+
+## Conditional domain (CD)
+The CD applies to the operand of `#if` and `#elif`.
+
+Syntax: `#if` <*constant expression*>
+
+
+## Line domain (LD)
+The LD applies to the operand of `#line`. The operand is scanned for macro expansion. This means the operand can be one or multiple MTUs.
+
+Note: the operand shall not return 
+
+Syntax: `#line` <*integer literal*> <*string literal*>
+
+
+## Pragma domain (PD)
+The pragma domain applies to `#pragma` and `_Pragma`.
+
+Syntax: `#pragma` <*tokens*>
+    or: `_Pragma` `(` <*string literal*> `)`
+
+The operand of `#pragma` is not scanned for macro expansion.
+The operand of `_Pragma` is scanned for macro expansion.
+
+## Examples
+
+#### Sloting a boolean
+```C
+// somefile.c
+#define VALUE 123 % 2 // is 123 even?
+#include "assign_slot.h" // memorise the result of VALUE to SLOT
+
+// slot_1.h
+#if VALUE
+#define SLOT 1
+#else
+#define SLOT 0
+#endif
+```
+
+**Explanation**:
+The macro `VALUE` contains a constant expression which is evaluated inside "slot_1.h"'s conditional. 
+The macro `SLOT` is defined according to the result of the constant expression of `VALUE`.
