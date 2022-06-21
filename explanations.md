@@ -636,7 +636,7 @@ The operand of `_Pragma` is scanned for macro expansion.
 #define VALUE 123 % 2 // is 123 even?
 #include "assign_slot.h" // memorise the result of VALUE to SLOT
 
-// slot_1.h
+// "assign_slot.h"
 #if VALUE
 #define SLOT 1
 #else
@@ -645,5 +645,5 @@ The operand of `_Pragma` is scanned for macro expansion.
 ```
 
 **Explanation**:
-The macro `VALUE` contains a constant expression which is evaluated inside "slot_1.h"'s conditional. 
+The macro `VALUE` contains a constant expression which is evaluated inside "assign_slot.h"'s conditional. 
 The macro `SLOT` is defined according to the result of the constant expression of `VALUE`.
