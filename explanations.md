@@ -262,20 +262,11 @@ For C++ both minimal limits are defined as 65536.
 # saturated overloading
 
 ```c
-#define IF(x) IF_(x)
-#define IF_(x) IF_##x
-#define IF_1(a,b) a
-#define IF_0(a,b) b
+#define TUPLE_AT_1(x0,x1,...) x1
 
-#define TUPLE_AT_2(x,y,...) y
-#define CHECK(...) TUPLE_AT_2(__VA_ARGS__,0,)
-
-#define GET_MACRO(a1,a2,a3,x,...) x
-#define FOO_NAME(...) GET_MACRO(__VA_ARGS__,FOO3,FOO2,FOO1)
-
-#define FOO_8RESERVE ,1
-#define FOO_(f,a,b,c,d,...) IF(CHECK(FOO_##d))(f,FOOn)
-#define FOO(...) FOO_(FOO_NAME(__VA_ARGS__),__VA_ARGS__,8RESERVE,8RESERVE,8RESERVE,8RESERVE)(__VA_ARGS__)
+#define COMMA_N(x) ,x
+#define FOO(...) FOO_I(__VA_ARGS__,COMMA_N(FOO3),COMMA_N(FOO2),COMMA_N(FOO1),)(__VA_ARGS__)
+#define FOO_I(x0,x1,x2,o,...) TUPLE_AT_1(o,FOOn,)
 
 FOO(1)         // FOO1(1,)
 FOO(1,2)       // FOO2(1,2)
