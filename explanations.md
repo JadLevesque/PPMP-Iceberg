@@ -527,114 +527,147 @@ pow(x,y); // pow(x,y)
 
 (https://godbolt.org/z/bjo5TcnbT)
 
-# Domains
-TLDR: Domains are functions in the mathematical sense. A domain has rules, inputs and an output. There is a domain for each type of translation unit.
+# file stack
 
-The concept of domains is very powerful in PPMP. It allows for a conceptual classification of operations as functions and for describing how those functions 
-can be composed to describe complex operations.
+Note: GCC only.
 
-The two main domains are the file-domain and the macro-domain. There are also directive specific domains like the include-domain, the conditional-domain,
-the line-domain and the pragma domain. Certain preprocessor add other implementations 
+GCC stores file names in a 200 high stack. Information stored on this stack includes file name and line number. Using linemarkers, it is possible to push, pop and modify this stack.
 
-Two very powerful concepts are the file-domain (FD) and the macro-domain (MD). They are both sets of operations allowed in an FTU and an MTU respectively.
+There are a few subtilities to take into consideration (which happen to vary with GCC version), but the essential is:
+- Push: `#` <*line number*> <*file name*> `1`
+- Pop: `#` <*line number*> <*file name*> `2`
 
-The inputs and output of each domain are the subject of this section. The rules themselves will not be presented (ISO does a good job at that), though the 
-operations they represent will be.
+## Subtilities
 
+There are small but important details to keep into consideration for the proper manipulation of the file stack. Henceforth, variables will be used to succinctly refer to file names.
 
-## File domain (FD)
-### Inputs
-- Conditional tree
-- `#include`
-- `#line`
-- `#define`
-- `#undef`
-- MTU
-- Diagnostics  ;; `#error` and `#warning`
-- Terminal tokens
+Note: the line number must be a literal. The linemarker does not accept an MTU
 
-### Outputs
-- Tokens
-- Macro environment editing
-- Diagnostics
+### Push
+4.1.2 - 12.1
+`# any-file-name 1`
 
-### Operations
-The FD includes:
-- `#include` 			: affects file domain  ;; sub-FTU
-- `#define` 			: affects macro domain
-- `#undef` 				: affects macro domain
-- `#pragma push_macro` 	: affects macro domain
-- `#pragma pop_macro` 	: affects macro domain
-- `#line` 				: affects macro domain
-- linemakers 			: affects macro domain
-- conditionals 			: affects file domain
-- MTU					: affects file domain
-
-
-## Macro domain (MD)
-### Inputs 
-- Macro environment
-
-### Outputs
-- Tokens
-- Pragmas
-- Macro environment editing
-
-### Operations
-- `_Pragma` 		: affects file domain through the generation of a `#pragma`. The exact pragma can then affect other domains.
-- Sub-MTU 			: affects macro domain local to the sub-MTU  ;; Macro expansion inside a macro expansion
-- `#` 				: affects macro domain
-- `##` 				: affects macro domain
-- `__VA_ARGS__` 	: affects macro domain
-- `__VA_OPT__` 		: affects macro domain
-- Blue paint		: affects macro domain local to the current MTU and following sub-MUTs
-
-
-## Include domain (ID)
-The CD applies to the operand of `#include`.
-
-Syntax: `#include` <*string literal*>
-    or: `#include` `<` <*text*> `>`
-
-## Conditional domain (CD)
-The CD applies to the operand of `#if` and `#elif`.
-
-Syntax: `#if` <*constant expression*>
-
-
-## Line domain (LD)
-The LD applies to the operand of `#line`. The operand is scanned for macro expansion. This means the operand can be one or multiple MTUs.
-
-Note: the operand shall not return 
-
-Syntax: `#line` <*integer literal*> <*string literal*>
-
-
-## Pragma domain (PD)
-The pragma domain applies to `#pragma` and `_Pragma`.
-
-Syntax: `#pragma` <*tokens*>
-    or: `_Pragma` `(` <*string literal*> `)`
-
-The operand of `#pragma` is not scanned for macro expansion.
-The operand of `_Pragma` is scanned for macro expansion.
-
-## Examples
-
-#### Sloting a boolean
+Example
 ```C
-// somefile.c
-#define VALUE 123 % 2 // is 123 even?
-#include "assign_slot.h" // memorise the result of VALUE to SLOT
-
-// "assign_slot.h"
-#if VALUE
-#define SLOT 1
-#else
-#define SLOT 0
-#endif
+#define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
+#line 1 "foo.c"
+INFO
+#42 "bar.h" 1
+INFO
+#123 "baz.h" 1
+INFO
+```
+Output:
+```
+[0, 1, "foo.c"]
+[1, 42, "bar.h"]
+[2, 123, "baz.h"]
 ```
 
-**Explanation**:
-The macro `VALUE` contains a constant expression which is evaluated inside "assign_slot.h"'s conditional. 
-The macro `SLOT` is defined according to the result of the constant expression of `VALUE`.
+Shape of the stack:
+```C
+  +-------+
+2 | baz.h |
+  +-------+
+1 | bar.h |
+  +-------+
+0 | foo.c |
+  +-------+
+```
+
+
+### Pop
+| Version range | With correct file name | With wrong file name | With empty file name |
+| ---           | ---                    | ---                  | ---                  |
+| 4.1.2 - 5.4   | Without carry          | With carry           | With carry           |
+| 6.1 - 9.5     | Without carry          | Ignored              | Ignored              |
+| 10.1 - 12.1   | Without carry          | Ignored              | Without carry        |
+
+
+#### Pop with carry
+4.1.2 - 5.4
+Example:
+```C
+// in "/app/example.c"
+#define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
+#line 1
+#1 "bar.h" 1 // push "bar.h"
+INFO
+#42 "123" 2 // pop with a file name different than "/app/example.c"
+INFO
+```
+Output:
+```C
+[1, 1, "bar.h"]
+[0, 2, "/app/example.c"]
+```
+
+#### Pop with without carry
+4.1.2 - 12.1
+```C
+#define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
+// in "/app/example.c"
+INFO
+#2"foo.h"1
+INFO
+#42"/app/example.c"2 // correct file name
+INFO
+```
+Output:
+```
+[0, 3, "/app/example.c"]
+[1, 2, "foo.h"]
+[0, 42, "/app/example.c"]
+```
+
+10.1 - 12.1
+```C
+#define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
+// in "/app/example.c"
+INFO
+#2"foo.h"1
+INFO
+#42""2 // empty file name
+INFO
+```
+Output:
+```
+[0, 3, "/app/example.c"]
+[1, 2, "foo.h"]
+[0, 42, "/app/example.c"]
+```
+
+#### Ignored
+6.1 - 12.1
+```C
+#define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
+// in "/app/example.c"
+INFO
+#2"foo.h"1
+INFO
+#42"bar.h"2 // wrong file name
+INFO
+```
+Output:
+```
+[0, 3, "/app/example.c"]
+[1, 2, "foo.h"]
+[1, 4, "foo.h"]
+```
+
+6.1 - 9.5
+```C
+#define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
+// in "/app/example.c"
+INFO
+#2"foo.h"1
+INFO
+#42""2 // empty file name
+INFO
+```
+Output:
+```C
+[0, 3, "/app/example.c"]
+[1, 2, "foo.h"]
+[1, 4, "foo.h"]
+```
