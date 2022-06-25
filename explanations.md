@@ -577,11 +577,33 @@ Shape of the stack:
 
 
 ### Pop
-| Version range | With correct file name | With wrong file name | With empty file name |
-| ---           | ---                    | ---                  | ---                  |
-| 4.1.2 - 5.4   | Without carry          | With carry           | With carry           |
-| 6.1 - 9.5     | Without carry          | Ignored              | Ignored              |
-| 10.1 - 12.1   | Without carry          | Ignored              | Without carry        |
+Behaviour in function of version:
+<table>
+ <tr>
+   <th>Versions</th>
+   <th>With correct file name</th>
+   <th>With wrong file name</th>
+   <th>With empty file name</th>
+ </tr>
+ <tr>
+   <td>4.1.2 - 5.4</td>
+   <td>Without carry</td>
+   <td>With carry</td>
+   <td>With carry</td>
+ </tr>
+ <tr>
+   <td>6.1 - 9.5</td>
+   <td>Without carry</td>
+   <td>Ignored</td>
+   <td>Ignored</td>
+ </tr>
+ <tr>
+   <td>10.1 - 12.1</td>
+   <td>Without carry</td>
+   <td>Ignored</td>
+   <td>Without carry</td>
+ </tr>
+</table> 
 
 
 #### Pop with carry
@@ -671,22 +693,3 @@ Output:
 [1, 2, "foo.h"]
 [1, 4, "foo.h"]
 ```
-
-# TEST 
-<table>
- <tr>
-   <th>Company</th>
-   <th>Contact</th>
-   <th>Country</th>
- </tr>
- <tr>
-   <td>Alfreds Futterkiste</td>
-   <td>Maria Anders</td>
-   <td>Germany</td>
- </tr>
- <tr>
-   <td>Centro comercial Moctezuma</td>
-   <td>Francisco Chang</td>
-   <td>Mexico</td>
- </tr>
-</table> 
