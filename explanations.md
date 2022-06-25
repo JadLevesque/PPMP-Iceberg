@@ -287,6 +287,25 @@ ONE_ARGUMENT(1)
 ONE_ARGUMENT(x) 
 ```
 
+# `EVAL/DEFER`
+
+```c
+#define E3(...) E2(E2(E2(E2(E2(E2(E2(E2(E2(E2(E2(E2(E2(__VA_ARGS__)))))))))))))
+#define E2(...) E1(E1(E1(E1(E1(E1(E1(E1(E1(E1(E1(E1(E1(__VA_ARGS__)))))))))))))
+#define E1(...) __VA_ARGS__
+
+#define EMPTY()
+#define TUPLE_AT_2(x,y,...) y
+#define CHECK(x,...) TUPLE_AT_2(__VA_ARGS__,x,)
+
+#define LOOP_END_END ,LOOP1
+#define LOOP(f,x,...) CHECK(LOOP0,LOOP_END_##x)(f,x,__VA_ARGS__)
+#define LOOP_INDIRECTION() LOOP
+#define LOOP0(f,x,...) f(x) LOOP_INDIRECTION EMPTY()() (f,__VA_ARGS__)
+#define LOOP1(...)
+
+E3(LOOP(f,1,2,3,4,5,6,7,8,9,END))
+```
 
 # tcc's non-recursive expansion is recursive
 
