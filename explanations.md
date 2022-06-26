@@ -951,13 +951,10 @@ Output:
 TODO
 
 ## operator overloading
-TODO
-
 
 <table>
 <tr><td><b>main.c</b></td><td><b>calc.c</b></td></tr>
-<tr><td>
-
+<tr><td><pre><code class="language-C">
 ```c
 #define SLOT (2,==,2)
 #include "calc.c"
@@ -972,11 +969,8 @@ VAL // 0
 #define SLOT (12,<=>,1)
 #include "calc.c"
 VAL // 1
-```
-
-</td><td>
-
-```c
+</code></pre></td>
+<td><pre><code class="language-C">
 #undef VAL
 #define SLOT_1(a,b,c) a
 #define SLOT_2(a,b,c) #b
@@ -988,13 +982,9 @@ VAL // 1
 #include SCAN(SLOT_2 SLOT)
 
 #undef SLOT
-```
-
-</td></tr>
+</code></pre></td></tr>
 <tr><td><b><=></b></td><td><b>==</b></td></tr>
-<tr><td>
-
-```c
+<td><pre><code class="language-C">
 #if LHS < RHS
 #define VAL -1
 #elif LHS == RHS
@@ -1002,19 +992,14 @@ VAL // 1
 #else
 #define VAL 1
 #endif
-```
-
-</td><td>
-
-```c
+</code></pre></td>
+<td><pre><code class="language-C">
 #if LHS == RHS
 #define VAL 1
 #else
 #define VAL 0
 #endif
-```
-
-</td></tr>
+</code></pre></td></tr>
 <tr><td>
 </table>
 
