@@ -4,7 +4,7 @@
 
 ## macros just replace text
 
-Macros just replace text, they don't know anything about the surrounding C code. TODO
+Macros just replace text, they don't know anything about the surrounding C code.
 
 ## [header guards](https://en.wikipedia.org/wiki/Include_guard)
 
@@ -78,6 +78,8 @@ for (int i = 0; i < 10; ++i)
 
 ## [`ARRAY_LEN()`](https://www.ashn.dev/blog/2020-01-06-c-array-length.html)
 
+
+
 # On the iceberg
 
 ## macro expansion isn't recursive
@@ -119,7 +121,10 @@ Produces a custom error recorded on the buildlog as well as halting compilation.
 
 ## [`defined`](https://en.cppreference.com/w/c/preprocessor/conditional#Combined_directives)
 
-## [pysical vs logical source lines](https://en.cppreference.com/w/c/language/translation_phases#Phase_2)
+## [physical vs logical source lines](https://en.cppreference.com/w/c/language/translation_phases#Phase_2)
+
+## [X macros](https://en.wikibooks.org/wiki/C_Programming/Preprocessor_directives_and_macros#X-Macros=)
+
 
 
 # Below the water
@@ -154,12 +159,18 @@ To circumvent this, always pass compound literal enclosed in parentheses.
 
 ## [`#define A(x...)`](https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html) (extension)
 
+## [`,##__VA_ARGS__`](https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html) (extension)
+
+## [`#pragma _Pragma()`](https://port70.net/~nsz/c/c11/n1570.html#6.10.9)
+
+## `-P -E` (not standardized)
+
+Many compilers (gcc,clang,tcc,...) have the options `-E` for only running the preprocessor and `-E` for not omitting line marks.
 
 ## `#if static_cast<bool>(-1)`
 
 The `#if` statement replaces, after macro expansion, every remaining identifier with the pp-number 0.
 So `#if static_cast<bool>(-1)` is equivalent to `#if 0<0>(-1)`, `#if 0 > -1`, and `#if 1`.
-
 
 ## preprocessing directives can't be inside of macros
 
@@ -175,9 +186,35 @@ Hence, it's not possible to generate preprocessor directives using standard macr
 
 (The rules are similar in C++)
 
-## `-P -E` (not standardized)
 
-Many compilers (gcc,clang,tcc,...) have the options `-E` for only running the preprocessor and `-E` for not omitting line marks.
+
+# Middle of the iceberg
+
+## `__COUNTER__` (extension)
+
+clang and gcc offer the language extension `__COUNTER__`, expands to an integer value starting at `0` and incrementing the value after every expansion:
+```c
+__COUNTER__ // 0
+__COUNTER__ // 1
+__COUNTER__ // 2
+```
+
+
+## prefix namespaces
+
+Because macro definitions are global there is no builtin namespace facility, it's recommended for libraries to prefix all the macros they define with a characteristic prefix, e.g.: `LIBRARYNAME_`
+
+## stringify macros
+
+```C
+#define STR(a,b) STR_(a,b)
+#define STR_(a,b) a##b
+
+#define AWOO ~
+
+STR_(AWOO) // "AWOO"
+STR(AWOO)  // "~"
+```
 
 ## `#define CAT(a,b) CAT_(a,b)` `#define CAT_(a,b) a##b`
 
@@ -193,29 +230,13 @@ CAT_(foo,bar) // foobar
 CAT(foo,bar) // ~
 ```
 
-## [X macros](https://en.wikibooks.org/wiki/C_Programming/Preprocessor_directives_and_macros#X-Macros=)
-
-
-# Middle of the iceberg
-
-## `__COUNTER__` (extension)
-
-clang and gcc offer the language extension `__COUNTER__`, expands to an integer value starting at `0` and incrementing the value after every expansion:
-```c
-__COUNTER__ // 0
-__COUNTER__ // 1
-__COUNTER__ // 2
-```
-
-## [`#pragma _Pragma()`](https://port70.net/~nsz/c/c11/n1570.html#6.10.9)
-
-## prefix namespaces
-
-Because macro definitions are global there is no builtin namespace facility, it's recommended for libraries to prefix all the macros they define with a characteristic prefix, e.g.: `LIBRARYNAME_`
-
 ## [`__has_include`](https://en.cppreference.com/w/cpp/preprocessor/include) (C++17)
 
-## `SCAN`
+## [`#elifdef #elifndef`](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2645.pdf) (C2x)
+
+## [`#embed`](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2967.htm) (C2x proposal)
+
+## `SCAN()`
 
 The `SCAN` macro can be used to scan it's arguments twice:
 
@@ -269,6 +290,7 @@ The same is true for [C11](https://port70.net/~nsz/c/c11/n1570.html#5.2.4.1) and
 
 For C++ both minimal limits are defined as 65536.
 
+## [mcpp](https://netcologne.dl.sourceforge.net/project/mcpp/mcpp/V.2.7.2/mcpp-summary-272.pdf)
 
 ## overloading macros based on argument count
 
@@ -297,17 +319,11 @@ foo(1,2)   // foo(1,2,3)
 foo(1)     // foo(1,2,3)
 ```
 
+
+
 # Bottom of the iceberg
 
-## [mcpp](https://netcologne.dl.sourceforge.net/project/mcpp/mcpp/V.2.7.2/mcpp-summary-272.pdf)
-
 ## [Microsoft took 30 years to implement a standard complient preprocessor](https://docs.microsoft.com/en-us/cpp/preprocessor/preprocessor-experimental-overview?view=msvc-170)
-
-## [`#elifdef #elifndef`](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2645.pdf) (C2x)
-
-## [`#embed`](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2967.htm) (C2x proposal)
-
-## [Boost preprocesor](https://www.boost.org/doc/libs/1_75_0/libs/preprocessor/doc/index.html) (C2x proposal)
 
 ## no argument means one argument
 
@@ -345,9 +361,8 @@ FOO(1,2,3,4,5) // FOOn(1,2,3,4,5)
 ## `INC()/DEC()`
 TODO
 
-# Below the iceberg
 
-## `EVAL/DEFER`
+## `EVAL()/DEFER()`
 
 It is possible to defer a otherwise recursive macro expansion to avoid it getting [painted blue](#painted-blue). Thus, rescanning a defered macro causes it to expand:
 
@@ -387,7 +402,6 @@ Expansion of SCAN finished, resulting tokens are rescanned
 
 The insertion of the `EMPTY` macro is sometimes abbreviated to `DEFER(LOOP_INDIRECTION)(x)` using `#define DEFER(id) id EMPTY()`, although it isn't much shorter, and just adds an unnecessary macro expansion.
 
-
 There is no reason to stop at a single rescan. Using nested `SCAN` macros, in this context often called `EVAL`, one can exponentially increase the rescan count by adding another line of code.:
 
 ```c
@@ -419,7 +433,14 @@ E3(LOOP(f,1,2,3,4,5,6,7,8,9,END))
 Note that rescanning even once no more macros are defered  still takes some time, so you can't just create a macro that rescans e.g. 2^64 times without there being a rather large constant overhead for every use of that function. For a method of circumventing this, see [the continuation machine
 ](#continuation-machine)
 
+## [Boost preprocesor](https://www.boost.org/doc/libs/1_75_0/libs/preprocessor/doc/index.html) (C2x proposal)
 
+
+
+
+
+
+# Below the iceberg
 
 # Deep water
 
@@ -592,9 +613,20 @@ Exceptions: prominent in Order-pp.
 #define ORDER_PP_9BIN_PR(P,b,p) (,ORDER_PP_OPEN p##P,ORDER_PP_OPEN b##P,8BIN_PR,P##p)
 ```
 
-### lazy `__VA_ARGS__`
+## pp-num prefix
 
-Used when `__VA_ARGS__` is needed for macro overload to avoid scanning its contents.
+Prominent in Order-pp
+
+```C
+ORDER_PP
+(8let ((8X, 8nat (1,2,3))
+       (8Y, 8nat (4,5,6))
+      ,8to_lit (8mul (8X, 8Y))
+      )
+) // 56088
+```
+
+This can also be used to lazily expand `arguments` is needed for macro overload to avoid scanning its contents.
 
 ```C
 #define GET_MACRO(_1,_2,_3,x,...) x
@@ -605,14 +637,11 @@ FOO(1,2)   // FOO2(1,2,3)
 FOO(1,2,3) // FOO3(1,2,3)
 ```
 
-Disclaimer: This is only faster if the __VA_ARGS__ is ludicrously long.
+Disclaimer: This is only faster if the `__VA_ARGS__` is ludicrously long.
 
-Note: in this example the first arguement must be a concatenable token.
 
 
 ### tuple open
-
-GCC extension.
 
 Used to open a tuple without rescanning the elements.
 
@@ -629,29 +658,9 @@ EAT(OPEN(R2(a))) // 4.2 seconds
 EAT(OPENq(,R2(a))) // 3.1 seconds
 ```
 
-### pp-num suffix
-
-Prominent in Order-pp
-
-```C
-ORDER_PP
-(8let ((8X, 8nat (1,2,3))
-       (8Y, 8nat (4,5,6))
-      ,8to_lit (8mul (8X, 8Y))
-      )
-) // 56088
-```
-
-### defer
-
-See: [http://saadahmad.ca/cc-preprocessor-metaprogramming-evaluating-and-defering-macro-calls/](http://saadahmad.ca/cc-preprocessor-metaprogramming-evaluating-and-defering-macro-calls/)
-
-### no args
-
-To stop a function-like macro from expanding, don't give it arguments.
 
 
-## ICE_P
+## `ICE_P()`
 
 You can overload a function depending on one of the argument being a constant expression.
 

@@ -139,6 +139,7 @@ li, h2 {
 <li><a href="explanations#error" class="ms">#error</a></li>
 <li><a href="https://en.cppreference.com/w/c/preprocessor/conditional#Combined_directives"><span class="ms">defined</span> is unary</a></li>
 <li><a href="https://en.cppreference.com/w/c/language/translation_phases#Phase_2">physical vs logical source lines</a></li>
+<li><a href="https://en.wikibooks.org/wiki/C_Programming/Preprocessor_directives_and_macros#X-Macros=">X macros</a></li>
 </ul>
 </div>
 
@@ -153,11 +154,10 @@ li, h2 {
 <li><a href="https://en.cppreference.com/w/cpp/preprocessor/replace#Function-like_macros" class="ms">__VA_OPT__</a><span>C++20 and extension</span></li>
 <li><a href="https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html">#define A(x...)</a><span>extension</span></li>
 <li><a href="https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html">,##__VA_ARGS__</a><span>extension</span></li>
+<li><a href="https://port70.net/~nsz/c/c11/n1570.html#6.10.9" class="ms">#pragma _Pragma()</a></li>
+<li><a href="explanations#p--e-not-standardized" class="ms">-P -E</a><span>not standardized</span></li>
 <li><a href="explanations#if-staticcastbool-1">#if static_cast&lt;bool&gt;(-1)</a></li>
 <li><a href="explanations#preprocessing-directives-cant-be-inside-of-macros">preprocessing directives can't be inside of macros</a></li>
-<li><a href="explanations#p--e-not-standardized" class="ms">-P -E</a><span>not standardized</span></li>
-<li><a href="explanations#define-catab-cat_abdefine-cat_ab-ab" class="ms">#define CAT(a,b) CAT_(a,b) #define CAT_(a,b) a##b</a></li>
-<li><a href="https://en.wikibooks.org/wiki/C_Programming/Preprocessor_directives_and_macros#X-Macros=">X macros</a></li>
 </ul>
 </div>
 
@@ -165,11 +165,15 @@ li, h2 {
 <h2>Middle of the iceberg</h2>
 <ul>
 <li><a href="explanations#__counter__-extension" class="ms">__COUNTER__</a><span>extension</span></li>
-<li><a href="https://port70.net/~nsz/c/c11/n1570.html#6.10.9" class="ms">#pragma _Pragma()</a></li>
 <li><a href="explanations#prefix-namespaces">prefix namespaces</a></li>
+<li><a href="explanations#stringify-macros">stringify macros</a></li>
+<li><a href="explanations#define-catab-cat_abdefine-cat_ab-ab" class="ms">#define CAT(a,b) CAT_(a,b) #define CAT_(a,b) a##b</a></li>
 <li><a href="https://en.cppreference.com/w/cpp/preprocessor/include" class="ms">__has_include</a><span>C++17</span></li>
-<li><a href="explanations#scan">SCAN</a></li>
+<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2645.pdf" class="ms">#elifdef #elifndef</a><span>C2x</span></li>
+<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2967.htm" class="ms">#embed</a><span>C2x proposal</span></li>
+<li><a href="explanations#scan">SCAN()</a></li>
 <li><a href="explanations#no-more-than-4095">no more than 4095</a></li>
+<li><a href="https://netcologne.dl.sourceforge.net/project/mcpp/mcpp/V.2.7.2/mcpp-summary-272.pdf">mcpp</a></li>
 <li><a href="explanations#overloading-macros-based-on-argument-count">overloading macros based on argument count</a></li>
 <li><a href="explanations#default-arguments">default arguments</a></li>
 </ul>
@@ -178,33 +182,31 @@ li, h2 {
 <div class="iceblock" id="bottomOfTheIceberg">
 <h2>Bottom of the iceberg</h2>
 <ul>
-<li><a href="https://netcologne.dl.sourceforge.net/project/mcpp/mcpp/V.2.7.2/mcpp-summary-272.pdf">mcpp</a></li>
 <li><a href="https://docs.microsoft.com/en-us/cpp/preprocessor/preprocessor-experimental-overview?view=msvc-170">Microsoft took 30 years to implement a standard complient preprocessor</a></li>
-<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2645.pdf" class="ms">#elifdef #elifndef</a><span>C2x</span></li>
-<li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2967.htm" class="ms">#embed</a><span>C2x proposal</span></li>
-<li><a href="https://www.boost.org/doc/libs/1_75_0/libs/preprocessor/doc/index.html">Boost preprocesor</a></li>
 <li><a href="explanations#no-argument-means-one-argument">no argument means one argument</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Painted_blue">blue paint</a></li>
 <li><a href="" class="ms">CHECK()</a></li>
 <li><a href="explanations#saturated-overloading">saturated overloading</a></li>
 <li><a href="" class="ms">INC()/DEC()</a></li>
+<li><a href="explanations#eval-defer" class="ms">EVAL()/DEFER()</a></li>
+<li><a href="https://www.boost.org/doc/libs/1_75_0/libs/preprocessor/doc/index.html">Boost preprocesor</a></li>
 </ul>
 </div>
 
 <div class="iceblock" id="belowTheIceberg">
 <h2>Below the iceberg</h2>
 <ul>
-<li><a href="explanations#eval-defer" class="ms">EVAL/DEFER</a></li>
-<li><a href="" class="ms">A(1)(2)(3)(4)(5)</a></li>
-<li><a href="" class="ms">#assert</a><span>extension</span></li>
+<li><a href="">list datastructure</a></li>
 <li><a href="explanations#23">#2""3</a><span>extension</span></li>
 <li><a href="">C89 <span class="ms">CHECK()</span></a></li>
 <li><a href="">lazy <span class="ms">P</span> arguments</a></li>
-<li><a href="">lazy SCAN</a></li>
-<li><a href="">coffee break</a></li>
-<li><a href="">file iteration</a></li>
+<li><a href="pp-num-prefix">pp-num prefix</a></li>
+<li><a href="explanations#lazy-arguments-without-p">lazy arguments without P</a><span>extension</span></li>
+<li><a href="">lazy <span class="ms"></span>SCAN()/OPEN()</span></a></li>
+<li><a href="" class="ms">#assert</a><span>extension</span></li>
 <li><a href="">constants are variables</a></li>
 <li><a href="https://gustedt.wordpress.com/2010/06/08/detect-empty-macro-arguments/" class="ms">IS_EMPTY()</a></li>
+<li><a href="https://github.com/notfoundry/ppstep">ppstep</a></li>
 <li><a href="https://marc.info/?l=boost&m=118835769257658">OBJECT disabling context</a></li>
 </ul>
 </div>
@@ -212,19 +214,19 @@ li, h2 {
 <div class="iceblock" id="deepWater">
 <h2>Deep water</h2>
 <ul>
-<li><a href="https://github.com/notfoundry/ppstep">ppstep</a></li>
+<li><a href="">sequence datastructure</a></li>
+<li><a href="" class="ms">A(1)(2)(3)(4)(5)</a></li>
 <li><a href="https://github.com/rofl0r/order-pp">order-pp</a></li>
 <li><a href="https://github.com/rofl0r/chaos-pp">chaos-pp</a></li>
 <li><a href="https://github.com/Hirrolot/metalang99">Metalang99</a></li>
 <li><a href="https://github.com/camel-cdr/bfcpp/blob/main/TUTORIAL.md#user-content-141-the-continuation-machine=">Continuation machine</a></li>
-<li><a href="">sequence datastructure</a></li>
-<li><a href="explanations#lazy-arguments-without-p">lazy arguments without P</a><span>extension</span></li>
 <li><a href="">macro stack</a></li>
-<li><a href="">variadic sequence</a></li>
-<li><a href="explanations#domains">domains</a></li>
-<li><a href="">lazy evaluation</a></li>
 <li><a href="explanations#interpreters-compilers">interpreters/compilers</a></li>
 <li><a href="explanations#language-extensions">language extensions</a></li>
+<li><a href="">random access memory</a></li>
+<li><a href="">file slots</a></li>
+<li><a href="">file iteration</a></li>
+<li><a href="">integer arithmetics</a></li>
 </ul>
 </div>
 
@@ -232,12 +234,11 @@ li, h2 {
 <h2>The abyss</h2>
 <ul>
 <li><a href="explanations#single-instructioncontinuation-multiple-data">SIMD/SCMD</a></li>
-<li><a href="explanations#ice_p">ICE_P</a><span>C11</span></li>
+<li><a href="explanations#ice_p">ICE_P()</a><span>C11</span></li>
 <li><a href="">macro expansion can be recursive</a><span>extension</span></li>
 <li><a href="https://github.com/camel-cdr/execfs">#include custom filesystem</a></li>
 <li><a href="" class="ms">F(x,y)y)y)y)y)</a></li>
 <li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n1410.pdf" class="ms">#for #endfor</a><span>rejected C proposal</span></li>
-<li><a href="">random access memory</a></li>
 <li><a href="explanations#file-function-table" class="ms">#include __DATE__</a></li>
 <li><a href="">tcc's magic non recurisve recursive sequence iteration</a></li>
 <li><a href="explanations#file-stack">file stack</a></li>
