@@ -1,9 +1,17 @@
-# macros just replace text
+# Above the iceberg
+
+## [`#include`](https://en.cppreference.com/w/c/preprocessor/include)
+
+## macros just replace text
 
 Macros just replace text, they don't know anything about the surrounding C code. TODO
 
+## [header guards](https://en.wikipedia.org/wiki/Include_guard)
 
-# make sure to parenthesize arguments
+## [`#if #elif`](https://en.wikipedia.org/wiki/C_preprocessor#Conditional_compilation)
+
+
+## make sure to parenthesize arguments
 
 Often macros are used for code generation purposes, take for example:
 ```c
@@ -20,8 +28,9 @@ To solve these problems make sure to parenthesize arguments, and the complete ex
 #define ADD(a, b) ((a) += (b))
 ```
 
+## [`#pragma once`](https://en.wikipedia.org/wiki/Pragma_once) (extension)
 
-# `do { } while (0)`
+## `do { } while (0)`
 
 When writing a more complex code generation macro that isn't a single expression, then you want it to at least fit into a single statement, so it behaves like other language elements.
 
@@ -67,8 +76,11 @@ for (int i = 0; i < 10; ++i)
     FOR_EACH(f,a[i]);
 ```
 
+## [`ARRAY_LEN()`](https://www.ashn.dev/blog/2020-01-06-c-array-length.html)
 
-# macro expansion isn't recursive
+# On the iceberg
+
+## macro expansion isn't recursive
 
 ```C
 #define A(x) A(x x)
@@ -79,14 +91,14 @@ A(x) // A(x x)
 B(x) // B(x x x x)
 ```
 
-# `#a`
+## `#a`
 
 ```C
 #define STR(a) #a
 STR(123 foo bar) // "123 foo bar"
 ```
 
-# `a##b`
+## `a##b`
 
 ```C
 #define CAT(a,b) a##b
@@ -94,22 +106,35 @@ STR(123 foo bar) // "123 foo bar"
 CAT(FOO,BAR) // ~
 ```
 
-# `#error`
+## [`__VA_ARGS__`](https://stackoverflow.com/questions/26053959/what-does-va-args-in-a-macro-mean)
+
+## [`#undef`](https://en.cppreference.com/w/c/preprocessor/replace#mw-headline)
+
+## `#error`
 Produces a custom error recorded on the buildlog as well as halting compilation.
 
 ```C
 #error "You did something wrong at line something."
 ```
 
-# `__FILE__` `__LINE__`
+## [`defined`](https://en.cppreference.com/w/c/preprocessor/conditional#Combined_directives)
+
+## [pysical vs logical source lines](https://en.cppreference.com/w/c/language/translation_phases#Phase_2)
+
+
+# Below the water
+
+## `__FILE__` `__LINE__`
 `__FILE__` expands to a string literal containing the name of the current file.
 `__LINE__` expands to an integer literal of the value of the line where it is expanded.
 
-# `__DATE__`  `__TIME__`
+## `__DATE__`  `__TIME__`
 `__DATE__` expands to a string literal containing the date of compilation.
 `__TIME__` expands to a string literal containing the time of compilation.
 
-# `#line`
+## [Trigraphs](https://en.cppreference.com/w/c/language/operator_alternative#Trigraphs)
+
+## `#line`
 Sets a new value for `__FILE__` and `__DATE__`.
 
 ```C
@@ -117,7 +142,7 @@ Sets a new value for `__FILE__` and `__DATE__`.
 __LINE__:__FILE__ // 42:"I/am/the/capitain.now"
 ```
 
-# function like macros only see parentheses
+## function like macros only see parentheses
 
 Function like macros only see parentheses when it comes to splitting up the arguments, e.g. `FOO({1,3})` calls `FOO` with the arguments `{1` and `3}`.
 
@@ -125,13 +150,18 @@ This problem often occurs when passing a compound literal, e.g. `(struct Vec3){1
 
 To circumvent this, always pass compound literal enclosed in parentheses.
 
-# `#if static_cast<bool>(-1)`
+## [`__VA_OPT__`](https://en.cppreference.com/w/cpp/preprocessor/replace#Function-like_macros) (C++20 and extension)
+
+## [`#define A(x...)`](https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html) (extension)
+
+
+## `#if static_cast<bool>(-1)`
 
 The `#if` statement replaces, after macro expansion, every remaining identifier with the pp-number 0.
 So `#if static_cast<bool>(-1)` is equivalent to `#if 0<0>(-1)`, `#if 0 > -1`, and `#if 1`.
 
 
-# preprocessing directives can't be inside of macros
+## preprocessing directives can't be inside of macros
 
 > If there are sequences of preprocessing tokens within the list of arguments that would otherwise act as preprocessing directives, the behavior is undefined.
 
@@ -145,11 +175,11 @@ Hence, it's not possible to generate preprocessor directives using standard macr
 
 (The rules are similar in C++)
 
-# `-P -E`
+## `-P -E` (not standardized)
 
 Many compilers (gcc,clang,tcc,...) have the options `-E` for only running the preprocessor and `-E` for not omitting line marks.
 
-# `#define CAT(a,b) CAT_(a,b)` `#define CAT_(a,b) a##b`
+## `#define CAT(a,b) CAT_(a,b)` `#define CAT_(a,b) a##b`
 
 ```C
 #define CAT(a,b) CAT_(a,b)
@@ -163,7 +193,12 @@ CAT_(foo,bar) // foobar
 CAT(foo,bar) // ~
 ```
 
-# `__COUNTER__`
+## [X macros](https://en.wikibooks.org/wiki/C_Programming/Preprocessor_directives_and_macros#X-Macros=)
+
+
+# Middle of the iceberg
+
+## `__COUNTER__` (extension)
 
 clang and gcc offer the language extension `__COUNTER__`, expands to an integer value starting at `0` and incrementing the value after every expansion:
 ```c
@@ -172,39 +207,15 @@ __COUNTER__ // 1
 __COUNTER__ // 2
 ```
 
-# overloading macros based on argument count
+## [`#pragma _Pragma()`](https://port70.net/~nsz/c/c11/n1570.html#6.10.9)
 
-```c
-#define GET_MACRO(_1,_2,_3,x,...) x
-#define FOO(...) GET_MACRO(__VA_ARGS__,FOO3,FOO2,FOO1)(__VA_ARGS__)
-
-FOO(1)     // FOO1(1)
-FOO(1,2)   // FOO2(1,2)
-FOO(1,2,3) // FOO3(1,2,3)
-```
-
-# default arguments
-
-By [overloading macros based on argument count](#overloading-macros-based-on-argument-count) it's posible to implement default arguments for functions:
-
-```c
-void foo(int a, int b, float c);
-#define GET_ARGS(_1,_2,_3,...) __VA_ARGS__
-#define foo(...) GET_MACRO(__VA_ARGS__, \
-                           foo(__VA_ARGS__), \
-                           foo(__VA_ARGS__,2), \
-                           foo(__VA_ARGS__,2,3))
-foo(1,2,3) // foo(1,2,3)
-foo(1,2)   // foo(1,2,3)
-foo(1)     // foo(1,2,3)
-```
-
-# prefix namespaces
+## prefix namespaces
 
 Because macro definitions are global there is no builtin namespace facility, it's recommended for libraries to prefix all the macros they define with a characteristic prefix, e.g.: `LIBRARYNAME_`
 
+## [`__has_include`](https://en.cppreference.com/w/cpp/preprocessor/include) (C++17)
 
-# `SCAN`
+## `SCAN`
 
 The `SCAN` macro can be used to scan it's arguments twice:
 
@@ -221,7 +232,6 @@ SCAN(STR B A(1))  // STR (x+x+x+x)
 SCAN2(STR B A(1)) // "(x+x+x+x)"
 ```
 
-
 ```
 1. STR A(1)
    ^ no arguments supplied, so it's ignored
@@ -235,7 +245,7 @@ Done
 ```
 1. SCAN(STR A(1))
    ^ expands
-Isolated expansion of SCAN's arguments
+Isolated expansion of SCAN's arguments:
    2. STR A(1)
       ^ no arguments supplied, so it's ignored
    3. STR A(1)
@@ -249,7 +259,7 @@ Expansion of SCAN finished, resulting tokens are rescanned
 Done
 ```
 
-# no more than 4095
+## no more than 4095
 
 The [C99 translation limits](https://port70.net/~nsz/c/c99/n1256.html#5.2.4.1) only require an implementation to support 4095 simultaneously defined macros, and crucially only requires to support 4095 characters in a logical source line.
 
@@ -259,7 +269,64 @@ The same is true for [C11](https://port70.net/~nsz/c/c11/n1570.html#5.2.4.1) and
 
 For C++ both minimal limits are defined as 65536.
 
-# saturated overloading
+
+## overloading macros based on argument count
+
+```c
+#define GET_MACRO(_1,_2,_3,x,...) x
+#define FOO(...) GET_MACRO(__VA_ARGS__,FOO3,FOO2,FOO1)(__VA_ARGS__)
+
+FOO(1)     // FOO1(1)
+FOO(1,2)   // FOO2(1,2)
+FOO(1,2,3) // FOO3(1,2,3)
+```
+
+## default arguments
+
+By [overloading macros based on argument count](#overloading-macros-based-on-argument-count) it's posible to implement default arguments for functions:
+
+```c
+void foo(int a, int b, float c);
+#define GET_ARGS(_1,_2,_3,...) __VA_ARGS__
+#define foo(...) GET_MACRO(__VA_ARGS__, \
+                           foo(__VA_ARGS__), \
+                           foo(__VA_ARGS__,2), \
+                           foo(__VA_ARGS__,2,3))
+foo(1,2,3) // foo(1,2,3)
+foo(1,2)   // foo(1,2,3)
+foo(1)     // foo(1,2,3)
+```
+
+# Bottom of the iceberg
+
+## [mcpp](https://netcologne.dl.sourceforge.net/project/mcpp/mcpp/V.2.7.2/mcpp-summary-272.pdf)
+
+## [Microsoft took 30 years to implement a standard complient preprocessor](https://docs.microsoft.com/en-us/cpp/preprocessor/preprocessor-experimental-overview?view=msvc-170)
+
+## [`#elifdef #elifndef`](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2645.pdf) (C2x)
+
+## [`#embed`](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2967.htm) (C2x proposal)
+
+## [Boost preprocesor](https://www.boost.org/doc/libs/1_75_0/libs/preprocessor/doc/index.html) (C2x proposal)
+
+## no argument means one argument
+
+```c
+#define NO_ARGUMENT()
+#define ONE_ARGUMENT(x) x
+
+NO_ARGUMENT()
+// NO_ARGUMENT(1) // error
+ONE_ARGUMENT(1) 
+ONE_ARGUMENT(x) 
+```
+
+## [blue paint](https://en.wikipedia.org/wiki/Painted_blue)
+
+## `CHECK()`
+TODO
+
+## saturated overloading
 
 ```c
 #define TUPLE_AT_1(x0,x1,...) x1
@@ -275,19 +342,61 @@ FOO(1,2,3,4)   // FOOn(1,2,3,4)
 FOO(1,2,3,4,5) // FOOn(1,2,3,4,5)
 ```
 
-# no argument means one argument
+## `INC()/DEC()`
+TODO
+
+# Below the iceberg
+
+## `EVAL/DEFER`
+
+It is possible to defer a otherwise recursive macro expansion to avoid it getting [painted blue](#painted-blue). Thus, rescanning a defered macro causes it to expand:
 
 ```c
-#define NO_ARGUMENT()
-#define ONE_ARGUMENT(x) x
-
-NO_ARGUMENT()
-// NO_ARGUMENT(1) // error
-ONE_ARGUMENT(1) 
-ONE_ARGUMENT(x) 
+#define SCAN(...) __VA_ARGS__
+#define EMPTY()
+#define LOOP_INDIRECTION() LOOP
+#define LOOP(x) x LOOP_INDIRECTION EMPTY()() (x)
+SCAN(LOOP(1))
 ```
 
-# `EVAL/DEFER`
+```
+1. SCAN(LOOP(1))
+Isolated expansion of SCAN's arguments:
+    2. LOOP(1)
+       ^ expands
+    Isolated expansion of LOOP's argument to 1
+    Expansion of LOOP finished, resulting tokens are rescanned
+    3. 1 LOOP_INDIRECTION EMPTY()() (1)
+      ^ pp-number ignored
+    4. 1 LOOP_INDIRECTION EMPTY()() (1)
+         ^ function like macro without arguments, ignored (crucially, not painted blue)
+    5. 1 LOOP_INDIRECTION EMPTY()() (1)
+                          ^ expands
+    6. 1 LOOP_INDIRECTION () (1)
+                          ^^^^^^ punctuators, ignored
+Expansion of SCAN finished, resulting tokens are rescanned
+7. 1 LOOP_INDIRECTION () (1)
+   ^ pp-num ignored
+8. 1 LOOP_INDIRECTION () (1)
+     ^ expands
+9. 1 LOOP (1)
+     ^ expands
+... (see 2. to 6.)
+14.: 1 1 LOOP_INDIRECTION () (1)
+```
+
+The insertion of the `EMPTY` macro is sometimes abbreviated to `DEFER(LOOP_INDIRECTION)(x)` using `#define DEFER(id) id EMPTY()`, although it isn't much shorter, and just adds an unnecessary macro expansion.
+
+
+There is no reason to stop at a single rescan. Using nested `SCAN` macros, in this context often called `EVAL`, one can exponentially increase the rescan count by adding another line of code.:
+
+```c
+#define EVAL3(...) EVAL2(EVAL2(EVAL2(EVAL2(__VA_ARGS__))))
+#define EVAL2(...) EVAL1(EVAL1(EVAL1(EVAL1(__VA_ARGS__))))
+#define EVAL1(...) __VA_ARGS__
+EVAL3(LOOP(1)) // 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 LOOP_INDIRECTION () (1)
+```
+By stopping the fake recursion once your algorithm is complete, this technique can be used in very powerful ways: 
 
 ```c
 #define E3(...) E2(E2(E2(E2(E2(E2(E2(E2(E2(E2(E2(E2(E2(__VA_ARGS__)))))))))))))
@@ -307,7 +416,25 @@ ONE_ARGUMENT(x)
 E3(LOOP(f,1,2,3,4,5,6,7,8,9,END))
 ```
 
-# tcc's non-recursive expansion is recursive
+Note that rescanning even once no more macros are defered  still takes some time, so you can't just create a macro that rescans e.g. 2^64 times without there being a rather large constant overhead for every use of that function. For a method of circumventing this, see [the continuation machine
+](#continuation-machine)
+
+
+
+# Deep water
+
+# The abyss
+
+# TODO
+
+
+
+
+
+
+
+
+## tcc's non-recursive expansion is recursive
 
 
 ```c
@@ -331,20 +458,20 @@ So tcc implements non-recursive expansion recursively.
 
 
 
-# interpreters/compilers
+## interpreters/compilers
 
 * [bfcpp](https://github.com/camel-cdr/bfcpp) (Optimizing Brainfuck interpreter)
 * [bfi](http://www.kotha.net/bfi/) (Optimizing Brainfuck interpreter)
 * [CPP_COMPLETE](https://github.com/orangeduck/CPP_COMPLETE) (Brainfuck interpreter)
 * [ppasm](https://github.com/notfoundry/ppasm) (x86_64 macro assembler)
 
-# language extensions
+## language extensions
 
 * [datatype99](https://github.com/Hirrolot/datatype99) (Algebraic data types)
 * [interface99](https://github.com/Hirrolot/interface99) (Interfaces)
 
 
-# lazy arguments without P
+## lazy arguments without P
 Comma concatenation is a GCC extension.
 
 ```c
@@ -362,10 +489,10 @@ LAZY_WITHOUT_P(A NOTHING ()) // A ()
 
 
 
-# gcc's macro's can be recursive
+## gcc's macro's can be recursive
 
 
-# `#2""3`
+## `#2""3`
 The first five characters of a dirty PPMP test file, that remove most warnings and shortens the current file name to nothing.
 Under GCC, this is called a line marker. This one sets the line under it as `2` and the file name as nothing (some systems will
 transform this as `"<stdin>"` on the buildlog). The `3` tells the compiler to treat the current file as a system header.
@@ -390,7 +517,7 @@ buildlog:
 ```
 
 
-# file-function table
+## file-function table
 
 `#include` is a file-function table.
 
@@ -411,7 +538,7 @@ CHAOS_PP_SLOT (1)                // 11
 
 
 
-# Single Instruction/Continuation Multiple Data
+## Single Instruction/Continuation Multiple Data
 
 Some algorithms can be sped up a lot by processing multiple elements of data in a single continuation, since continuations have a comparatively large overhead.
 
@@ -429,18 +556,19 @@ Reversing tuple for example can be easily done 8 elements at a time:
 #define FX(f,x) f(x)
 #define TUPLE_TAIL(x,...) (__VA_ARGS__)
 #define TUPLE_AT_2(x,y,...) y
-#define CHECK(...) TUPLE_AT_2(__VA_ARGS__,0,)
-#define EQ_END_END ,1
+#define CHECK(...) TUPLE_AT_2(__VA_ARGS__,)
 
 // reverse 8 arguments at a time, defer to LOOP is there are less then 8 arguments
 #define SIMD_() SIMD
-#define SIMD(a,b,c,d,e,f,g,h,...) CAT(SIMD, CHECK(EQ_END_##h))(a,b,c,d,e,f,g,h,__VA_ARGS__)
+#define SIMD_END_END ,SIMD1
+#define SIMD(a,b,c,d,e,f,g,h,...) CHECK(SIMD_END_##h,SIMD0)(a,b,c,d,e,f,g,h,__VA_ARGS__)
 #define SIMD1 LOOP
 #define SIMD0(a,b,c,d,e,f,g,h,...) SIMD_ EMPTY() ()(__VA_ARGS__),h,g,f,e,d,c,b,a
 
 // reverse 1 argument at a time
 #define LOOP_() LOOP
-#define LOOP(x,...) CAT(LOOP, CHECK(EQ_END_##x))(x,__VA_ARGS__)
+#define LOOP_END_END ,LOOP1
+#define LOOP(x,...) CHECK(LOOP_END_##x,LOOP0)(x,__VA_ARGS__)
 #define LOOP1(x,...) 
 #define LOOP0(x,...) LOOP_ EMPTY() ()(__VA_ARGS__),x
 
@@ -450,11 +578,11 @@ REVERSE(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
 //     (15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)
 ```
 
-# lazy evaluation
+## lazy evaluation
 
 Lazy evaluation is important for both performance and functionnality. 
 
-## lazy `P` argument
+### lazy `P` argument
 
 This strategy involves having the first argument of a macro (usually called `P` for historical reasons) be used for prefix concatenation. See bellow for exceptions.
 
@@ -464,7 +592,7 @@ Exceptions: prominent in Order-pp.
 #define ORDER_PP_9BIN_PR(P,b,p) (,ORDER_PP_OPEN p##P,ORDER_PP_OPEN b##P,8BIN_PR,P##p)
 ```
 
-## lazy `__VA_ARGS__`
+### lazy `__VA_ARGS__`
 
 Used when `__VA_ARGS__` is needed for macro overload to avoid scanning its contents.
 
@@ -482,7 +610,7 @@ Disclaimer: This is only faster if the __VA_ARGS__ is ludicrously long.
 Note: in this example the first arguement must be a concatenable token.
 
 
-## tuple open
+### tuple open
 
 GCC extension.
 
@@ -501,7 +629,7 @@ EAT(OPEN(R2(a))) // 4.2 seconds
 EAT(OPENq(,R2(a))) // 3.1 seconds
 ```
 
-## pp-num suffix
+### pp-num suffix
 
 Prominent in Order-pp
 
@@ -514,16 +642,16 @@ ORDER_PP
 ) // 56088
 ```
 
-## defer
+### defer
 
 See: [http://saadahmad.ca/cc-preprocessor-metaprogramming-evaluating-and-defering-macro-calls/](http://saadahmad.ca/cc-preprocessor-metaprogramming-evaluating-and-defering-macro-calls/)
 
-## no args
+### no args
 
 To stop a function-like macro from expanding, don't give it arguments.
 
 
-# ICE_P
+## ICE_P
 
 You can overload a function depending on one of the argument being a constant expression.
 
@@ -546,7 +674,7 @@ pow(x,y); // pow(x,y)
 
 (https://godbolt.org/z/bjo5TcnbT)
 
-# file stack
+## file stack
 
 Note: GCC only.
 
@@ -556,13 +684,13 @@ There are a few subtilities to take into consideration (which happen to vary wit
 - Push: `#` <*line number*> <*file name*> `1`
 - Pop: `#` <*line number*> <*file name*> `2`
 
-## Subtilities
+### Subtilities
 
 There are small but important details to keep into consideration for the proper manipulation of the file stack. Henceforth, variables will be used to succinctly refer to file names.
 
 Note: the line number must be a literal. The linemarker does not accept an MTU
 
-### Push
+#### Push
 4.1.2 - 12.1
 `# any-file-name 1`
 
@@ -595,7 +723,7 @@ Shape of the stack:
 ```
 
 
-### Pop
+#### Pop
 Behaviour in function of version:
 <table>
  <tr>
@@ -625,7 +753,7 @@ Behaviour in function of version:
 </table> 
 
 
-#### Pop with carry
+##### Pop with carry
 4.1.2 - 5.4
 Example:
 ```C
@@ -643,7 +771,7 @@ Output:
 [0, 2, "/app/example.c"]
 ```
 
-#### Pop with without carry
+##### Pop with without carry
 4.1.2 - 12.1
 ```C
 #define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
@@ -678,7 +806,7 @@ Output:
 [0, 42, "/app/example.c"]
 ```
 
-#### Ignored
+##### Ignored
 6.1 - 12.1
 ```C
 #define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
