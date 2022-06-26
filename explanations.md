@@ -18,7 +18,7 @@ Often macros are used for code generation purposes, take for example:
 #define ADD(a, b) a += b
 ```
 This will have unexpected behavior in many circumstances:
-```
+```c
 ADD(x, y; z);
 w = (2 + ADD(x, y) + z);
 w = (ADD(x, y) + z);
@@ -36,7 +36,7 @@ When writing a more complex code generation macro that isn't a single expression
 
 The naïve implementation doesn't have such properties:
 
-```C
+```c
 #define FOR_EACH(f,a) \
         int i; \
         for (i = 0; i < sizeof (a) / sizeof *(a); i++) { \
@@ -49,7 +49,7 @@ for (int i = 0; i < 10; ++i)
 
 A somewhat better solution is to enclose the code in a compound-statement:
 
-```C
+```c
 #define FOR_EACH(f,a) \
     { \
         int i; \
@@ -63,7 +63,7 @@ for (int i = 0; i < 10; ++i)
 //                  ^ 
 ```
 This works, but some compilers warn about the highlighted useless semicolon. The canonical way to get rid of this warning to use a `do {} while (0)` block:
-```C
+```c
 #define FOR_EACH(f,a) \
     do { \
         int i; \
@@ -84,7 +84,7 @@ for (int i = 0; i < 10; ++i)
 
 ## macro expansion isn't recursive
 
-```C
+```c
 #define A(x) A(x x)
 A(x) // A(x x)
 
@@ -95,14 +95,14 @@ B(x) // B(x x x x)
 
 ## `#a`
 
-```C
+```c
 #define STR(a) #a
 STR(123 foo bar) // "123 foo bar"
 ```
 
 ## `a##b`
 
-```C
+```c
 #define CAT(a,b) a##b
 #define FOOBAR ~
 CAT(FOO,BAR) // ~
@@ -115,7 +115,7 @@ CAT(FOO,BAR) // ~
 ## `#error`
 Produces a custom error recorded on the buildlog as well as halting compilation.
 
-```C
+```c
 #error "You did something wrong at line something."
 ```
 
@@ -142,7 +142,7 @@ Produces a custom error recorded on the buildlog as well as halting compilation.
 ## `#line`
 Sets a new value for `__FILE__` and `__DATE__`.
 
-```C
+```c
 #line "I/am/the/capitain.now" 42
 __LINE__:__FILE__ // 42:"I/am/the/capitain.now"
 ```
@@ -206,7 +206,7 @@ Because macro definitions are global there is no builtin namespace facility, it'
 
 ## stringify macros
 
-```C
+```c
 #define STR(a,b) STR_(a,b)
 #define STR_(a,b) a##b
 
@@ -218,7 +218,7 @@ STR(AWOO)  // "~"
 
 ## `#define CAT(a,b) CAT_(a,b)` `#define CAT_(a,b) a##b`
 
-```C
+```c
 #define CAT(a,b) CAT_(a,b)
 #define CAT_(a,b) a##b
 
@@ -507,7 +507,7 @@ transform this as `"<stdin>"` on the buildlog). The `3` tells the compiler to tr
 
 > Syntax: `#` <*line number*> <*file name*> <*flag*>
 
-```C
+```c
 #2""3
 
 #warning "Not sneaky"             // appears on the buildlog
@@ -539,7 +539,7 @@ gcc buildlog without `#2""3`:
 Passing an empty argument to a macro (usually the first argument called `P` for historical reasons) allows it to stop the expansion of arguments, before the tokes are rescanned:
 
 
-```C
+```c
 #define OPEN(...) __VA_ARGS__
 #define OPENq(P,...) P##__VA_ARGS__
 
@@ -582,7 +582,7 @@ CHECK(,NOT_PROBE,not found) // not found
 When a library uses identifiers that will later be concatenated with a macro, it's advisory for them to prefix these with a pp-numer.
 E.g. [order-pp](#order-pp) uses this extensively:
 
-```C
+```c
 ORDER_PP
 (8let ((8X, 8nat (1,2,3))
        (8Y, 8nat (4,5,6))
@@ -752,7 +752,7 @@ Secondly, `#include` accepts a macro translation unit (MTU). The of values of th
 Finally, we can understand a file inclusion as being an MTU indexed function table where the arguments to the function called are all global.
 
 Example with Chaos-pp slots
-```C
+```c
 #define CHAOS_PP_VALUE 5 + 6       // ENA
 #include CHAOS_PP_ASSIGN_SLOT (1) // File-function table indexed at slot number 1
 CHAOS_PP_SLOT (1)                // 11
@@ -798,7 +798,7 @@ Note: the line number must be a literal. The linemarker does not accept an MTU
 `# any-file-name 1`
 
 Example
-```C
+```c
 #define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
 #line 1 "foo.c"
 INFO
@@ -815,7 +815,7 @@ Output:
 ```
 
 Shape of the stack:
-```C
+```c
   +-------+
 2 | baz.h |
   +-------+
@@ -860,7 +860,7 @@ Behaviour in function of version:
 ##### Pop with carry
 4.1.2 - 5.4
 Example:
-```C
+```c
 // in "/app/example.c"
 #define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
 #line 1
@@ -870,14 +870,14 @@ INFO
 INFO
 ```
 Output:
-```C
+```c
 [1, 1, "bar.h"]
 [0, 2, "/app/example.c"]
 ```
 
 ##### Pop with without carry
 4.1.2 - 12.1
-```C
+```c
 #define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
 // in "/app/example.c"
 INFO
@@ -894,7 +894,7 @@ Output:
 ```
 
 10.1 - 12.1
-```C
+```c
 #define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
 // in "/app/example.c"
 INFO
@@ -912,7 +912,7 @@ Output:
 
 ##### Ignored
 6.1 - 12.1
-```C
+```c
 #define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
 // in "/app/example.c"
 INFO
@@ -929,7 +929,7 @@ Output:
 ```
 
 6.1 - 9.5
-```C
+```c
 #define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
 // in "/app/example.c"
 INFO
@@ -939,7 +939,7 @@ INFO
 INFO
 ```
 Output:
-```C
+```c
 [0, 3, "/app/example.c"]
 [1, 2, "foo.h"]
 [1, 4, "foo.h"]
@@ -954,7 +954,9 @@ TODO
 
 <table>
 <tr><td><b>"main.c"</b></td><td><b>"calc.c"</b></td></tr>
-<tr><td><pre><code class="language-C">
+<tr><td>
+
+```c
 #define SLOT (2,==,2)
 #include "calc.c"
 VAL // 1
@@ -968,8 +970,12 @@ VAL // 0
 #define SLOT (12,&lt;=&gt;,1)
 #include "calc.c"
 VAL // 1
-</code></pre></td>
-<td><pre><code class="language-C">
+```
+
+</td>
+<td>
+
+```c
 #undef VAL
 #define SLOT_1(a,b,c) a
 #define SLOT_2(a,b,c) #b
@@ -981,9 +987,13 @@ VAL // 1
 #include SCAN(SLOT_2 SLOT)
 
 #undef SLOT
+```
+
 </code></pre></td></tr>
 <tr><td><b>"&lt;=&gt;"</b></td><td><b>"=="</b></td></tr>
-<tr><td><pre><code class="language-C">
+<tr><td>
+
+```c
 #if LHS &lt; RHS
 #define VAL -1
 #elif LHS == RHS
@@ -991,13 +1001,19 @@ VAL // 1
 #else
 #define VAL 1
 #endif
+```
+
 </code></pre></td>
-<td><pre><code class="language-C">
+<td>
+
+```c
 #if LHS == RHS
 #define VAL 1
 #else
 #define VAL 0
 #endif
+```
+
 </code></pre></td></tr>
 </table>
 
