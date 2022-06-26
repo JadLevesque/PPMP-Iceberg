@@ -989,7 +989,7 @@ VAL // 1
 #undef SLOT
 ```
 
-</code></pre></td></tr>
+</td></tr>
 <tr><td><b>"&lt;=&gt;"</b></td><td><b>"=="</b></td></tr>
 <tr><td>
 
@@ -1003,7 +1003,7 @@ VAL // 1
 #endif
 ```
 
-</code></pre></td>
+</td>
 <td>
 
 ```c
@@ -1014,7 +1014,7 @@ VAL // 1
 #endif
 ```
 
-</code></pre></td></tr>
+</td></tr>
 </table>
 
 
