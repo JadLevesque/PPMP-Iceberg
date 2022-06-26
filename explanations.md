@@ -954,7 +954,7 @@ TODO
 
 <table>
 <tr><td><b>"main.c"</b></td><td><b>"calc.c"</b></td></tr>
-<tr><td><code class="language-C">
+<tr><td><pre><code class="language-C">
 #define SLOT (2,==,2)
 #include "calc.c"
 VAL // 1
@@ -968,8 +968,8 @@ VAL // 0
 #define SLOT (12,&lt;=&gt;,1)
 #include "calc.c"
 VAL // 1
-</code></td>
-<td><code class="language-C">
+</code></pre></td>
+<td><pre><code class="language-C">
 #undef VAL
 #define SLOT_1(a,b,c) a
 #define SLOT_2(a,b,c) #b
@@ -981,9 +981,9 @@ VAL // 1
 #include SCAN(SLOT_2 SLOT)
 
 #undef SLOT
-</code></td></tr>
+</code></pre></td></tr>
 <tr><td><b>"&lt;=&gt;"</b></td><td><b>"=="</b></td></tr>
-<tr><td><code class="language-C">
+<tr><td><pre><code class="language-C">
 #if LHS &lt; RHS
 #define VAL -1
 #elif LHS == RHS
@@ -991,14 +991,14 @@ VAL // 1
 #else
 #define VAL 1
 #endif
-</code></td>
-<td><code class="language-C">
+</code></pre></td>
+<td><pre><code class="language-C">
 #if LHS == RHS
 #define VAL 1
 #else
 #define VAL 0
 #endif
-</code></td></tr>
+</code></pre></td></tr>
 </table>
 
 
