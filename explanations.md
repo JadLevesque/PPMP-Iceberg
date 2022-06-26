@@ -787,13 +787,12 @@ There are a few subtilities to take into consideration (which happen to vary wit
 - Push: `#` <*line number*> <*file name*> `1`
 - Pop: `#` <*line number*> <*file name*> `2`
 
-### Subtilities
 
 There are small but important details to keep into consideration for the proper manipulation of the file stack. Henceforth, variables will be used to succinctly refer to file names.
 
 Note: the line number must be a literal. The linemarker does not accept an MTU
 
-#### Push
+### Push
 4.1.2 - 12.1
 `# any-file-name 1`
 
@@ -826,7 +825,7 @@ Shape of the stack:
 ```
 
 
-#### Pop
+### Pop
 Behaviour in function of version:
 
 <table>
@@ -857,7 +856,7 @@ Behaviour in function of version:
 </table> 
 
 
-##### Pop with carry
+### Pop with carry
 4.1.2 - 5.4
 Example:
 ```c
@@ -875,7 +874,7 @@ Output:
 [0, 2, "/app/example.c"]
 ```
 
-##### Pop with without carry
+### Pop with without carry
 4.1.2 - 12.1
 ```c
 #define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
@@ -887,7 +886,7 @@ INFO
 INFO
 ```
 Output:
-```
+```c
 [0, 3, "/app/example.c"]
 [1, 2, "foo.h"]
 [0, 42, "/app/example.c"]
@@ -904,13 +903,13 @@ INFO
 INFO
 ```
 Output:
-```
+```c
 [0, 3, "/app/example.c"]
 [1, 2, "foo.h"]
 [0, 42, "/app/example.c"]
 ```
 
-##### Ignored
+### Pop ignored
 6.1 - 12.1
 ```c
 #define INFO [__INCLUDE_LEVEL__, __LINE__, __FILE__]
@@ -922,7 +921,7 @@ INFO
 INFO
 ```
 Output:
-```
+```c
 [0, 3, "/app/example.c"]
 [1, 2, "foo.h"]
 [1, 4, "foo.h"]
