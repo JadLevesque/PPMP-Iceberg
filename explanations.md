@@ -17,7 +17,7 @@ Often macros are used for code generation purposes, take for example:
 ```c
 #define ADD(a, b) a += b
 ```
-This will have unexpected behavior in many circumstance:
+This will have unexpected behavior in many circumstances:
 ```
 ADD(x, y; z);
 w = (2 + ADD(x, y) + z);
@@ -34,7 +34,7 @@ To solve these problems make sure to parenthesize arguments, and the complete ex
 
 When writing a more complex code generation macro that isn't a single expression, then you want it to at least fit into a single statement, so it behaves like other language elements.
 
-The naiive implementation doesn't have such properties:
+The naïve implementation doesn't have such properties:
 
 ```C
 #define FOR_EACH(f,a) \
@@ -238,7 +238,7 @@ CAT(foo,bar) // ~
 
 ## `SCAN()`
 
-The `SCAN` macro can be used to scan it's arguments twice:
+The `SCAN` macro can be used to scan its arguments twice:
 
 ```c
 #define SCAN(...) __VA_ARGS__
@@ -305,7 +305,7 @@ FOO(1,2,3) // FOO3(1,2,3)
 
 ## default arguments
 
-By [overloading macros based on argument count](#overloading-macros-based-on-argument-count) it's posible to implement default arguments for functions:
+By [overloading macros based on argument count](#overloading-macros-based-on-argument-count) it's possible to implement default arguments for functions:
 
 ```c
 void foo(int a, int b, float c);
@@ -323,7 +323,7 @@ foo(1)     // foo(1,2,3)
 
 # Bottom of the iceberg
 
-## [Microsoft took 30 years to implement a standard complient preprocessor](https://docs.microsoft.com/en-us/cpp/preprocessor/preprocessor-experimental-overview?view=msvc-170)
+## [Microsoft took 30 years to implement a standard complaint preprocessor](https://docs.microsoft.com/en-us/cpp/preprocessor/preprocessor-experimental-overview?view=msvc-170)
 
 ## no argument means one argument
 
@@ -340,7 +340,27 @@ ONE_ARGUMENT(x)
 ## [blue paint](https://en.wikipedia.org/wiki/Painted_blue)
 
 ## `CHECK()`
-TODO
+
+The `CHECK` macro can be used to detect the existence or non-existence of a probe:
+
+```c
+#define TUPLE_AT_1(b,a,...) a
+#define CHECK(...) TUPLE_AT_1(__VA_ARGS__,)
+#define PROBE ,found
+
+CHECK(PROBE,not found)     // found
+CHECK(NOT_PROBE,not found) // not found
+```
+
+Crucially, this can be used to convert a token to a boolean (0 -> 0, not 0 -> 1):
+
+```c
+#define BOOL_0_0 ,0
+#define BOOL(x) CHECK(BOOL_0_##x,1)
+BOOL(0)   // 0
+BOOL(1)   // 0
+BOOL(abc) // 1
+```
 
 ## saturated overloading
 
@@ -359,7 +379,29 @@ FOO(1,2,3,4,5) // FOOn(1,2,3,4,5)
 ```
 
 ## `INC()/DEC()`
-TODO
+
+Many libraries use a structure similar to the following to implement counting in the preprocessor:
+
+```c
+#define AT_0(a,b,c,d,e,f,g,h) a
+#define AT_1(a,b,c,d,e,f,g,h) b
+#define AT_2(a,b,c,d,e,f,g,h) c
+#define AT_3(a,b,c,d,e,f,g,h) d
+#define AT_4(a,b,c,d,e,f,g,h) e
+#define AT_5(a,b,c,d,e,f,g,h) f
+#define AT_6(a,b,c,d,e,f,g,h) g
+#define AT_7(a,b,c,d,e,f,g,h) h
+
+#define INC_(n) AT_##n(1,2,3,4,5,6,7,0)
+#define DEC_(n) AT_##n(7,0,1,2,3,4,5,6)
+#define INC(n) INC_(n)
+#define DEC(n) DEC_(n)
+
+INC(6) // 7
+INC(DEC(INC(INC(1)))) // 3
+```
+
+This approach is quite limited, see [#integer-arithmetics](#integer-arithmetics) for more advanced math.
 
 
 ## `EVAL()/DEFER()`
@@ -418,8 +460,8 @@ By stopping the fake recursion once your algorithm is complete, this technique c
 #define E1(...) __VA_ARGS__
 
 #define EMPTY()
-#define TUPLE_AT_2(x,y,...) y
-#define CHECK(x,...) TUPLE_AT_2(__VA_ARGS__,x,)
+#define TUPLE_AT_1(x,y,...) y
+#define CHECK(x,...) TUPLE_AT_1(__VA_ARGS__,x,)
 
 #define LOOP_END_END ,LOOP1
 #define LOOP(f,x,...) CHECK(LOOP0,LOOP_END_##x)(f,x,__VA_ARGS__)
@@ -433,7 +475,7 @@ E3(LOOP(f,1,2,3,4,5,6,7,8,9,END))
 Note that rescanning even once no more macros are defered  still takes some time, so you can't just create a macro that rescans e.g. 2^64 times without there being a rather large constant overhead for every use of that function. For a method of circumventing this, see [the continuation machine
 ](#continuation-machine)
 
-## [Boost preprocesor](https://www.boost.org/doc/libs/1_75_0/libs/preprocessor/doc/index.html) (C2x proposal)
+## [Boost preprocessor](https://www.boost.org/doc/libs/1_75_0/libs/preprocessor/doc/index.html) (C2x proposal)
 
 
 
@@ -576,8 +618,8 @@ Reversing tuple for example can be easily done 8 elements at a time:
 #define CAT_(a,b) a##b
 #define FX(f,x) f(x)
 #define TUPLE_TAIL(x,...) (__VA_ARGS__)
-#define TUPLE_AT_2(x,y,...) y
-#define CHECK(...) TUPLE_AT_2(__VA_ARGS__,)
+#define TUPLE_AT_1(x,y,...) y
+#define CHECK(...) TUPLE_AT_1(__VA_ARGS__,)
 
 // reverse 8 arguments at a time, defer to LOOP is there are less then 8 arguments
 #define SIMD_() SIMD
