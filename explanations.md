@@ -479,62 +479,123 @@ Note that rescanning even once no more macros are defered  still takes some time
 
 
 
-
-
-
 # Below the iceberg
 
-# Deep water
-
-# The abyss
-
-# TODO
-
-
-
-
-
-
-
-
-## tcc's non-recursive expansion is recursive
-
+## list datastructure
 
 ```c
-#define A(x) x B
-#define B(x) x A
-A(1)(1)(1)(1)
+#define LIST_HEAD(a,b) a
+#define LIST_TAIL(a,b) b
+
+LIST_HEAD(1,(2,(3,))) // 1
+LIST_TAIL(1,(2,(3,))) // (2,(3,))
+
+#define TUPLE_AT_1(x,y,...) y
+#define CHECK(...) TUPLE_AT_1(__VA_ARGS__,)
+#define LIST_END(...) ,0
+#define LIST_IS_END(x) CHECK(LIST_END x,1)
+
+LIST_IS_END((9,))          // 0
+LIST_IS_END(LIST_TAIL(9,)) // 1
 ```
 
-The standard say that it's implementation defined if in the above code the macro expansions are nested or not. (see https://port70.net/~nsz/c/c11/n1570.html#6.10.3.4p4 and "When a fully expanded..." in Annex J)
-So an implementation could expand the above either to "1 1 A(1)(1)..." or "1 1 1 1 A".
+## `#2""3`
 
-gcc, clang, tcc and all otherwise valid preprocessor implementation I know of expand it to "1 1 1 1 A", which is great for preprocessor meta programming.
+The first five characters of a preprocessor prototyping test file, that remove most warnings and shortens the current file name to nothing.
+Under GCC, this is called a line marker. This one sets the line under it as `2` and the file name as nothing (some systems will
+transform this as `"<stdin>"` on the buildlog). The `3` tells the compiler to treat the current file as a system header.
 
-But the problem is, whiles tcc expands the macros as though the expansion isn't nested, this isn't reflected in the tcc code.
-Meaning, if instead of 4 iterations you have e.g. 20000 of them tcc segfaults, and the backtrace indicates that it's a stack overflow because of too many recursive calls.
+> Syntax: `#` <*line number*> <*file name*> <*flag*>
 
-So tcc implements non-recursive expansion recursively.
+```C
+#2""3
+
+#warning "Not sneaky"             // appears on the buildlog
+#pragma GCC warning "Very sneaky" // doesn't appear on the buildlog
+#error "Not a warning"            // appears on the buildlog
+```
+
+gcc buildlog with `#2""3`:
+```
+:3:2: warning: #warning "Not sneaky" [-Wcpp]
+:5:2: error: #error "Not a warning"
+```
+
+gcc buildlog without `#2""3`:
+```
+<source>:3:2: warning: #warning "Not sneaky" [-Wcpp]
+    3 | #warning "Not sneaky"             // appears on the buildlog
+      |  ^~~~~~~
+<source>:4:21: warning: Very sneaky
+    4 | #pragma GCC warning "Very sneaky" // doesn't appear on the buildlog
+      |                     ^~~~~~~~~~~~~
+<source>:5:2: error: #error "Not a warning"
+    5 | #error "Not a warning"            // appears on the buildlog
+      |  ^~~~~
+```
+
+### lazy `P` argument
+
+Passing an empty argument to a macro (usually the first argument called `P` for historical reasons) allows it to stop the expansion of arguments, before the tokes are rescanned:
 
 
+```C
+#define OPEN(...) __VA_ARGS__
+#define OPENq(P,...) P##__VA_ARGS__
+
+#define A() ~
+#define NOTHING
+
+OPEN(A NOTHING ())   // ~
+OPENq(,A NOTHING ()) // A ()
+```
+
+This can also be used to increase performance, by delaying a macro expansion, when the expansion results in more tokens than the macro call.
+
+```c
+#define R2(x) R(R(R(R(R(R(R(R(R(R(x))))))))))
+#define R(x) x,x,x,x,x,x
+
+#define EAT(...) EAT_(__VA_ARGS__)
+#define EAT_(...)
+
+EAT(OPEN(R2(a))) // 4.2 seconds
+EAT(OPENq(,R2(a))) // 3.1 seconds
+```
+
+## C89 `CHECK()`
+
+```c
+#define CHECK_EAT(x,y) 
+#define CHECK_RESULT(x) CHECK_RESULT_ x
+#define CHECK_RESULT_(x,y) y
+#define CHECK(P,x,y) CHECK_RESULT((P##x,y))
+
+#define PROBE ,found)CHECK_EAT(
+
+CHECK(,PROBE,not found)     // found
+CHECK(,NOT_PROBE,not found) // not found
+```
+
+## pp-num prefix
+
+When a library uses identifiers that will later be concatenated with a macro, it's advisory for them to prefix these with a pp-numer.
+E.g. [order-pp](#order-pp) uses this extensively:
+
+```C
+ORDER_PP
+(8let ((8X, 8nat (1,2,3))
+       (8Y, 8nat (4,5,6))
+      ,8to_lit (8mul (8X, 8Y))
+      )
+)
+```
+
+If the above code wouldn't use pp-num prefixes, it would break when surrounding code, e.g. uses `#define mul ...`.
 
 
+## lazy arguments without P (extension)
 
-
-## interpreters/compilers
-
-* [bfcpp](https://github.com/camel-cdr/bfcpp) (Optimizing Brainfuck interpreter)
-* [bfi](http://www.kotha.net/bfi/) (Optimizing Brainfuck interpreter)
-* [CPP_COMPLETE](https://github.com/orangeduck/CPP_COMPLETE) (Brainfuck interpreter)
-* [ppasm](https://github.com/notfoundry/ppasm) (x86_64 macro assembler)
-
-## language extensions
-
-* [datatype99](https://github.com/Hirrolot/datatype99) (Algebraic data types)
-* [interface99](https://github.com/Hirrolot/interface99) (Interfaces)
-
-
-## lazy arguments without P
 Comma concatenation is a GCC extension.
 
 ```c
@@ -548,57 +609,61 @@ LAZY_WITHOUT_P(A ()) // ~
 LAZY_WITHOUT_P(A NOTHING ()) // A ()
 ```
 
+## [`#assert`](https://gcc.gnu.org/onlinedocs/gcc-4.3.1/cpp/Assertions.html) (extension)
+
+## constants are variables
+TODO
+
+## [`IS_EMPTY()`](https://gustedt.wordpress.com/2010/06/08/detect-empty-macro-arguments/)
+
+## [ppstep](https://github.com/notfoundry/ppstep)
+
+## [OBJECT disabling context](https://marc.info/?l=boost&m=118835769257658)
 
 
 
+# Deep water
 
-## gcc's macro's can be recursive
+## sequence datastructure
+TODO
 
+## `A(1)(2)(3)(4)(5)`
+TODO
 
-## `#2""3`
-The first five characters of a dirty PPMP test file, that remove most warnings and shortens the current file name to nothing.
-Under GCC, this is called a line marker. This one sets the line under it as `2` and the file name as nothing (some systems will
-transform this as `"<stdin>"` on the buildlog). The `3` tells the compiler to treat the current file as a system header.
+## [order-pp](https://github.com/rofl0r/order-pp)
 
-This trick is usually used in dirty PPMP tests to shorten the file names, though the system header status becomes a necessity
-when using warning prone features such as GCC's `#assert`.
+## [chaos-pp](https://github.com/rofl0r/chaos-pp)
 
-Syntax: `#` <*line number*> <*file name*> <*flag*>
+## [Metalang99](https://github.com/Hirrolot/metalang99)
 
-```C
-#2""3
+## [Continuation machine](https://github.com/camel-cdr/bfcpp/blob/main/TUTORIAL.md#user-content-141-the-continuation-machine=)
 
-#warning "Not sneaky"              // appears on the buildlog
-#pragma GCC warning "Very sneaky" // doesn't appear on the buildlog
-#error "Not a warning"           // appears on the buildlog
+## macro stack
+TODO
 
-/*
-buildlog:
-:3:2: warning: #warning "Not sneaky" [-Wcpp]
-:5:2: error: #error "Not a warning"
-*/
-```
+## interpreters/compilers
 
+* [bfcpp](https://github.com/camel-cdr/bfcpp) (Optimizing Brainfuck interpreter)
+* [bfi](http://www.kotha.net/bfi/) (Optimizing Brainfuck interpreter)
+* [CPP_COMPLETE](https://github.com/orangeduck/CPP_COMPLETE) (Brainfuck interpreter)
+* [ppasm](https://github.com/notfoundry/ppasm) (x86_64 macro assembler)
 
-## file-function table
+## language extensions
 
-`#include` is a file-function table.
+* [datatype99](https://github.com/Hirrolot/datatype99) (Algebraic data types)
+* [interface99](https://github.com/Hirrolot/interface99) (Interfaces)
 
-Firstly, a file-function depends on a set of Named External Arguments (NEA), which are macros defined prior to the inclusion of the file. A good example of this are Chaos-pp slots, which take `CHAOS_PP_VALUE` as a NEA. The slot assignment file-function then defines 21 macros to produce a memorization of an integer literal.
+## random access memory
 
-Secondly, `#include` accepts a macro translation unit (MTU). The of values of the set of macros considered by this MTU is the domain of the function. The codomain is the set of paths the MTU produces. A good (if extreme) example of this is [`#include __DATE__`](https://github.com/JadLevesque/my-ppmptd).
+## file slots
 
-Finally, we can understand a file inclusion as being an MTU indexed function table where the arguments to the function called are all global.
+## file iteration
 
-Example with Chaos-pp slots
-```C
-#define CHAOS_PP_VALUE 5 + 6       // ENA
-#include CHAOS_PP_ASSIGN_SLOT (1) // File-function table indexed at slot number 1
-CHAOS_PP_SLOT (1)                // 11
-```
+## [integer arithmetics](TODO)
 
 
 
+# The abyss
 
 
 ## Single Instruction/Continuation Multiple Data
@@ -641,67 +706,6 @@ REVERSE(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
 //     (15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)
 ```
 
-## lazy evaluation
-
-Lazy evaluation is important for both performance and functionnality. 
-
-### lazy `P` argument
-
-This strategy involves having the first argument of a macro (usually called `P` for historical reasons) be used for prefix concatenation. See bellow for exceptions.
-
-Exceptions: prominent in Order-pp.
-
-```C
-#define ORDER_PP_9BIN_PR(P,b,p) (,ORDER_PP_OPEN p##P,ORDER_PP_OPEN b##P,8BIN_PR,P##p)
-```
-
-## pp-num prefix
-
-Prominent in Order-pp
-
-```C
-ORDER_PP
-(8let ((8X, 8nat (1,2,3))
-       (8Y, 8nat (4,5,6))
-      ,8to_lit (8mul (8X, 8Y))
-      )
-) // 56088
-```
-
-This can also be used to lazily expand `arguments` is needed for macro overload to avoid scanning its contents.
-
-```C
-#define GET_MACRO(_1,_2,_3,x,...) x
-#define FOO(...) GET_MACRO(0##__VA_ARGS__,FOO3,FOO2,FOO1)(__VA_ARGS__)
-
-FOO(1)     // FOO1(1,2,3)
-FOO(1,2)   // FOO2(1,2,3)
-FOO(1,2,3) // FOO3(1,2,3)
-```
-
-Disclaimer: This is only faster if the `__VA_ARGS__` is ludicrously long.
-
-
-
-### tuple open
-
-Used to open a tuple without rescanning the elements.
-
-```C
-#define R2(x) R(R(R(R(R(R(R(R(R(R(x))))))))))
-#define R(x) x,x,x,x,x,x
-#define OPEN(...) __VA_ARGS__
-#define OPENq(P,...) P##__VA_ARGS__
-
-#define EAT(...) EAT_(__VA_ARGS__)
-#define EAT_(...)
-
-EAT(OPEN(R2(a))) // 4.2 seconds
-EAT(OPENq(,R2(a))) // 3.1 seconds
-```
-
-
-
 ## `ICE_P()`
 
 You can overload a function depending on one of the argument being a constant expression.
@@ -724,6 +728,54 @@ pow(x,y); // pow(x,y)
 ```
 
 (https://godbolt.org/z/bjo5TcnbT)
+
+
+## macro expansion can be recursive (extension)
+TODO
+
+## [`#include` custom filesystem](https://github.com/camel-cdr/execfs)
+
+## `F(x,y)y)y)y)y)`
+TODO
+
+## [`#for #endfor`](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n1410.pdf) rejected C proposal
+
+
+## file-function table
+
+`#include` is a file-function table.
+
+Firstly, a file-function depends on a set of Named External Arguments (NEA), which are macros defined prior to the inclusion of the file. A good example of this are Chaos-pp slots, which take `CHAOS_PP_VALUE` as a NEA. The slot assignment file-function then defines 21 macros to produce a memorization of an integer literal.
+
+Secondly, `#include` accepts a macro translation unit (MTU). The of values of the set of macros considered by this MTU is the domain of the function. The codomain is the set of paths the MTU produces. A good (if extreme) example of this is [`#include __DATE__`](https://github.com/JadLevesque/my-ppmptd).
+
+Finally, we can understand a file inclusion as being an MTU indexed function table where the arguments to the function called are all global.
+
+Example with Chaos-pp slots
+```C
+#define CHAOS_PP_VALUE 5 + 6       // ENA
+#include CHAOS_PP_ASSIGN_SLOT (1) // File-function table indexed at slot number 1
+CHAOS_PP_SLOT (1)                // 11
+```
+
+## tcc's non-recursive expansion is recursive
+
+```c
+#define A(x) x B
+#define B(x) x A
+A(1)(1)(1)(1)
+```
+
+The standard say that it's implementation defined if in the above code the macro expansions are nested or not. (see https://port70.net/~nsz/c/c11/n1570.html#6.10.3.4p4 and "When a fully expanded..." in Annex J)
+So an implementation could expand the above either to "1 1 A(1)(1)..." or "1 1 1 1 A".
+
+gcc, clang, tcc and all otherwise valid preprocessor implementation I know of expand it to "1 1 1 1 A", which is great for preprocessor meta programming.
+
+But the problem is, whiles tcc expands the macros as though the expansion isn't nested, this isn't reflected in the tcc code.
+Meaning, if instead of 4 iterations you have e.g. 20000 of them tcc segfaults, and the backtrace indicates that it's a stack overflow because of too many recursive calls.
+
+So tcc implements non-recursive expansion recursively.
+
 
 ## file stack
 
@@ -776,6 +828,7 @@ Shape of the stack:
 
 #### Pop
 Behaviour in function of version:
+
 <table>
  <tr>
    <th>Versions</th>
@@ -891,3 +944,83 @@ Output:
 [1, 2, "foo.h"]
 [1, 4, "foo.h"]
 ```
+
+
+
+## file stack line accumulator
+TODO
+
+## operator overloading
+TODO
+
+
+<table>
+<tr><td><b>main.c</b></td><td><b>calc.c</b></td></tr>
+<tr><td>
+
+```c
+#define SLOT (2,==,2)
+#include "calc.c"
+VAL // 1
+
+#define SLOT (1,<=>,12)
+#include "calc.c"
+VAL // -1
+#define SLOT (12,<=>,12)
+#include "calc.c"
+VAL // 0
+#define SLOT (12,<=>,1)
+#include "calc.c"
+VAL // 1
+```
+
+</td><td>
+
+```c
+#undef VAL
+#define SLOT_1(a,b,c) a
+#define SLOT_2(a,b,c) #b
+#define SLOT_3(a,b,c) c
+
+#define SCAN(...) __VA_ARGS__
+#define LHS SCAN(SLOT_1 SLOT)
+#define RHS SCAN(SLOT_3 SLOT)
+#include SCAN(SLOT_2 SLOT)
+
+#undef SLOT
+```
+
+</td></tr>
+<tr><td><b><=></b></td><td><b>==</b></td></tr>
+<tr><td>
+
+```c
+#if LHS < RHS
+#define VAL -1
+#elif LHS == RHS
+#define VAL 0
+#else
+#define VAL 1
+#endif
+```
+
+</td><td>
+
+```c
+#if LHS == RHS
+#define VAL 1
+#else
+#define VAL 0
+#endif
+```
+
+</td></tr>
+<tr><td>
+</table>
+
+
+
+
+## cross-MTU memory
+TODO
+
