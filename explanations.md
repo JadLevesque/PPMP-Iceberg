@@ -630,7 +630,49 @@ TODO
 ## `A(1)(2)(3)(4)(5)`
 TODO
 
-## [order-pp](https://github.com/rofl0r/order-pp)
+## Order-pp
+```C
+#include <stdio.h>
+#include <string.h>
+
+#include <order/interpreter.h>
+
+
+#ifndef ORDER_PP_DEF_8singleton
+#define ORDER_PP_DEF_8singleton ORDER_PP_FN_CM(1,8SINGLETON,0IS_ANY)
+#define ORDER_PP_8SINGLETON(P,x,...) (,(P##x),P##__VA_ARGS__)
+#endif
+
+#define TOTAL_STRLEN(xs...) \
+ORDER_PP \
+(8lets ((8S, 8tuple_to_seq (8quote ((xs)))) \
+        (8M, 8seq_map (8compose (8adjacent (8quote (+strlen)) \
+                                ,8singleton \
+                                ) \
+                      ,8S \
+                      ) \
+        ) \
+       ,8seq_fold (8adjacent \
+                  ,0 \
+                  ,8M \
+                  ) \
+       ) \
+)
+//
+
+
+int main () {
+    printf ("%i\n"
+           ,TOTAL_STRLEN ("123", "34634523", ((char[]){'5', '2', '1', '\0'}))
+            // 0 +strlen("123")+strlen("34634523")+strlen(((char[]){'5', '2', '1', '\0'}))
+           );
+    // output: 14
+
+    return 0;
+}
+```
+
+[order-pp](https://github.com/rofl0r/order-pp)
 
 ## [chaos-pp](https://github.com/rofl0r/chaos-pp)
 
