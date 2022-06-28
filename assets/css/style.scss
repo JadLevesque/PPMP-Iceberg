@@ -8,6 +8,12 @@ h1 {
     text-align: center;
 }
 
-h2 { margin-top: 2em; }
-
+h2 {
+    margin-top: 2em;
+    font-size: 24px;
+}
+h2 > code {
+    font-size: inherit;
+    color: inherit;
+}
 h2:before { content:"➤ "; }
