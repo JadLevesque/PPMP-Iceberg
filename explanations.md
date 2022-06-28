@@ -28,9 +28,9 @@ To solve these problems make sure to parenthesize arguments, and the complete ex
 #define ADD(a, b) ((a) += (b))
 ```
 
-## [#pragma once](https://en.wikipedia.org/wiki/Pragma_once) (extension)
+## [`#pragma once`](https://en.wikipedia.org/wiki/Pragma_once) (extension)
 
-## do { } while (0)
+## `do { } while (0)`
 
 When writing a more complex code generation macro that isn't a single expression, then you want it to at least fit into a single statement, so it behaves like other language elements.
 
