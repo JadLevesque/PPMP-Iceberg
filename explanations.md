@@ -1,6 +1,6 @@
 # Above the iceberg
 
-## [`#include`](https://en.cppreference.com/w/c/preprocessor/include)
+## [#include](https://en.cppreference.com/w/c/preprocessor/include)
 
 ## macros just replace text
 
@@ -8,7 +8,7 @@ Macros just replace text, they don't know anything about the surrounding C code.
 
 ## [header guards](https://en.wikipedia.org/wiki/Include_guard)
 
-## [`#if #elif`](https://en.wikipedia.org/wiki/C_preprocessor#Conditional_compilation)
+## [#if #elif](https://en.wikipedia.org/wiki/C_preprocessor#Conditional_compilation)
 
 
 ## make sure to parenthesize arguments
@@ -28,9 +28,9 @@ To solve these problems make sure to parenthesize arguments, and the complete ex
 #define ADD(a, b) ((a) += (b))
 ```
 
-## [`#pragma once`](https://en.wikipedia.org/wiki/Pragma_once) (extension)
+## [#pragma once](https://en.wikipedia.org/wiki/Pragma_once) (extension)
 
-## `do { } while (0)`
+## do { } while (0)
 
 When writing a more complex code generation macro that isn't a single expression, then you want it to at least fit into a single statement, so it behaves like other language elements.
 
@@ -76,7 +76,7 @@ for (int i = 0; i < 10; ++i)
     FOR_EACH(f,a[i]);
 ```
 
-## [`ARRAY_LEN()`](https://www.ashn.dev/blog/2020-01-06-c-array-length.html)
+## [ARRAY_LEN()](https://www.ashn.dev/blog/2020-01-06-c-array-length.html)
 
 
 
@@ -93,14 +93,14 @@ A(x) // A(x x)
 B(x) // B(x x x x)
 ```
 
-## `#a`
+## #a
 
 ```c
 #define STR(a) #a
 STR(123 foo bar) // "123 foo bar"
 ```
 
-## `a##b`
+## a##b
 
 ```c
 #define CAT(a,b) a##b
@@ -108,18 +108,18 @@ STR(123 foo bar) // "123 foo bar"
 CAT(FOO,BAR) // ~
 ```
 
-## [`__VA_ARGS__`](https://stackoverflow.com/questions/26053959/what-does-va-args-in-a-macro-mean)
+## [__VA_ARGS__](https://stackoverflow.com/questions/26053959/what-does-va-args-in-a-macro-mean)
 
-## [`#undef`](https://en.cppreference.com/w/c/preprocessor/replace#mw-headline)
+## [#undef](https://en.cppreference.com/w/c/preprocessor/replace#mw-headline)
 
-## `#error`
+## #error
 Produces a custom error recorded on the buildlog as well as halting compilation.
 
 ```c
 #error "You did something wrong at line something."
 ```
 
-## [`defined`](https://en.cppreference.com/w/c/preprocessor/conditional#Combined_directives)
+## [defined](https://en.cppreference.com/w/c/preprocessor/conditional#Combined_directives)
 
 ## [physical vs logical source lines](https://en.cppreference.com/w/c/language/translation_phases#Phase_2)
 
@@ -129,17 +129,17 @@ Produces a custom error recorded on the buildlog as well as halting compilation.
 
 # Below the water
 
-## `__FILE__` `__LINE__`
+## __FILE__ __LINE__
 `__FILE__` expands to a string literal containing the name of the current file.
 `__LINE__` expands to an integer literal of the value of the line where it is expanded.
 
-## `__DATE__`  `__TIME__`
+## __DATE__ __TIME__
 `__DATE__` expands to a string literal containing the date of compilation.
 `__TIME__` expands to a string literal containing the time of compilation.
 
 ## [Trigraphs](https://en.cppreference.com/w/c/language/operator_alternative#Trigraphs)
 
-## `#line`
+## #line
 Sets a new value for `__FILE__` and `__DATE__`.
 
 ```c
@@ -155,19 +155,19 @@ This problem often occurs when passing a compound literal, e.g. `(struct Vec3){1
 
 To circumvent this, always pass compound literal enclosed in parentheses.
 
-## [`__VA_OPT__`](https://en.cppreference.com/w/cpp/preprocessor/replace#Function-like_macros) (C++20 and extension)
+## [__VA_OPT__](https://en.cppreference.com/w/cpp/preprocessor/replace#Function-like_macros) (C++20 and extension)
 
-## [`#define A(x...)`](https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html) (extension)
+## [#define A(x...)](https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html) (extension)
 
-## [`,##__VA_ARGS__`](https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html) (extension)
+## [,##__VA_ARGS__](https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html) (extension)
 
-## [`#pragma _Pragma()`](https://port70.net/~nsz/c/c11/n1570.html#6.10.9)
+## [#pragma _Pragma()](https://port70.net/~nsz/c/c11/n1570.html#6.10.9)
 
-## `-P -E` (not standardized)
+## -P -E (not standardized)
 
 Many compilers (gcc,clang,tcc,...) have the options `-E` for only running the preprocessor and `-E` for not omitting line marks.
 
-## `#if static_cast<bool>(-1)`
+## #if static_cast<bool>(-1)
 
 The `#if` statement replaces, after macro expansion, every remaining identifier with the pp-number 0.
 So `#if static_cast<bool>(-1)` is equivalent to `#if 0<0>(-1)`, `#if 0 > -1`, and `#if 1`.
@@ -190,7 +190,7 @@ Hence, it's not possible to generate preprocessor directives using standard macr
 
 # Middle of the iceberg
 
-## `__COUNTER__` (extension)
+## __COUNTER__ (extension)
 
 clang and gcc offer the language extension `__COUNTER__`, expands to an integer value starting at `0` and incrementing the value after every expansion:
 ```c
@@ -216,7 +216,7 @@ STR_(AWOO) // "AWOO"
 STR(AWOO)  // "~"
 ```
 
-## `#define CAT(a,b) CAT_(a,b)` `#define CAT_(a,b) a##b`
+## #define CAT(a,b) CAT_(a,b) #define CAT_(a,b) a##b
 
 ```c
 #define CAT(a,b) CAT_(a,b)
@@ -230,13 +230,13 @@ CAT_(foo,bar) // foobar
 CAT(foo,bar) // ~
 ```
 
-## [`__has_include`](https://en.cppreference.com/w/cpp/preprocessor/include) (C++17)
+## [__has_include](https://en.cppreference.com/w/cpp/preprocessor/include) (C++17)
 
-## [`#elifdef #elifndef`](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2645.pdf) (C2x)
+## [#elifdef #elifndef](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2645.pdf) (C2x)
 
-## [`#embed`](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2967.htm) (C2x proposal)
+## [#embed](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2967.htm) (C2x proposal)
 
-## `SCAN()`
+## SCAN()
 
 The `SCAN` macro can be used to scan its arguments twice:
 
@@ -339,7 +339,7 @@ ONE_ARGUMENT(x)
 
 ## [blue paint](https://en.wikipedia.org/wiki/Painted_blue)
 
-## `CHECK()`
+## CHECK()
 
 The `CHECK` macro can be used to detect the existence or non-existence of a probe:
 
@@ -378,7 +378,7 @@ FOO(1,2,3,4)   // FOOn(1,2,3,4)
 FOO(1,2,3,4,5) // FOOn(1,2,3,4,5)
 ```
 
-## `INC()/DEC()`
+## INC()/DEC()
 
 Many libraries use a structure similar to the following to implement counting in the preprocessor:
 
@@ -404,7 +404,7 @@ INC(DEC(INC(INC(1)))) // 3
 This approach is quite limited, see [#integer-arithmetics](#integer-arithmetics) for more advanced math.
 
 
-## `EVAL()/DEFER()`
+## EVAL()/DEFER()
 
 It is possible to defer a otherwise recursive macro expansion to avoid it getting [painted blue](#painted-blue). Thus, rescanning a defered macro causes it to expand:
 
@@ -499,7 +499,7 @@ LIST_IS_END((9,))          // 0
 LIST_IS_END(LIST_TAIL(9,)) // 1
 ```
 
-## `#2""3`
+## #2""3
 
 The first five characters of a preprocessor prototyping test file, that remove most warnings and shortens the current file name to nothing.
 Under GCC, this is called a line marker. This one sets the line under it as `2` and the file name as nothing (some systems will
@@ -534,7 +534,7 @@ gcc buildlog without `#2""3`:
       |  ^~~~~
 ```
 
-### lazy `P` argument
+### lazy P argument
 
 Passing an empty argument to a macro (usually the first argument called `P` for historical reasons) allows it to stop the expansion of arguments, before the tokes are rescanned:
 
@@ -609,7 +609,7 @@ LAZY_WITHOUT_P(A ()) // ~
 LAZY_WITHOUT_P(A NOTHING ()) // A ()
 ```
 
-## [`#assert`](https://gcc.gnu.org/onlinedocs/gcc-4.3.1/cpp/Assertions.html) (extension)
+## [#assert](https://gcc.gnu.org/onlinedocs/gcc-4.3.1/cpp/Assertions.html) (extension)
 
 ## constants are variables
 TODO
@@ -627,7 +627,7 @@ TODO
 ## sequence datastructure
 TODO
 
-## `A(1)(2)(3)(4)(5)`
+## A(1)(2)(3)(4)(5)
 TODO
 
 ## Order-pp
@@ -748,7 +748,7 @@ REVERSE(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
 //     (15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)
 ```
 
-## `ICE_P()`
+## ICE_P()
 
 You can overload a function depending on one of the argument being a constant expression.
 
@@ -775,12 +775,12 @@ pow(x,y); // pow(x,y)
 ## macro expansion can be recursive (extension)
 TODO
 
-## [`#include` custom filesystem](https://github.com/camel-cdr/execfs)
+## [#include custom filesystem](https://github.com/camel-cdr/execfs)
 
 ## `F(x,y)y)y)y)y)`
 TODO
 
-## [`#for #endfor`](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n1410.pdf) rejected C proposal
+## [#for #endfor](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n1410.pdf) rejected C proposal
 
 
 ## file-function table
