@@ -993,11 +993,9 @@ TODO
 
 ## operator overloading
 
-{::nomarkdown}
 <table>
 <tr><td><b>"main.c"</b></td><td><b>"calc.c"</b></td></tr>
 <tr><td>
-{:/}
 
 ```c
 #define SLOT (2,==,2)
@@ -1015,10 +1013,8 @@ VAL // 0
 VAL // 1
 ```
 
-{::nomarkdown}
 </td>
 <td>
-{:/}
 
 ```c
 #undef VAL
@@ -1034,11 +1030,9 @@ VAL // 1
 #undef SLOT
 ```
 
-{::nomarkdown}
 </td></tr>
 <tr><td><b>"&lt;=&gt;"</b></td><td><b>"=="</b></td></tr>
 <tr><td>
-{:/}
 
 ```c
 #if LHS &lt; RHS
@@ -1050,10 +1044,8 @@ VAL // 1
 #endif
 ```
 
-{::nomarkdown}
 </td>
 <td>
-{:/}
 
 ```c
 #if LHS == RHS
@@ -1063,10 +1055,8 @@ VAL // 1
 #endif
 ```
 
-{::nomarkdown}
 </td></tr>
 </table>
-{:/}
 
 
 
