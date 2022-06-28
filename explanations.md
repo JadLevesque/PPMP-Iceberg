@@ -870,32 +870,11 @@ Shape of the stack:
 ### Pop
 Behaviour in function of version:
 
-<table>
- <tr>
-   <th>Versions</th>
-   <th>With correct file name</th>
-   <th>With wrong file name</th>
-   <th>With empty file name</th>
- </tr>
- <tr>
-   <td>4.1.2 - 5.4</td>
-   <td>Without carry</td>
-   <td>With carry</td>
-   <td>With carry</td>
- </tr>
- <tr>
-   <td>6.1 - 9.5</td>
-   <td>Without carry</td>
-   <td>Ignored</td>
-   <td>Ignored</td>
- </tr>
- <tr>
-   <td>10.1 - 12.1</td>
-   <td>Without carry</td>
-   <td>Ignored</td>
-   <td>Without carry</td>
- </tr>
-</table> 
+| Version range | With correct file name | With wrong file name | With empty file name |
+| :---          | :---                   | :---                 | :---                 |
+| 4.1.2 - 5.4   | Without carry          | With carry           | With carry           |
+| 6.1 - 9.5     | Without carry          | Ignored              | Ignored              |
+| 10.1 - 12.1   | Without carry          | Ignored              | Without carry        |
 
 
 ### Pop with carry
