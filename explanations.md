@@ -981,13 +981,13 @@ TODO
 #include "calc.c"
 VAL // 1
 
-#define SLOT (1,&lt;=&gt;,12)
+#define SLOT (1,<=>,12)
 #include "calc.c"
 VAL // -1
-#define SLOT (12,&lt;=&gt;,12)
+#define SLOT (12,<=>,12)
 #include "calc.c"
 VAL // 0
-#define SLOT (12,&lt;=&gt;,1)
+#define SLOT (12,<=>,1)
 #include "calc.c"
 VAL // 1
 ```
@@ -1014,7 +1014,7 @@ VAL // 1
 <tr><td>
 
 ```c
-#if LHS &lt; RHS
+#if LHS < RHS
 #define VAL -1
 #elif LHS == RHS
 #define VAL 0
