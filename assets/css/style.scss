@@ -1,0 +1,11 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+h1 {
+    font-size: 32px;
+    text-align: center;
+}
+
+h2:before { content:">>> "; }
