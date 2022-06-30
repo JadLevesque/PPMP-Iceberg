@@ -1039,5 +1039,58 @@ VAL // 1
 
 
 ## cross-MTU memory
-TODO
 
+
+```C
+#define EAT(...)
+#define DUMP(v...) EAT(v)
+
+#define SEQ_TERMINATE(v...) v##0
+#define INC_A() DUMP(__COUNTER__) INC_B
+#define INC_B() DUMP(__COUNTER__) INC_A
+#define INC_A0
+#define INC_B0
+
+#define FX(f,x) f x
+
+#define MEMORISE(n) FX(SEQ_TERMINATE, (INC_A n))
+
+#define LIT_0
+#define LIT_1 ()
+#define LIT_2 ()()
+#define LIT_3 ()()()
+#define LIT_4 ()()()()
+#define LIT_5 ()()()()()
+#define LIT_6 ()()()()()()
+#define LIT_7 ()()()()()()()
+#define LIT_8 ()()()()()()()()
+#define LIT_9 ()()()()()()()()()
+#define LIT_10 ()()()()()()()()()()
+
+#define MUL_0(x)
+#define MUL_1(x) x
+#define MUL_2(x) x x
+#define MUL_3(x) x x x
+#define MUL_4(x) x x x x
+#define MUL_5(x) x x x x x
+#define MUL_6(x) x x x x x x
+#define MUL_7(x) x x x x x x x
+#define MUL_8(x) x x x x x x x x
+#define MUL_9(x) x x x x x x x x x
+#define MUL_10(x) x x x x x x x x x x
+
+#define MUL(x,y) MUL_##x(LIT_##y)
+
+int main() {
+
+    MEMORISE(MUL(2,3))
+    printf ("%i\n", __COUNTER__);
+
+    // safe line setting
+    #0""1
+    #line __COUNTER__
+    MEMORISE(MUL(9,5))
+    printf ("%i\n", __COUNTER__ - __LINE__);
+    #0""2
+}
+```
