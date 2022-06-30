@@ -628,7 +628,82 @@ TODO
 TODO
 
 ## `A(1)(2)(3)(4)(5)`
-TODO
+
+Iterating over a sequence is quite easy:
+
+```c
+#define A(x) f(x) B
+#define B(x) f(x) A
+
+A(1)(2)(3)(4)(5) // f(1) f(2) f(3) f(4) f(5) B
+```
+
+Sadly it's implementation defined behavior whether this works in C.
+
+The relevant standard passage is [Annex J.1](https://port70.net/~nsz/c/c11/n1570.html#J.1):
+
+> When a fully expanded macro replacement list contains a function-like macro name as its last preprocessing token and the next preprocessing token from the source file is a (, and the fully expanded replacement of that macro ends with the name of the first macro and the next preprocessing token from the source file is again a (, whether that is considered a nested replacement
+
+As well as the example from [6.10.3.4p4](https://port70.net/~nsz/c/c11/n1570.html#6.10.3.4p4):
+
+> EXAMPLE There are cases where it is not clear whether a replacement is nested or not. For example, given the following macro definitions:
+> ```c
+> #define f(a) a*g
+> #define g(a) f(a)
+> ```
+> the invocation `f(2)(9)` may expand to either `2*f(9)` or `2*9*g`.
+> Strictly conforming programs are not permitted to depend on such unspecified behavior.
+
+Fortunately for us, almost all preprocessor allow for sequence iteration, and crucially it is possible to detect whether your preprocessor supports:
+
+```c
+#define CAT(a,b) CAT_(a,b)
+#define CAT_(a,b) a##b
+
+#define HAS_SEQ_ITER CAT(X_,HAS_SEQ_ITERa()()())
+#define HAS_SEQ_ITERa() HAS_SEQ_ITERb
+#define HAS_SEQ_ITERb() HAS_SEQ_ITERa
+
+#define X_HAS_SEQ_ITERa() 0
+#define X_HAS_SEQ_ITERb 1
+
+#if HAS_SEQ_ITER
+// use sequence iteration
+#else
+// don't use sequence iteration
+#endif
+```
+
+### Terminating sequence iteration / removing the trailing
+
+After the sequence iteration, you still need to get rid of the leftover function like macro without arguments.
+The easiest method probably is the following:
+
+```c
+#define CAT(a,b) CAT_(a,b)
+#define CAT_(a,b) a##b
+
+#define A(x) f(x) B
+#define B(x) f(x) A
+
+#define A_RM
+#define B_RM
+
+CAT(A(1)(2)(3)(4)(5),_RM) // f(1) f(2) f(3) f(4) f(5)
+```
+
+This doesn't work out of the box with commas, but we can just defer a macro that expands to a comma:
+
+```c
+#define EMPTY()
+#define COMMA() ,
+
+#define A(x) f(x)COMMA EMPTY()()B
+#define B(x) f(x)COMMA EMPTY()()A
+
+CAT(A(1)(2)(3)(4)(5),_RM) // f(1),f(2),f(3),f(4),f(5),
+```
+
 
 ## Order-pp
 ```C
