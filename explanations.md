@@ -680,33 +680,23 @@ After the sequence iteration, you still need to get rid of the leftover function
 The easiest method probably is the following:
 
 ```c
-#define CAT(a,b) CAT_(a,b)
-#define CAT_(a,b) a##b
+#define SEQ_TERM(...) SEQ_TERM_(__VA_ARGS__)
+#define SEQ_TERM_(...) __VA_ARGS__##_RM
 
-#define A(x) f(x) B
-#define B(x) f(x) A
+#define A(x) f(x),B
+#define B(x) f(x),A
 
 #define A_RM
 #define B_RM
 
-CAT(A(1)(2)(3)(4)(5),_RM) // f(1) f(2) f(3) f(4) f(5)
+SEQ_TERM(A(1)(2)(3)(4)(5)) // f(1),f(2),f(3),f(4),f(5),
 ```
 
-This doesn't work out of the box with commas, but we can just defer a macro that expands to a comma:
-
-```c
-#define EMPTY()
-#define COMMA() ,
-
-#define A(x) f(x)COMMA EMPTY()()B
-#define B(x) f(x)COMMA EMPTY()()A
-
-CAT(A(1)(2)(3)(4)(5),_RM) // f(1),f(2),f(3),f(4),f(5),
-```
 
 
 ## Order-pp
-```C
+
+```c
 #include <stdio.h>
 #include <string.h>
 
@@ -718,9 +708,9 @@ CAT(A(1)(2)(3)(4)(5),_RM) // f(1),f(2),f(3),f(4),f(5),
 #define ORDER_PP_8SINGLETON(P,x,...) (,(P##x),P##__VA_ARGS__)
 #endif
 
-#define TOTAL_STRLEN(xs...) \
+#define TOTAL_STRLEN(...) \
 ORDER_PP \
-(8lets ((8S, 8tuple_to_seq (8quote ((xs)))) \
+(8lets ((8S, 8tuple_to_seq (8quote ((__VA_ARGS__)))) \
         (8M, 8seq_map (8compose (8adjacent (8quote (+strlen)) \
                                 ,8singleton \
                                 ) \
@@ -1118,9 +1108,9 @@ VAL // 1
 
 ```C
 #define EAT(...)
-#define DUMP(v...) EAT(v)
+#define DUMP(...) EAT(__VA_ARGS__)
 
-#define SEQ_TERMINATE(v...) v##0
+#define SEQ_TERMINATE(...) __VA_ARGS__##0
 #define INC_A() DUMP(__COUNTER__) INC_B
 #define INC_B() DUMP(__COUNTER__) INC_A
 #define INC_A0
