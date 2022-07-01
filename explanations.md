@@ -475,7 +475,7 @@ E3(LOOP(f,1,2,3,4,5,6,7,8,9,END))
 Note that rescanning even once no more macros are defered  still takes some time, so you can't just create a macro that rescans e.g. 2^64 times without there being a rather large constant overhead for every use of that function. For a method of circumventing this, see [the continuation machine
 ](#continuation-machine)
 
-## [Boost preprocessor](https://www.boost.org/doc/libs/1_75_0/libs/preprocessor/doc/index.html) (C2x proposal)
+## [Boost preprocessor](https://www.boost.org/doc/libs/1_75_0/libs/preprocessor/doc/index.html) 
 
 
 
@@ -625,7 +625,16 @@ TODO
 # Deep water
 
 ## sequence datastructure
+
+A sequence is a group of adjacent parenthesized elements, e.g. `(1)(2)()((),w,())(awoo())(())`
+
 TODO
+
+* insert front: fast
+* insert back: fast
+* pop front: fast
+* back front: slow
+* iteration: [fast](#a12345)
 
 ## `A(1)(2)(3)(4)(5)`
 
