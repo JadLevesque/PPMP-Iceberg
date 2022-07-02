@@ -626,15 +626,13 @@ TODO
 
 ## sequence datastructure
 
-A sequence is a group of adjacent parenthesized elements, e.g. `(1)(2)()((),w,())(awoo())(())`
+A sequence is a group of adjacent parenthesized elements, e.g. `(1)(2)()((),w,())(awoo())(())`:
 
-TODO
-
-* insert front: fast
-* insert back: fast
-* pop front: fast
+* insert front: fast (`(x)seq`)
+* insert back: fast (`seq(x)`)
+* pop front: fast (`EAT seq`)
 * back front: slow
-* iteration: [fast](#a12345)
+* iteration: fast ([see `#A(1)(2)(3)(4)(5)`](#a12345))
 
 ## `A(1)(2)(3)(4)(5)`
 
@@ -774,8 +772,6 @@ TODO
 
 ## file iteration
 
-## [integer arithmetics](TODO)
-
 
 
 # The abyss
@@ -851,7 +847,85 @@ TODO
 ## [`#include` custom filesystem](https://github.com/camel-cdr/execfs)
 
 ## `F(x,y)y)y)y)y)`
-TODO
+
+A guide is a group of adjacent elements separated by closing parentheses, e.g. `1)2)3))(),w,())awoo()),())`.
+
+It isn't a portable data structure, can't be passed to arguments directly, so it's usually constructed in place or from a [preprocessor sequence](#sequence-datastructure):
+
+```c
+#define SEQ_TERM(...) SEQ_TERM_(__VA_ARGS__)
+#define SEQ_TERM_(...) __VA_ARGS__##_RM
+
+#define EMPTY()
+#define RPAREN() )
+
+#define TO_GUIDE_A(...) __VA_ARGS__ RPAREN EMPTY()()TO_GUIDE_B
+#define TO_GUIDE_B(...) __VA_ARGS__ RPAREN EMPTY()()TO_GUIDE_A
+#define TO_GUIDE_A_RM
+#define TO_GUIDE_B_RM
+#define TO_GUIDE(seq) SEQ_TERM(TO_GUIDE_A seq)
+
+TO_GUIDE((1)(2)(3)(4)(5)) // 1 )2 )3 )4 )5 )
+```
+
+The main advantage of the using guides is that they allow for fast iteration, very similar to the sequence iteration, but they also support passing a context between iterations, e.g.:
+
+```c
+#define TUPLE_AT_1(x,y,...) y
+#define CHECK(...) TUPLE_AT_1(__VA_ARGS__,)
+
+#define CAT_GUIDE_END_END ,CAT_GUIDE_END
+#define CAT_GUIDE_A(ctx,x) CHECK(CAT_GUIDE_END_##x,CAT_GUIDE_NEXT)(ctx,x,B)
+#define CAT_GUIDE_B(ctx,x) CHECK(CAT_GUIDE_END_##x,CAT_GUIDE_NEXT)(ctx,x,A)
+#define CAT_GUIDE_NEXT(ctx,x,next) CAT_GUIDE_##next(ctx##x,
+#define CAT_GUIDE_END(ctx,x,next) ctx
+
+#define CAT_GUIDE(guide) CAT_GUIDE_A(,guide
+#define CAT_SEQ(seq)  CAT_GUIDE(TO_GUIDE(seq(END)))
+
+CAT_SEQ((1)(2)(3)(4)(5)) // 12345
+```
+
+
+The above has the same portability problems as [preprocessor sequence](#sequence-datastructure), as in it may be interpreted as a nested expansion and hence may not work on all preprocessors (although all major ones support it).
+
+But guides can also be used, probably, by using a fixed length chain of iteration macros. The following code showcases this by implementing 8-bit integer addition:
+
+```c
+#define ADD_000(f) 0 f(0,
+#define ADD_001(f) 1 f(0,
+#define ADD_010(f) 1 f(0,
+#define ADD_011(f) 0 f(1,
+#define ADD_100(f) 1 f(0,
+#define ADD_101(f) 0 f(1,
+#define ADD_110(f) 0 f(1,
+#define ADD_111(f) 1 f(1,
+#define ADD_(c,x,y,n) ADD_##c##x##y(ADD_##n)
+
+#define ADD_8(c,x,y) ADD_(c,x,y,7)
+#define ADD_7(c,x,y) ,ADD_(c,x,y,6)
+#define ADD_6(c,x,y) ,ADD_(c,x,y,5)
+#define ADD_5(c,x,y) ,ADD_(c,x,y,4)
+#define ADD_4(c,x,y) ,ADD_(c,x,y,3)
+#define ADD_3(c,x,y) ,ADD_(c,x,y,2)
+#define ADD_2(c,x,y) ,ADD_(c,x,y,1)
+#define ADD_1(c,x,y) ,ADD_(c,x,y,0)
+#define ADD_0(c,x,y) 
+
+#define FX(f,...) f(__VA_ARGS__)
+#define SCAN(...) __VA_ARGS__
+#define ADD_8BIT(x,y) (FX(ADD_8BIT_,SCAN x, SCAN y))
+#define ADD_8BIT_(x0,x1,x2,x3,x4,x5,x6,x7,y0,y1,y2,y3,y4,y5,y6,y7) \
+    ADD_8(0,x0,y0)x1,y1)x2,y2)x3,y3)x4,y4)x5,y5)x6,y6)x7,y7),)
+
+// bits are reversed (LSB,...,MSB):
+ADD_8BIT((0,1,0,1,0,1,0,0),(0,0,1,0,0,1,1,0)) // (0,1,1,1,0,0,0,1)
+//        0 0 1 0 1 0 1 0 + 0 1 1 0 0 1 0 0     = 1 0 0 0 1 1 1 0
+//        42              + 100                 = 142
+```
+
+## [integer arithmetics](TODO)
+
 
 ## [`#for #endfor`](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n1410.pdf) rejected C proposal
 
