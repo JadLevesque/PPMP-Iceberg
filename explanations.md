@@ -772,7 +772,95 @@ TODO
 
 ## file iteration
 
+```C
+// file.h
+#if !CHAOS_PP_IS_ITERATING
 
+#ifndef FILE_H
+#define FILE_H
+
+#include <chaos/preprocessor.h>
+#include <order/interpreter.h>
+
+
+#define ITERATION_FILE "file.h"
+
+#define RADIUS 10
+
+
+#define ORDER_PP_DEF_8radius ORDER_PP_CONST (RADIUS)
+#define ORDER_PP_DEF_8height ORDER_PP_CONST (CHAOS_PP_ITERATION())
+
+
+#define ORDER_PP_DEF_8output ORDER_PP_FN \
+(8fn (8R, 8Y, 8X \
+     ,8print (8if (8equation, 8quote (%), 8quote (~)) \
+              8space \
+             ) \
+     ) \
+)
+
+/**
+circle
+x*x + y*y <= r*r
+*/
+#define ORDER_PP_DEF_8equation ORDER_PP_MACRO \
+(8less_eq (8add (8pow (8X, 2) \
+                ,8pow (8Y, 2) \
+                ) \
+       ,8pow (8R, 2) \
+       ) \
+)
+
+
+#define CHAOS_PP_ITERATION_PARAMS (RADIUS)(0)(ITERATION_FILE)
+%:include CHAOS_PP_ITERATE()
+
+#define CHAOS_PP_ITERATION_PARAMS (0)(RADIUS)(ITERATION_FILE)
+%:include CHAOS_PP_ITERATE()
+
+
+#endif // FILE_H
+
+#else
+
+ORDER_PP
+(8do (8seq_for_each (8output (8radius, 8height)
+                    ,8seq_iota(8inc (8radius), 0)
+                    )
+     ,8seq_for_each (8output (8radius, 8height)
+                    ,8seq_iota(0, 8inc (8radius))
+                    )
+     )
+)
+
+#endif
+```
+Output:
+```C
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ % % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+~ ~ ~ ~ ~ ~ % % % % % % % % % % ~ ~ ~ ~ ~ ~
+~ ~ ~ ~ % % % % % % % % % % % % % % ~ ~ ~ ~
+~ ~ ~ % % % % % % % % % % % % % % % % ~ ~ ~
+~ ~ % % % % % % % % % % % % % % % % % % ~ ~
+~ ~ % % % % % % % % % % % % % % % % % % ~ ~
+~ % % % % % % % % % % % % % % % % % % % % ~
+~ % % % % % % % % % % % % % % % % % % % % ~
+~ % % % % % % % % % % % % % % % % % % % % ~
+~ % % % % % % % % % % % % % % % % % % % % ~
+% % % % % % % % % % % % % % % % % % % % % %
+% % % % % % % % % % % % % % % % % % % % % %
+~ % % % % % % % % % % % % % % % % % % % % ~
+~ % % % % % % % % % % % % % % % % % % % % ~
+~ % % % % % % % % % % % % % % % % % % % % ~
+~ % % % % % % % % % % % % % % % % % % % % ~
+~ ~ % % % % % % % % % % % % % % % % % % ~ ~
+~ ~ % % % % % % % % % % % % % % % % % % ~ ~
+~ ~ ~ % % % % % % % % % % % % % % % % ~ ~ ~
+~ ~ ~ ~ % % % % % % % % % % % % % % ~ ~ ~ ~
+~ ~ ~ ~ ~ ~ % % % % % % % % % % ~ ~ ~ ~ ~ ~
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ % % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+```
 
 # The abyss
 
