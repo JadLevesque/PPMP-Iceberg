@@ -611,18 +611,9 @@ LAZY_WITHOUT_P(A NOTHING ()) // A ()
 
 ## [`#assert`](https://gcc.gnu.org/onlinedocs/gcc-4.3.1/cpp/Assertions.html) (extension)
 
-## constants are variables
-TODO
-
 ## [`IS_EMPTY()`](https://gustedt.wordpress.com/2010/06/08/detect-empty-macro-arguments/)
 
 ## [ppstep](https://github.com/notfoundry/ppstep)
-
-## [OBJECT disabling context](https://marc.info/?l=boost&m=118835769257658)
-
-
-
-# Deep water
 
 ## sequence datastructure
 
@@ -633,6 +624,12 @@ A sequence is a group of adjacent parenthesized elements, e.g. `(1)(2)()((),w,()
 * pop front: fast (`EAT seq`)
 * back front: slow
 * iteration: fast ([see `#A(1)(2)(3)(4)(5)`](#a12345))
+
+## [OBJECT disabling context](https://marc.info/?l=boost&m=118835769257658)
+
+
+# Deep water
+
 
 ## `A(1)(2)(3)(4)(5)`
 
