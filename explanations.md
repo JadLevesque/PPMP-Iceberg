@@ -799,7 +799,11 @@ Output:
 
 ## random access memory
 
+TODO
+
 ## file slots
+
+TODO
 
 ## file iteration
 
@@ -969,14 +973,13 @@ Macros can be recursive through the macro revival mechanism (term coined by Foun
 
 #define PRAGMA(...) _Pragma(#__VA_ARGS__)
 #define REVIVE(m) PRAGMA(push_macro(#m))PRAGMA(pop_macro(#m))
-#define DEC(n,ns...) (ns)
+#define DEC(n,...) (__VA_ARGS__)
 #define FX(f,x) REVIVE(FX) f x
-#define HOW_MANY_ARGS(ns...) \
-REVIVE(HOW_MANY_ARGS) \
-__VA_OPT__(+1 FX(HOW_MANY_ARGS, DEC (ns)))
+#define HOW_MANY_ARGS(...) REVIVE(HOW_MANY_ARGS) \
+    __VA_OPT__(+1 FX(HOW_MANY_ARGS, DEC(__VA_ARGS__)))
 
 int main () {
-    printf ("%i", HOW_MANY_ARGS(1,2,3,4,5)); // 5
+    printf("%i", HOW_MANY_ARGS(1,2,3,4,5)); // 5
 }
 ```
 
@@ -986,7 +989,7 @@ int main () {
 
 A guide is a group of adjacent elements separated by closing parentheses, e.g. `1)2)3))(),w,())awoo()),())`.
 
-It isn't a portable data structure, can't be passed to arguments directly, so it's usually constructed in place or from a [preprocessor sequence](#sequence-datastructure):
+Guides are often constructed in place or from a [preprocessor sequence](#sequence-datastructure):
 
 ```c
 #define SEQ_TERM(...) SEQ_TERM_(__VA_ARGS__)
