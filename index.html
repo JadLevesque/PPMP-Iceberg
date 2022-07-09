@@ -131,7 +131,7 @@ li, h2 {
 <div class="iceblock" id="onTheIceberg">
 <h2>On the iceberg</h2>
 <ul>
-<li><a href="explanations#macros-expansion-isnt-recursive">macros expansion isn't recursive</a></li>
+<li><a href="explanations#macro-expansion-isnt-recursive">macros expansion isn't recursive</a></li>
 <li><a href="explanations#codeacode" class="ms">#a</a></li>
 <li><a href="explanations#codeabcode" class="ms">a##b</a></li>
 <li><a href="https://stackoverflow.com/questions/26053959/what-does-va-args-in-a-macro-mean" class="ms">__VA_ARGS__</a></li>
@@ -146,8 +146,8 @@ li, h2 {
 <div class="iceblock" id="belowTheWater">
 <h2>Below the water</h2>
 <ul>
-<li><a href="explanations#code__file__-__line__code" class="ms">__FILE__ __LINE__</a></li>
-<li><a href="explanations#code__date__-__time__code" class="ms">__DATE__ __TIME__</a></li>
+<li><a href="explanations#codefilecode-codelinecode" class="ms">__FILE__ __LINE__</a></li>
+<li><a href="explanations#codedatecode-codetimecode" class="ms">__DATE__ __TIME__</a></li>
 <li><a href="https://en.cppreference.com/w/c/language/operator_alternative#Trigraphs">Trigraph</a></li>
 <li><a href="explanations#codelinecode" class="ms">#line</a></li>
 <li><a href="explanations#function-like-macros-only-see-parentheses">function like macros only see parentheses</a></li>
@@ -155,8 +155,8 @@ li, h2 {
 <li><a href="https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html">#define A(x...)</a><span>extension</span></li>
 <li><a href="https://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html">,##__VA_ARGS__</a><span>extension</span></li>
 <li><a href="https://port70.net/~nsz/c/c11/n1570.html#6.10.9" class="ms">#pragma _Pragma()</a></li>
-<li><a href="explanations#codep--ecode-not-standardized" class="ms">-P -E</a><span>not standardized</span></li>
-<li><a href="explanations#codeif-staticcastbool-1code">#if static_cast&lt;bool&gt;(-1)</a></li>
+<li><a href="explanations#code-p--ecode-not-standardized" class="ms">-P -E</a><span>not standardized</span></li>
+<li><a href="explanations#codeif-staticcastltboolgt-1code">#if static_cast&lt;bool&gt;(-1)</a></li>
 <li><a href="explanations#preprocessing-directives-cant-be-inside-of-macros">preprocessing directives can't be inside of macros</a></li>
 </ul>
 </div>
@@ -164,10 +164,10 @@ li, h2 {
 <div class="iceblock" id="middleOfTheIceberg">
 <h2>Middle of the iceberg</h2>
 <ul>
-<li><a href="explanations#code__counter__code-extension" class="ms">__COUNTER__</a><span>extension</span></li>
+<li><a href="explanations#codecountercode-extension" class="ms">__COUNTER__</a><span>extension</span></li>
 <li><a href="explanations#prefix-namespaces">prefix namespaces</a></li>
 <li><a href="explanations#stringify-macros">stringify macros</a></li>
-<li><a href="explanations#codedefine-catab-cat_abdefine-cat_ab-abcode" class="ms">#define CAT(a,b) CAT_(a,b) #define CAT_(a,b) a##b</a></li>
+<li><a href="explanations#codedefine-catab-catab-define-catab-abcode" class="ms">#define CAT(a,b) CAT_(a,b) #define CAT_(a,b) a##b</a></li>
 <li><a href="https://en.cppreference.com/w/cpp/preprocessor/include" class="ms">__has_include</a><span>C++17</span></li>
 <li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2645.pdf" class="ms">#elifdef #elifndef</a><span>C2x</span></li>
 <li><a href="http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n2967.htm" class="ms">#embed</a><span>C2x proposal</span></li>
@@ -187,8 +187,8 @@ li, h2 {
 <li><a href="https://en.wikipedia.org/wiki/Painted_blue">blue paint</a></li>
 <li><a href="explanations#codecheckcode" class="ms">CHECK()</a></li>
 <li><a href="explanations#saturated-overloading">saturated overloading</a></li>
-<li><a href="explanations#codeinc-deccode" class="ms">INC()/DEC()</a></li>
-<li><a href="explanations#codeeval-defercode" class="ms">EVAL()/DEFER()</a></li>
+<li><a href="explanations#codeincdeccode" class="ms">INC()/DEC()</a></li>
+<li><a href="explanations#codeevaldefercode" class="ms">EVAL()/DEFER()</a></li>
 <li><a href="https://www.boost.org/doc/libs/1_75_0/libs/preprocessor/doc/index.html">Boost preprocessor</a></li>
 </ul>
 </div>
@@ -197,7 +197,7 @@ li, h2 {
 <h2>Below the iceberg</h2>
 <ul>
 <li><a href="explanations#list-datastructure">list datastructure</a></li>
-<li><a href="explanations#code23code">#2""3</a><span>extension</span></li>
+<li><a href="explanations#code2quotquot3code">#2""3</a><span>extension</span></li>
 <li><a href="explanations#lazy-codepcode-argument">lazy <span class="ms">P</span> arguments</a></li>
 <li><a href="explanations#c89-codecheckcode">C89 <span class="ms">CHECK()</span></a></li>
 <li><a href="explanations#pp-num-prefix">pp-num prefix</a></li>
@@ -220,7 +220,7 @@ li, h2 {
 <li><a href="https://github.com/Hirrolot/metalang99">Metalang99</a></li>
 <li><a href="https://github.com/camel-cdr/bfcpp/blob/main/TUTORIAL.md#user-content-141-the-continuation-machine=">Continuation machine</a></li>
 <li><a href="explanations#macro-stack">macro stack</a></li>
-<li><a href="explanations#interpreters-compilers">interpreters/compilers</a></li>
+<li><a href="explanations#interpreterscompilers">interpreters/compilers</a></li>
 <li><a href="explanations#language-extensions">language extensions</a></li>
 <li><a href="explanations#o1-random-access-memory">O(1) random access memory</a></li>
 <li><a href="explanations#slots">slots</a></li>
@@ -243,7 +243,7 @@ li, h2 {
 <li><a href="explanations#file-stack">file stack</a><span>extension</span></li>
 <li><a href="explanations#file-stack-line-accumulator">file stack line accumulator</a></li>
 <li><a href="explanations#operator-overloading">operator overloading</a></li>
-<li><a href="explanations#counter-reset">`__COUNTER__` reset</a><span>extension</span></li>
+<li><a href="explanations#codecountercode-reset">`__COUNTER__` reset</a><span>extension</span></li>
 </ul>
 </div>
 
