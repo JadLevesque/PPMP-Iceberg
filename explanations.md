@@ -801,11 +801,160 @@ Output:
 
 TODO
 
-## file slots
+## slots
 
-TODO
+Slots are a technique to evaluate a constant expression and turn it into an independent macro definition. It effectively allows for cross-MTU memory.
+
+<table>
+<tr><td><b>example.c</b></td><td><b>slot.c</b></td></tr>
+<tr><td>
+
+```c
+#define SLOT (2*3+1)
+#include "slot.c"
+VAL // 7
+
+// slot.c needs A and B parts to
+// allow for self-referential SLOTs:
+#undef SLOT
+#define SLOT (VAL - 1)
+#include "slot.c"
+VAL // 6
+#include "slot.c"
+VAL // 5
+#include "slot.c"
+VAL // 4
+
+#undef SLOT
+#define SLOT ((99|87) > (99^87))
+#include "slot.c"
+VAL // 1
+```
+
+</td><td>
+
+```c
+#ifndef VAL_000
+# define VAL_000 0
+# define VAL_001 1
+# define VAL_010 2
+# define VAL_011 3
+# define VAL_100 4
+# define VAL_101 5
+# define VAL_110 6
+# define VAL_111 7
+# define VAL_C_(a,b,c) VAL_##a##b##c
+# define VAL_C(a,b,c) VAL_C_(a,b,c)
+#endif
+
+#ifndef A_0
+# include "a.c"
+#else
+# include "b.c"
+#endif
+```
+
+<tr><td><b>a.c</b></td><td><b>b.c</b></td></tr>
+<tr><td>
+
+```c
+#if (SLOT) & 1
+# define A_0 1
+#else
+# define A_0 0
+#endif
+#if (SLOT) & 2
+# define A_1 1
+#else
+# define A_1 0
+#endif
+#if (SLOT) & 4
+# define A_2 1
+#else
+# define A_2 0
+#endif
+
+#undef VAL
+#define VAL VAL_C(A_2,A_1,A_0)
+
+#undef B_0
+#undef B_1
+#undef B_2
+```
+
+</td><td>
+
+```c
+#if (SLOT) & 1
+# define B_0 1
+#else
+# define B_0 0
+#endif
+#if (SLOT) & 2
+# define B_1 1
+#else
+# define B_1 0
+#endif
+#if (SLOT) & 4
+# define B_2 1
+#else
+# define B_2 0
+#endif
+
+#undef VAL
+#define VAL VAL_C(B_2,B_1,B_0)
+
+#undef A_0
+#undef A_1
+#undef A_2
+```
+
+</td></tr></table>
+
 
 ## file iteration
+
+File iteration can be done using methods of cross-MTU memory, like [slots](#slots):
+
+<table>
+<tr><td><b>file</b></td><td><b>output</b></td></tr>
+<tr><td>
+
+```c
+#ifndef VAL
+#define VAL 7
+#endif
+
+VAL
+
+#define SLOT (VAL-1)
+#include "slot.c"
+#if VAL != 0
+#include __FILE__
+#endif
+```
+
+</td><td>
+
+```c
+7
+6
+5
+4
+3
+2
+1
+```
+
+</td></tr></table>
+
+
+The above example uses nested/self inclusion, but the standard only mandates "15 nesting levels for #included files". ([C11](https://port70.net/~nsz/c/c11/n1570.html#5.2.4.1p1))
+
+By default, gcc only allows for up to` 200` nested inclusions, but this limit can be extended arbitrarily using the `-fmax-include-depth=N` command line argument.
+
+A more portable, but also more verbose approach is to create a flat inclusion machine that supports a finite number of iterations, but doesn't nest more than 15 times. [chaos-pp](#chaos-pp) has [such a machine](https://github.com/rofl0r/chaos-pp/blob/master/chaos/preprocessor/iteration/detail/i1.h):
+
 
 ```C
 // file.h
@@ -1278,8 +1427,7 @@ VAL // 0
 VAL // 1
 ```
 
-</td>
-<td>
+</td><td>
 
 ```c
 #undef VAL
@@ -1309,8 +1457,7 @@ VAL // 1
 #endif
 ```
 
-</td>
-<td>
+</td><td>
 
 ```c
 #if LHS == RHS
@@ -1325,7 +1472,7 @@ VAL // 1
 
 
 
-## cross-MTU memory
+## `__COUNTER__` reset
 
 
 ```C
