@@ -930,7 +930,24 @@ pow(x,y); // pow(x,y)
 
 
 ## macro expansion can be recursive (extension)
-TODO
+GCC exploit up to version 11.3
+
+Macros can be recursive through the macro revival mechanism (term coined by Foundry). This mechanism clears the recursion inhibiting paint. This can be pushed much further like demonstrated in the now deprecated [Grail-pp](https://github.com/JadLevesque/Grail-pp)
+```C
+#2""3
+
+#define PRAGMA(...) _Pragma(#__VA_ARGS__)
+#define REVIVE(m) PRAGMA(push_macro(#m))PRAGMA(pop_macro(#m))
+#define DEC(n,ns...) (ns)
+#define FX(f,x) REVIVE(FX) f x
+#define HOW_MANY_ARGS(ns...) \
+REVIVE(HOW_MANY_ARGS) \
+__VA_OPT__(+1 FX(HOW_MANY_ARGS, DEC (ns)))
+
+int main () {
+    printf ("%i", HOW_MANY_ARGS(1,2,3,4,5)); // 5
+}
+```
 
 ## [`#include` custom filesystem](https://github.com/camel-cdr/execfs)
 
