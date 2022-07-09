@@ -797,9 +797,85 @@ Output:
 * [datatype99](https://github.com/Hirrolot/datatype99) (Algebraic data types)
 * [interface99](https://github.com/Hirrolot/interface99) (Interfaces)
 
-## random access memory
+## O(1) random access memory 
 
-TODO
+Proof of concept for a constant time random access memory implementation:
+
+```c
+#define SCAN(...) __VA_ARGS__
+#define FX(f,...) f(__VA_ARGS__)
+#define TUPLE_AT_2(a,b,...) b
+#define CHECK(...) TUPLE_AT_2(__VA_ARGS__,)
+
+#define EVAL4(...) EVAL(EVAL(EVAL(__VA_ARGS__)))
+#define EVAL(...) __VA_ARGS__
+#define EMPTY()
+
+
+#define MEM_AT_0(a,...) a
+#define MEM_AT_1(a,b,...) b
+#define MEM_AT_2(a,b,c,...) c
+#define MEM_AT_3(a,b,c,d,...) d
+#define MEM_AT_4(a,b,c,d,e,...) e
+#define MEM_AT_5(a,b,c,d,e,f,...) f
+#define MEM_AT_6(a,b,c,d,e,f,g,...) g
+#define MEM_AT_7(a,b,c,d,e,f,g,h,...) h
+#define MEM_AT_8(a,b,c,d,e,f,g,h,i,...) i
+#define MEM_AT_9(a,b,c,d,e,f,g,h,i,j) j
+
+#define MEM__AT_1_PROBE(...) ,MEM__AT_1
+#define MEM__AT_2_PROBE(...) ,MEM__AT_2
+#define MEM__AT_3_PROBE(...) ,MEM__AT_3
+
+#define M16_AT(m,x) FX(M16__AT,m,SCAN x)
+#define M16__AT(m,x,...) MEM__AT_4(MEM_AT_##x m,__VA_ARGS__)
+#define MEM__AT_4(m,x,...) CHECK(MEM__AT_3_PROBE m,MEM__AT_0)(MEM_AT_##x m,__VA_ARGS__)
+#define MEM__AT_3(m,x,...) CHECK(MEM__AT_2_PROBE m,MEM__AT_0)(MEM_AT_##x m,__VA_ARGS__)
+#define MEM__AT_2(m,x)     CHECK(MEM__AT_1_PROBE m,MEM__AT_0)(MEM_AT_##x m)
+#define MEM__AT_1(m) m
+#define MEM__AT_0(...)
+
+
+
+#define MEM_PUT_0(F,a,b,c,d,e,f,g,h,i,j,...) (F EMPTY()()(a,__VA_ARGS__),b,c,d,e,f,g,h,i,j)
+#define MEM_PUT_1(F,a,b,c,d,e,f,g,h,i,j,...) (a,F EMPTY()()(b,__VA_ARGS__),c,d,e,f,g,h,i,j)
+#define MEM_PUT_2(F,a,b,c,d,e,f,g,h,i,j,...) (a,b,F EMPTY()()(c,__VA_ARGS__),d,e,f,g,h,i,j)
+#define MEM_PUT_3(F,a,b,c,d,e,f,g,h,i,j,...) (a,b,c,F EMPTY()()(d,__VA_ARGS__),e,f,g,h,i,j)
+#define MEM_PUT_4(F,a,b,c,d,e,f,g,h,i,j,...) (a,b,c,d,F EMPTY()()(e,__VA_ARGS__),f,g,h,i,j)
+#define MEM_PUT_5(F,a,b,c,d,e,f,g,h,i,j,...) (a,b,c,d,e,F EMPTY()()(f,__VA_ARGS__),g,h,i,j)
+#define MEM_PUT_6(F,a,b,c,d,e,f,g,h,i,j,...) (a,b,c,d,e,f,F EMPTY()()(g,__VA_ARGS__),h,i,j)
+#define MEM_PUT_7(F,a,b,c,d,e,f,g,h,i,j,...) (a,b,c,d,e,f,g,F EMPTY()()(h,__VA_ARGS__),i,j)
+#define MEM_PUT_8(F,a,b,c,d,e,f,g,h,i,j,...) (a,b,c,d,e,f,g,h,F EMPTY()()(i,__VA_ARGS__),j)
+#define MEM_PUT_9(F,a,b,c,d,e,f,g,h,i,j,...) (a,b,c,d,e,f,g,h,i,F EMPTY()()(j,__VA_ARGS__))
+
+#define MEM_PUT_FX(f,...) f(__VA_ARGS__)
+#define MEM_PUT_N_PROBE(...) ,MEM_PUT_N_
+#define MEM_PUT_N(F,m,...) CHECK(MEM_PUT_N_PROBE m,MEM_PUT_EMPTY)(F,m,__VA_ARGS__)
+#define MEM_PUT_EMPTY(F,m,...) MEM_PUT_N_(F,(,,,,,,,,,),__VA_ARGS__)
+#define MEM_PUT_N_(F,m,x,...) MEM_PUT_FX(MEM_PUT_##x,F,SCAN m,__VA_ARGS__)
+
+#define MEM__PUT_3_ID() MEM__PUT_3
+#define MEM__PUT_2_ID() MEM__PUT_2
+#define MEM__PUT_1_ID() MEM__PUT_1
+#define MEM__PUT_0_ID() MEM__PUT_0
+
+#define M16_FX(f,...) f(__VA_ARGS__)
+#define M16_PUT(m,x,v) EVAL4(FX(M16__PUT,m,SCAN x,v))
+#define M16__PUT(m,x,...) MEM_PUT_N(MEM__PUT_3_ID,m,x,__VA_ARGS__)
+#define MEM__PUT_3(m,x,...) MEM_PUT_N(MEM__PUT_2_ID,m,x,__VA_ARGS__)
+#define MEM__PUT_2(m,x,...) MEM_PUT_N(MEM__PUT_1_ID,m,x,__VA_ARGS__)
+#define MEM__PUT_1(m,x,...)  MEM_PUT_N(MEM__PUT_0_ID,m,x,__VA_ARGS__)
+#define MEM__PUT_0(m,x)  x
+
+
+
+M16_PUT(M16_PUT(,(1,2,3,4),X),(1,2,4,0),Y)
+// (,(,,(,,,(,,,,X,,,,,),(Y,,,,,,,,,),,,,,),,,,,,,),,,,,,,,)
+M16_AT(M16_PUT(,(0,0,0,2),n),(0,0,0,2)) // n
+
+M16_AT(((,,(,,(0,1,2,3,4,,,,,),,,,,,,),,,,,,,),,,,,,,,,),(0,2,2,2)) // 2
+M16_AT(((,,(,,(0,1,2,3,4,,,,,),,,,,,,),,,,,,,),,,,,,,,,),(0,2,2,3)) // 3
+```
 
 ## slots
 
