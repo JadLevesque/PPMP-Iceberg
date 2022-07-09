@@ -1288,7 +1288,10 @@ ADD_8BIT((0,1,0,1,0,1,0,0),(0,0,1,0,0,1,1,0)) // (0,1,1,1,0,0,0,1)
 //        42              + 100                 = 142
 ```
 
-## [integer arithmetics](TODO)
+## integer arithmetics
+
+* [boline](https://github.com/camel-cdr/boline/blob/main/boline/boline.c) (8/16/32/64 bit integer arithmetics, base 16)
+* [order-pp](https://github.com/rofl0r/chaos-pp/tree/master/chaos/preprocessor/arbitrary) (arbitrary integer arithmetics, base 10)
 
 
 ## [`#for #endfor`](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n1410.pdf) rejected C proposal
