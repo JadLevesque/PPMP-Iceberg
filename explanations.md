@@ -752,7 +752,38 @@ int main () {
 ## [Continuation machine](https://github.com/camel-cdr/bfcpp/blob/main/TUTORIAL.md#user-content-141-the-continuation-machine=)
 
 ## macro stack
-TODO
+
+Extension on multiple preprocessors (GCC, CLang, MSVC,...)
+
+Macro definitions can be stacked using the `push_macro` and `pop_macro` pragmas. This is very useful for cross-MTU memory.
+
+```C
+#2""3
+#define PRAMGA(...) _Pragma(#__VA_ARGS__)
+#define POP(m) PRAMGA(pop_macro(#m))
+
+#define X 1 POP(X)
+#pragma push_macro("X")
+#define X 2 POP(X)
+#pragma push_macro("X")
+#define X 3 POP(X)
+#pragma push_macro("X")
+#define X 4 POP(X)
+X
+X
+X
+X
+```
+Output:
+```C
+4
+
+3
+
+2
+
+1
+```
 
 ## interpreters/compilers
 
