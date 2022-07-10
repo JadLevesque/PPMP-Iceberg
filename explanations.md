@@ -309,11 +309,11 @@ By [overloading macros based on argument count](#overloading-macros-based-on-arg
 
 ```c
 void foo(int a, int b, float c);
-#define GET_ARGS(_1,_2,_3,...) __VA_ARGS__
-#define foo(...) GET_MACRO(__VA_ARGS__, \
-                           foo(__VA_ARGS__), \
-                           foo(__VA_ARGS__,2), \
-                           foo(__VA_ARGS__,2,3))
+#define GET_ARGS(_1,_2,_3,x,...) x
+#define foo(...) GET_ARGS(__VA_ARGS__, \
+                          foo(__VA_ARGS__), \
+                          foo(__VA_ARGS__,2), \
+                          foo(__VA_ARGS__,2,3))
 foo(1,2,3) // foo(1,2,3)
 foo(1,2)   // foo(1,2,3)
 foo(1)     // foo(1,2,3)
@@ -358,7 +358,7 @@ Crucially, this can be used to convert a token to a boolean (0 -> 0, not 0 -> 1)
 #define BOOL_0_0 ,0
 #define BOOL(x) CHECK(BOOL_0_##x,1)
 BOOL(0)   // 0
-BOOL(1)   // 0
+BOOL(1)   // 1
 BOOL(abc) // 1
 ```
 
@@ -413,7 +413,8 @@ It is possible to defer a otherwise recursive macro expansion to avoid it gettin
 #define EMPTY()
 #define LOOP_INDIRECTION() LOOP
 #define LOOP(x) x LOOP_INDIRECTION EMPTY()() (x)
-SCAN(LOOP(1))
+LOOP(1) // 1 LOOP_INDIRECTION () (1)
+SCAN(LOOP(1)) // 1 1 LOOP_INDIRECTION () (1)
 ```
 
 ```
@@ -450,7 +451,8 @@ There is no reason to stop at a single rescan. Using nested `SCAN` macros, in th
 #define EVAL3(...) EVAL2(EVAL2(EVAL2(EVAL2(__VA_ARGS__))))
 #define EVAL2(...) EVAL1(EVAL1(EVAL1(EVAL1(__VA_ARGS__))))
 #define EVAL1(...) __VA_ARGS__
-EVAL3(LOOP(1)) // 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 LOOP_INDIRECTION () (1)
+EVAL3(LOOP(1))
+// 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 LOOP_INDIRECTION () (1)
 ```
 By stopping the fake recursion once your algorithm is complete, this technique can be used in very powerful ways: 
 
@@ -470,6 +472,7 @@ By stopping the fake recursion once your algorithm is complete, this technique c
 #define LOOP1(...)
 
 E3(LOOP(f,1,2,3,4,5,6,7,8,9,END))
+// f(1) f(2) f(3) f(4) f(5) f(6) f(7) f(8) f(9)
 ```
 
 Note that rescanning even once no more macros are defered  still takes some time, so you can't just create a macro that rescans e.g. 2^64 times without there being a rather large constant overhead for every use of that function. For a method of circumventing this, see [the continuation machine
@@ -562,6 +565,9 @@ This can also be used to increase performance, by delaying a macro expansion, wh
 EAT(OPEN(R2(a))) // 4.2 seconds
 EAT(OPENq(,R2(a))) // 3.1 seconds
 ```
+
+The above code might need too much memory in gcc and clang, it was tested with tcc.
+
 
 ## C89 `CHECK()`
 
