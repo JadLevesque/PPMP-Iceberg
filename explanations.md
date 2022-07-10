@@ -927,13 +927,13 @@ M16_AT(((,,(,,(0,1,2,3,4,,,,,),,,,,,,),,,,,,,),,,,,,,,,),(0,2,2,3)) // 3
 int main() {
 
     MEMORISE(MUL(2,3))
-    printf ("%i\n", __COUNTER__);
+    printf ("%i\n", __COUNTER__); // 6
 
     // safe line setting
     #0""1
     #line __COUNTER__
     MEMORISE(MUL(9,5))
-    printf ("%i\n", __COUNTER__ - __LINE__);
+    printf ("%i\n", __COUNTER__ - __LINE__); // 45
     #0""2
 }
 ```
