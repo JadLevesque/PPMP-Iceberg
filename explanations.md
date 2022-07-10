@@ -1629,225 +1629,150 @@ Possible operations include reseting the accumulator (`#line somevalue`), increm
 #ifdef stdin
     #if __INCLUDE_LEVEL__ != __LINE__
         #0""2
-        #if   TEST(0,0)
-        #define DIGIT_0 0
-        #elif TEST(0,1)
-        #define DIGIT_0 1
-        #elif TEST(0,2)
-        #define DIGIT_0 2
-        #elif TEST(0,3)
-        #define DIGIT_0 3
-        #elif TEST(0,4)
-        #define DIGIT_0 4
-        #elif TEST(0,5)
-        #define DIGIT_0 5
-        #elif TEST(0,6)
-        #define DIGIT_0 6
-        #elif TEST(0,7)
-        #define DIGIT_0 7
-        #elif TEST(0,8)
-        #define DIGIT_0 8
-        #else
-        #define DIGIT_0 9
-        #endif
+...
+```
 
-        #if   TEST(1,0)
-        #define DIGIT_1 0
-        #elif TEST(1,1)
-        #define DIGIT_1 1
-        #elif TEST(1,2)
-        #define DIGIT_1 2
-        #elif TEST(1,3)
-        #define DIGIT_1 3
-        #elif TEST(1,4)
-        #define DIGIT_1 4
-        #elif TEST(1,5)
-        #define DIGIT_1 5
-        #elif TEST(1,6)
-        #define DIGIT_1 6
-        #elif TEST(1,7)
-        #define DIGIT_1 7
-        #elif TEST(1,8)
-        #define DIGIT_1 8
-        #else
-        #define DIGIT_1 9
-        #endif
+<table>
+<tr><td>
 
-        #if   TEST(2,0)
-        #define DIGIT_2 0
-        #elif TEST(2,1)
-        #define DIGIT_2 1
-        #elif TEST(2,2)
-        #define DIGIT_2 2
-        #elif TEST(2,3)
-        #define DIGIT_2 3
-        #elif TEST(2,4)
-        #define DIGIT_2 4
-        #elif TEST(2,5)
-        #define DIGIT_2 5
-        #elif TEST(2,6)
-        #define DIGIT_2 6
-        #elif TEST(2,7)
-        #define DIGIT_2 7
-        #elif TEST(2,8)
-        #define DIGIT_2 8
-        #else
-        #define DIGIT_2 9
-        #endif
+```c
+#if   TEST(0,0)
+#define DIGIT_0 0
+#elif TEST(0,1)
+#define DIGIT_0 1
+#elif TEST(0,2)
+#define DIGIT_0 2
+#elif TEST(0,3)
+#define DIGIT_0 3
+#elif TEST(0,4)
+#define DIGIT_0 4
+#elif TEST(0,5)
+#define DIGIT_0 5
+#elif TEST(0,6)
+#define DIGIT_0 6
+#elif TEST(0,7)
+#define DIGIT_0 7
+#elif TEST(0,8)
+#define DIGIT_0 8
+#else
+#define DIGIT_0 9
+#endif
+// important
+```
 
-        #if   TEST(3,0)
-        #define DIGIT_3 0
-        #elif TEST(3,1)
-        #define DIGIT_3 1
-        #elif TEST(3,2)
-        #define DIGIT_3 2
-        #elif TEST(3,3)
-        #define DIGIT_3 3
-        #elif TEST(3,4)
-        #define DIGIT_3 4
-        #elif TEST(3,5)
-        #define DIGIT_3 5
-        #elif TEST(3,6)
-        #define DIGIT_3 6
-        #elif TEST(3,7)
-        #define DIGIT_3 7
-        #elif TEST(3,8)
-        #define DIGIT_3 8
-        #else
-        #define DIGIT_3 9
-        #endif
+</td><td>
 
-        #if   TEST(4,0)
-        #define DIGIT_4 0
-        #elif TEST(4,1)
-        #define DIGIT_4 1
-        #elif TEST(4,2)
-        #define DIGIT_4 2
-        #elif TEST(4,3)
-        #define DIGIT_4 3
-        #elif TEST(4,4)
-        #define DIGIT_4 4
-        #elif TEST(4,5)
-        #define DIGIT_4 5
-        #elif TEST(4,6)
-        #define DIGIT_4 6
-        #elif TEST(4,7)
-        #define DIGIT_4 7
-        #elif TEST(4,8)
-        #define DIGIT_4 8
-        #else
-        #define DIGIT_4 9
-        #endif
+```c
+#if   TEST(1,0)
+#define DIGIT_1 0
+#elif TEST(1,1)
+#define DIGIT_1 1
+#elif TEST(1,2)
+#define DIGIT_1 2
+#elif TEST(1,3)
+#define DIGIT_1 3
+#elif TEST(1,4)
+#define DIGIT_1 4
+#elif TEST(1,5)
+#define DIGIT_1 5
+#elif TEST(1,6)
+#define DIGIT_1 6
+#elif TEST(1,7)
+#define DIGIT_1 7
+#elif TEST(1,8)
+#define DIGIT_1 8
+#else
+#define DIGIT_1 9
+#endif
+// important
+```
 
-        #if   TEST(5,0)
-        #define DIGIT_5 0
-        #elif TEST(5,1)
-        #define DIGIT_5 1
-        #elif TEST(5,2)
-        #define DIGIT_5 2
-        #elif TEST(5,3)
-        #define DIGIT_5 3
-        #elif TEST(5,4)
-        #define DIGIT_5 4
-        #elif TEST(5,5)
-        #define DIGIT_5 5
-        #elif TEST(5,6)
-        #define DIGIT_5 6
-        #elif TEST(5,7)
-        #define DIGIT_5 7
-        #elif TEST(5,8)
-        #define DIGIT_5 8
-        #else
-        #define DIGIT_5 9
-        #endif
+</td><td>
 
-        #if   TEST(6,0)
-        #define DIGIT_6 0
-        #elif TEST(6,1)
-        #define DIGIT_6 1
-        #elif TEST(6,2)
-        #define DIGIT_6 2
-        #elif TEST(6,3)
-        #define DIGIT_6 3
-        #elif TEST(6,4)
-        #define DIGIT_6 4
-        #elif TEST(6,5)
-        #define DIGIT_6 5
-        #elif TEST(6,6)
-        #define DIGIT_6 6
-        #elif TEST(6,7)
-        #define DIGIT_6 7
-        #elif TEST(6,8)
-        #define DIGIT_6 8
-        #else
-        #define DIGIT_6 9
-        #endif
+```c
+#if   TEST(2,0)
+#define DIGIT_2 0
+#elif TEST(2,1)
+#define DIGIT_2 1
+#elif TEST(2,2)
+#define DIGIT_2 2
+#elif TEST(2,3)
+#define DIGIT_2 3
+#elif TEST(2,4)
+#define DIGIT_2 4
+#elif TEST(2,5)
+#define DIGIT_2 5
+#elif TEST(2,6)
+#define DIGIT_2 6
+#elif TEST(2,7)
+#define DIGIT_2 7
+#elif TEST(2,8)
+#define DIGIT_2 8
+#else
+#define DIGIT_2 9
+#endif
+// important
+```
 
-        #if   TEST(7,0)
-        #define DIGIT_7 0
-        #elif TEST(7,1)
-        #define DIGIT_7 1
-        #elif TEST(7,2)
-        #define DIGIT_7 2
-        #elif TEST(7,3)
-        #define DIGIT_7 3
-        #elif TEST(7,4)
-        #define DIGIT_7 4
-        #elif TEST(7,5)
-        #define DIGIT_7 5
-        #elif TEST(7,6)
-        #define DIGIT_7 6
-        #elif TEST(7,7)
-        #define DIGIT_7 7
-        #elif TEST(7,8)
-        #define DIGIT_7 8
-        #else
-        #define DIGIT_7 9
-        #endif
+</td><td>
 
-        #if   TEST(8,0)
-        #define DIGIT_8 0
-        #elif TEST(8,1)
-        #define DIGIT_8 1
-        #elif TEST(8,2)
-        #define DIGIT_8 2
-        #elif TEST(8,3)
-        #define DIGIT_8 3
-        #elif TEST(8,4)
-        #define DIGIT_8 4
-        #elif TEST(8,5)
-        #define DIGIT_8 5
-        #elif TEST(8,6)
-        #define DIGIT_8 6
-        #elif TEST(8,7)
-        #define DIGIT_8 7
-        #elif TEST(8,8)
-        #define DIGIT_8 8
-        #else
-        #define DIGIT_8 9
-        #endif
+```c
+#if   TEST(3,0)
+#define DIGIT_3 0
+#elif TEST(3,1)
+#define DIGIT_3 1
+#elif TEST(3,2)
+#define DIGIT_3 2
+#elif TEST(3,3)
+#define DIGIT_3 3
+#elif TEST(3,4)
+#define DIGIT_3 4
+#elif TEST(3,5)
+#define DIGIT_3 5
+#elif TEST(3,6)
+#define DIGIT_3 6
+#elif TEST(3,7)
+#define DIGIT_3 7
+#elif TEST(3,8)
+#define DIGIT_3 8
+#else
+#define DIGIT_3 9
+#endif
+// important
+```
 
-        #if   TEST(9,0)
-        #define DIGIT_9 0
-        #elif TEST(9,1)
-        #define DIGIT_9 1
-        #elif TEST(9,2)
-        #define DIGIT_9 2
-        #elif TEST(9,3)
-        #define DIGIT_9 3
-        #elif TEST(9,4)
-        #define DIGIT_9 4
-        #elif TEST(9,5)
-        #define DIGIT_9 5
-        #elif TEST(9,6)
-        #define DIGIT_9 6
-        #elif TEST(9,7)
-        #define DIGIT_9 7
-        #elif TEST(9,8)
-        #define DIGIT_9 8
-        #else
-        #define DIGIT_9 9
-        #endif
+</td><td>
+
+```c
+#if   TEST(4,0)
+#define DIGIT_4 0
+#elif TEST(4,1)
+#define DIGIT_4 1
+#elif TEST(4,2)
+#define DIGIT_4 2
+#elif TEST(4,3)
+#define DIGIT_4 3
+#elif TEST(4,4)
+#define DIGIT_4 4
+#elif TEST(4,5)
+#define DIGIT_4 5
+#elif TEST(4,6)
+#define DIGIT_4 6
+#elif TEST(4,7)
+#define DIGIT_4 7
+#elif TEST(4,8)
+#define DIGIT_4 8
+#else
+#define DIGIT_4 9
+#endif
+// important
+```
+
+</td></tr>
+</table>
+
+```c
+...
         #0""1
         #0""3
         #line RAW_SLOT() // recording the accumulator for later
@@ -1857,7 +1782,7 @@ Possible operations include reseting the accumulator (`#line somevalue`), increm
     #endif // why ^^^^^^^^^^^^^ here but
 #else // not vvvvvvvv here? because magic
     #include __FILE__ //"" // <- the comment to the left is a sacrifice to appease the godbolt syntax highlighter
-    #define CAT_10_PR(a,b,c,d,e,f,g,h,i,j) a##b##c##d##e##f##g##h##i##j
+    #define CAT_5_PR(a,b,c,d,e) a##b##c##d##e
     #define STR(v...) STR_PR(v)
     #define STR_PR(v...) #v
     #define FX(f,x) f x
@@ -1867,23 +1792,19 @@ Possible operations include reseting the accumulator (`#line somevalue`), increm
     #define EXP_2 100UL
     #define EXP_3 1000UL
     #define EXP_4 10000UL
-    #define EXP_5 100000UL
-    #define EXP_6 1000000UL
-    #define EXP_7 10000000UL
-    #define EXP_8 100000000UL
-    #define EXP_9 1000000000UL
 
     #define TEST(d,v) ((VALUE(BUFFER(d,v))) / EXP_##d) % 10 == v
     // Raw slots only have their place in line slot.
     // This is because line temporary memorisation removes leading zeros.
-    #define RAW_SLOT() FX(CAT_10_PR, (DIGIT_9, DIGIT_8, DIGIT_7, DIGIT_6, DIGIT_5, DIGIT_4, DIGIT_3, DIGIT_2, DIGIT_1, DIGIT_0))
+    #define RAW_SLOT() FX(CAT_5_PR, (DIGIT_4, DIGIT_3, DIGIT_2, DIGIT_1, DIGIT_0))
     #define BUFFER(d,v) (__LINE__ - (2 * v + 22 * d + 2))
     #define VALUE(buffer) buffer * 2
     int main(){printf("powers of 2: "
         #1""3 // initialization of the line accumulator to 1
-        
+        // important
         %:include __BASE_FILE__
     "...");}
 #endif
 ```
 
+(https://godbolt.org/z/Kszj7K9h4)
