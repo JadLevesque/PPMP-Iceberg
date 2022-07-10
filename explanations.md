@@ -1743,12 +1743,12 @@ Possible operations include reseting the accumulator (`#line somevalue`), increm
     #define EXP_8 100000000UL
     #define EXP_9 1000000000UL
 
-    #define TEST(d,v) (VALUE(BUFFER(d,v)) / EXP_##d) % 10 == v
+    #define TEST(d,v) ((VALUE(BUFFER(d,v))) / EXP_##d) % 10 == v
     // Raw slots only have their place in line slot.
     // This is because line temporary memorisation removes leading zeros.
     #define RAW_SLOT() FX(CAT_10_PR, (DIGIT_9, DIGIT_8, DIGIT_7, DIGIT_6, DIGIT_5, DIGIT_4, DIGIT_3, DIGIT_2, DIGIT_1, DIGIT_0))
-    #define BUFFER(d,v) ((__LINE__) - (2 * (v) + 22 * (d) + 2))
-    #define VALUE(buffer) (buffer * 2)
+    #define BUFFER(d,v) (__LINE__ - (2 * v + 22 * d + 2))
+    #define VALUE(buffer) buffer * 2
     int main(){printf("powers of 2: "
         #1""3 // initialization of the line accumulator to 1
         
