@@ -800,6 +800,59 @@ Output:
 * [datatype99](https://github.com/Hirrolot/datatype99) (Algebraic data types)
 * [interface99](https://github.com/Hirrolot/interface99) (Interfaces)
 
+
+## binary search `SCAN`
+
+You can't nest the `SCAN` macro by default:
+
+```c
+#define SCAN0(...) __VA_ARGS__
+#define SCAN1(...) __VA_ARGS__
+#define SCAN2(...) __VA_ARGS__
+#define SCAN3(...) __VA_ARGS__
+
+#define EMPTY()
+
+#define A_() A
+#define A(x) x A_ EMPTY() ()(x)
+
+#define A2_() A2
+#define A2(x) SCAN0(A(1)) A2_ EMPTY() ()(x)
+//                 doesn't work ---v
+SCAN0(A2(2)) // 1 1 1 A_ ()(1) SCAN0(1 A_ ()(1)) A2_ ()(2)
+```
+
+You can get around this by using multiple `SCAN` macros and choosing the correct one manually:
+
+```c
+#define B2_() B2
+#define B2(x) SCAN1(A(1)) B2_ EMPTY() ()(x)
+// works, but     ^--- you need to keep track of depth
+SCAN0(B2(2)) // 1 1 1 A_ ()(1) 1 1 A_ ()(1) B2_ ()(2)
+```
+
+But there is a potentially better way, by doing a binary search to figure out which `SCAN` macro can be used in the current context:
+
+```c
+#define IF(x) IF_(x)
+#define IF_(x) IF_##x
+#define IF_1(a,b) a
+#define IF_0(a,b) b
+
+#define B_TUPLE_AT_1(b,a,...) a
+#define IF_C(x) IF(B_TUPLE_AT_1(x,0,))
+
+// binary search
+#define SCAN IF_C(SCAN1(,1))(IF_C(SCAN0(,1))(SCAN0,SCAN1),IF_C(SCAN2(,1))(SCAN2,SCAN3))
+    
+
+#define C2_() C2
+#define C2(x) SCAN(A(1)) C2_ EMPTY() ()(x)
+// works, automatically
+SCAN(C2(2)) // 1 1 1 A_ ()(1) 1 1 A_ ()(1) C2_ ()(2)
+```
+
+
 ## O(1) random access memory 
 
 Proof of concept for a constant time random access memory implementation:
