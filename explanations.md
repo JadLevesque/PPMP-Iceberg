@@ -334,7 +334,7 @@ foo(1)     // foo(1,2,3)
 NO_ARGUMENT()
 // NO_ARGUMENT(1) // error
 ONE_ARGUMENT(1) 
-ONE_ARGUMENT(x) 
+ONE_ARGUMENT()  // this also works
 ```
 
 ## [blue paint](https://en.wikipedia.org/wiki/Painted_blue)
