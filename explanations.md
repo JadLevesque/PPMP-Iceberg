@@ -207,8 +207,8 @@ Because macro definitions are global there is no builtin namespace facility, it'
 ## stringify macros
 
 ```c
-#define STR(a,b) STR_(a,b)
-#define STR_(a,b) a##b
+#define STR(a) STR_(a)
+#define STR_(a) #a
 
 #define AWOO ~
 
