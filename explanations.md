@@ -754,7 +754,7 @@ Extension on multiple preprocessors (GCC, CLang, MSVC,...)
 
 Macro definitions can be stacked using the `push_macro` and `pop_macro` pragmas. This is very useful for cross-MTU memory.
 
-```C
+```c
 #2""3
 #define PRAMGA(...) _Pragma(#__VA_ARGS__)
 #define POP(m) PRAMGA(pop_macro(#m))
@@ -772,7 +772,7 @@ X
 X
 ```
 Output:
-```C
+```c
 4
 
 3
@@ -873,6 +873,346 @@ M16_AT(M16_PUT(,(0,0,0,2),n),(0,0,0,2)) // n
 M16_AT(((,,(,,(0,1,2,3,4,,,,,),,,,,,,),,,,,,,),,,,,,,,,),(0,2,2,2)) // 2
 M16_AT(((,,(,,(0,1,2,3,4,,,,,),,,,,,,),,,,,,,),,,,,,,,,),(0,2,2,3)) // 3
 ```
+
+
+## `__COUNTER__` reset
+
+
+```c
+#define EAT(...)
+#define DUMP(...) EAT(__VA_ARGS__)
+
+#define SEQ_TERMINATE(...) __VA_ARGS__##0
+#define INC_A() DUMP(__COUNTER__) INC_B
+#define INC_B() DUMP(__COUNTER__) INC_A
+#define INC_A0
+#define INC_B0
+
+#define FX(f,x) f x
+
+#define MEMORISE(n) FX(SEQ_TERMINATE, (INC_A n))
+
+#define LIT_0
+#define LIT_1 ()
+#define LIT_2 ()()
+#define LIT_3 ()()()
+#define LIT_4 ()()()()
+#define LIT_5 ()()()()()
+#define LIT_6 ()()()()()()
+#define LIT_7 ()()()()()()()
+#define LIT_8 ()()()()()()()()
+#define LIT_9 ()()()()()()()()()
+#define LIT_10 ()()()()()()()()()()
+
+#define MUL_0(x)
+#define MUL_1(x) x
+#define MUL_2(x) x x
+#define MUL_3(x) x x x
+#define MUL_4(x) x x x x
+#define MUL_5(x) x x x x x
+#define MUL_6(x) x x x x x x
+#define MUL_7(x) x x x x x x x
+#define MUL_8(x) x x x x x x x x
+#define MUL_9(x) x x x x x x x x x
+#define MUL_10(x) x x x x x x x x x x
+
+#define MUL(x,y) MUL_##x(LIT_##y)
+
+int main() {
+
+    MEMORISE(MUL(2,3))
+    printf ("%i\n", __COUNTER__);
+
+    // safe line setting
+    #0""1
+    #line __COUNTER__
+    MEMORISE(MUL(9,5))
+    printf ("%i\n", __COUNTER__ - __LINE__);
+    #0""2
+}
+```
+
+
+## integer arithmetics
+
+* [boline](https://github.com/camel-cdr/boline/blob/main/boline/boline.c) (8/16/32/64 bit integer arithmetics, base 16)
+* [order-pp](https://github.com/rofl0r/chaos-pp/tree/master/chaos/preprocessor/arbitrary) (arbitrary integer arithmetics, base 10)
+
+
+
+
+# The abyss
+
+
+## Single Instruction/Continuation Multiple Data
+
+Some algorithms can be sped up a lot by processing multiple elements of data in a single continuation, since continuations have a comparatively large overhead.
+
+Reversing tuple for example can be easily done 8 elements at a time:
+
+```c
+#define E4(...) E3(E3(E3(E3(E3(E3(E3(E3(E3(E3(__VA_ARGS__))))))))))
+#define E3(...) E2(E2(E2(E2(E2(E2(E2(E2(E2(E2(__VA_ARGS__))))))))))
+#define E2(...) E1(E1(E1(E1(E1(E1(E1(E1(E1(E1(__VA_ARGS__))))))))))
+#define E1(...) __VA_ARGS__
+
+#define EMPTY()
+#define CAT(a,b) CAT_(a,b)
+#define CAT_(a,b) a##b
+#define FX(f,x) f(x)
+#define TUPLE_TAIL(x,...) (__VA_ARGS__)
+#define TUPLE_AT_1(x,y,...) y
+#define CHECK(...) TUPLE_AT_1(__VA_ARGS__,)
+
+// reverse 8 arguments at a time, defer to LOOP is there are less then 8 arguments
+#define SIMD_() SIMD
+#define SIMD_END_END ,SIMD1
+#define SIMD(a,b,c,d,e,f,g,h,...) CHECK(SIMD_END_##h,SIMD0)(a,b,c,d,e,f,g,h,__VA_ARGS__)
+#define SIMD1 LOOP
+#define SIMD0(a,b,c,d,e,f,g,h,...) SIMD_ EMPTY() ()(__VA_ARGS__),h,g,f,e,d,c,b,a
+
+// reverse 1 argument at a time
+#define LOOP_() LOOP
+#define LOOP_END_END ,LOOP1
+#define LOOP(x,...) CHECK(LOOP_END_##x,LOOP0)(x,__VA_ARGS__)
+#define LOOP1(x,...) 
+#define LOOP0(x,...) LOOP_ EMPTY() ()(__VA_ARGS__),x
+
+#define REVERSE(...) FX(TUPLE_TAIL,E4(SIMD(__VA_ARGS__,END,END,END,END,END,END,END,END)))
+
+REVERSE(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
+//     (15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)
+```
+
+## `ICE_P()`
+
+You can overload a function depending on one of the argument being a constant expression.
+
+It works by abusing the fact that the return type of the ternary expression `1 ? (void*)1 : (int*)1` has the type `int*`, but `1 ? (void*)0 : (int*)1` has the type `void*`:
+
+> [...] if one operand is a null pointer constant, the result has the type of the other operand; otherwise, one operand is a pointer to void or a qualified version of void, in which case the result type is a pointer to an appropriately qualified version of void.
+
+(https://port70.net/~nsz/c/c11/n1570.html#6.5.15p6)
+
+Since any constant expression that evaluates to zero is a null pointer constant, you can e.g. do the following:
+
+```c
+#define ICE_P(x) _Generic((1 ? ((void*)!(x)) : &(int){1}), int*: 1, void*: 0)
+#define pow(x,p) (ICE_P(p==1 || p==2) ? (p==1 ? x : (p==2 ? x*x : 0)) : pow(x, p))
+
+pow(x,1); // (x)
+pow(x,2); // (x*x)
+pow(x,y); // pow(x,y)
+```
+
+(https://godbolt.org/z/bjo5TcnbT)
+
+
+## macro expansion can be recursive (extension)
+GCC exploit up to version 11.3
+
+Macros can be recursive through the macro revival mechanism (term coined by Foundry). This mechanism clears the recursion inhibiting paint. This can be pushed much further like demonstrated in the now deprecated [Grail-pp](https://github.com/JadLevesque/Grail-pp)
+
+```c
+#2""3
+
+#define PRAGMA(...) _Pragma(#__VA_ARGS__)
+#define REVIVE(m) PRAGMA(push_macro(#m))PRAGMA(pop_macro(#m))
+#define DEC(n,...) (__VA_ARGS__)
+#define FX(f,x) REVIVE(FX) f x
+#define HOW_MANY_ARGS(...) REVIVE(HOW_MANY_ARGS) \
+    __VA_OPT__(+1 FX(HOW_MANY_ARGS, DEC(__VA_ARGS__)))
+
+int main () {
+    printf("%i", HOW_MANY_ARGS(1,2,3,4,5)); // 5
+}
+```
+
+## [`#include` custom filesystem](https://github.com/camel-cdr/execfs)
+
+## `F(x,y)y)y)y)y)`
+
+A guide is a group of adjacent elements separated by closing parentheses, e.g. `1)2)3))(),w,())awoo()),())`.
+
+Guides are often constructed in place or from a [preprocessor sequence](#sequence-datastructure):
+
+```c
+#define SEQ_TERM(...) SEQ_TERM_(__VA_ARGS__)
+#define SEQ_TERM_(...) __VA_ARGS__##_RM
+
+#define EMPTY()
+#define RPAREN() )
+
+#define TO_GUIDE_A(...) __VA_ARGS__ RPAREN EMPTY()()TO_GUIDE_B
+#define TO_GUIDE_B(...) __VA_ARGS__ RPAREN EMPTY()()TO_GUIDE_A
+#define TO_GUIDE_A_RM
+#define TO_GUIDE_B_RM
+#define TO_GUIDE(seq) SEQ_TERM(TO_GUIDE_A seq)
+
+TO_GUIDE((1)(2)(3)(4)(5)) // 1 )2 )3 )4 )5 )
+```
+
+The main advantage of the using guides is that they allow for fast iteration, very similar to the sequence iteration, but they also support passing a context between iterations, e.g.:
+
+```c
+#define TUPLE_AT_1(x,y,...) y
+#define CHECK(...) TUPLE_AT_1(__VA_ARGS__,)
+
+#define CAT_GUIDE_END_END ,CAT_GUIDE_END
+#define CAT_GUIDE_A(ctx,x) CHECK(CAT_GUIDE_END_##x,CAT_GUIDE_NEXT)(ctx,x,B)
+#define CAT_GUIDE_B(ctx,x) CHECK(CAT_GUIDE_END_##x,CAT_GUIDE_NEXT)(ctx,x,A)
+#define CAT_GUIDE_NEXT(ctx,x,next) CAT_GUIDE_##next(ctx##x,
+#define CAT_GUIDE_END(ctx,x,next) ctx
+
+#define CAT_GUIDE(guide) CAT_GUIDE_A(,guide
+#define CAT_SEQ(seq)  CAT_GUIDE(TO_GUIDE(seq(END)))
+
+CAT_SEQ((1)(2)(3)(4)(5)) // 12345
+```
+
+The above has the same portability problems as [preprocessor sequence](#sequence-datastructure), as in it may be interpreted as a nested expansion and hence may not work on all preprocessors (although all major ones support it).
+
+But guides can also be used, probably, by using a fixed length chain of iteration macros. The following code showcases this by implementing 8-bit integer addition:
+
+```c
+#define ADD_000(f) 0 f(0,
+#define ADD_001(f) 1 f(0,
+#define ADD_010(f) 1 f(0,
+#define ADD_011(f) 0 f(1,
+#define ADD_100(f) 1 f(0,
+#define ADD_101(f) 0 f(1,
+#define ADD_110(f) 0 f(1,
+#define ADD_111(f) 1 f(1,
+#define ADD_(c,x,y,n) ADD_##c##x##y(ADD_##n)
+
+#define ADD_8(c,x,y) ADD_(c,x,y,7)
+#define ADD_7(c,x,y) ,ADD_(c,x,y,6)
+#define ADD_6(c,x,y) ,ADD_(c,x,y,5)
+#define ADD_5(c,x,y) ,ADD_(c,x,y,4)
+#define ADD_4(c,x,y) ,ADD_(c,x,y,3)
+#define ADD_3(c,x,y) ,ADD_(c,x,y,2)
+#define ADD_2(c,x,y) ,ADD_(c,x,y,1)
+#define ADD_1(c,x,y) ,ADD_(c,x,y,0)
+#define ADD_0(c,x,y) 
+
+#define FX(f,...) f(__VA_ARGS__)
+#define SCAN(...) __VA_ARGS__
+#define ADD_8BIT(x,y) (FX(ADD_8BIT_,SCAN x, SCAN y))
+#define ADD_8BIT_(x0,x1,x2,x3,x4,x5,x6,x7,y0,y1,y2,y3,y4,y5,y6,y7) \
+    ADD_8(0,x0,y0)x1,y1)x2,y2)x3,y3)x4,y4)x5,y5)x6,y6)x7,y7),)
+
+// bits are reversed (LSB,...,MSB):
+ADD_8BIT((0,1,0,1,0,1,0,0),(0,0,1,0,0,1,1,0)) // (0,1,1,1,0,0,0,1)
+//        0 0 1 0 1 0 1 0 + 0 1 1 0 0 1 0 0     = 1 0 0 0 1 1 1 0
+//        42              + 100                 = 142
+```
+
+
+## [`#for #endfor`](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n1410.pdf) rejected C proposal
+
+
+## file-function table
+
+`#include` is a file-function table.
+
+Firstly, a file-function depends on a set of Named External Arguments (NEA), which are macros defined prior to the inclusion of the file. A good example of this are Chaos-pp slots, which take `CHAOS_PP_VALUE` as a NEA. The slot assignment file-function then defines 21 macros to produce a memorization of an integer literal.
+
+Secondly, `#include` accepts a macro translation unit (MTU). The of values of the set of macros considered by this MTU is the domain of the function. The codomain is the set of paths the MTU produces. A good (if extreme) example of this is [`#include __DATE__`](https://github.com/JadLevesque/my-ppmptd).
+
+Finally, we can understand a file inclusion as being an MTU indexed function table where the arguments to the function called are all global.
+
+Example with Chaos-pp slots
+```c
+#define CHAOS_PP_VALUE 5 + 6       // ENA
+#include CHAOS_PP_ASSIGN_SLOT (1) // File-function table indexed at slot number 1
+CHAOS_PP_SLOT (1)                // 11
+```
+
+
+## operator overloading
+
+<table>
+<tr><td><b>"main.c"</b></td><td><b>"calc.c"</b></td></tr>
+<tr><td>
+
+```c
+#define SLOT (2,==,2)
+#include "calc.c"
+VAL // 1
+
+#define SLOT (1,<=>,12)
+#include "calc.c"
+VAL // -1
+#define SLOT (12,<=>,12)
+#include "calc.c"
+VAL // 0
+#define SLOT (12,<=>,1)
+#include "calc.c"
+VAL // 1
+```
+
+</td><td>
+
+```c
+#undef VAL
+#define SLOT_1(a,b,c) a
+#define SLOT_2(a,b,c) #b
+#define SLOT_3(a,b,c) c
+
+#define SCAN(...) __VA_ARGS__
+#define LHS SCAN(SLOT_1 SLOT)
+#define RHS SCAN(SLOT_3 SLOT)
+#include SCAN(SLOT_2 SLOT)
+
+#undef SLOT
+```
+
+</td></tr>
+<tr><td><b>"&lt;=&gt;"</b></td><td><b>"=="</b></td></tr>
+<tr><td>
+
+```c
+#if LHS < RHS
+#define VAL -1
+#elif LHS == RHS
+#define VAL 0
+#else
+#define VAL 1
+#endif
+```
+
+</td><td>
+
+```c
+#if LHS == RHS
+#define VAL 1
+#else
+#define VAL 0
+#endif
+```
+
+</td></tr>
+</table>
+
+
+## tcc's non-recursive expansion is recursive
+
+```c
+#define A(x) x B
+#define B(x) x A
+A(1)(1)(1)(1)
+```
+
+The standard say that it's implementation defined if in the above code the macro expansions are nested or not. (see https://port70.net/~nsz/c/c11/n1570.html#6.10.3.4p4 and "When a fully expanded..." in Annex J)
+So an implementation could expand the above either to "1 1 A(1)(1)..." or "1 1 1 1 A".
+
+gcc, clang, tcc and all otherwise valid preprocessor implementation I know of expand it to "1 1 1 1 A", which is great for preprocessor meta programming.
+
+But the problem is, whiles tcc expands the macros as though the expansion isn't nested, this isn't reflected in the tcc code.
+Meaning, if instead of 4 iterations you have e.g. 20000 of them tcc segfaults, and the backtrace indicates that it's a stack overflow because of too many recursive calls.
+
+So tcc implements non-recursive expansion recursively.
+
 
 ## slots
 
@@ -1029,7 +1369,7 @@ By default, gcc only allows for up to` 200` nested inclusions, but this limit ca
 A more portable, but also more verbose approach is to create a flat inclusion machine that supports a finite number of iterations, but doesn't nest more than 15 times. [chaos-pp](#chaos-pp) has [such a machine](https://github.com/rofl0r/chaos-pp/blob/master/chaos/preprocessor/iteration/detail/i1.h):
 
 
-```C
+```c
 // file.h
 #if !CHAOS_PP_IS_ITERATING
 
@@ -1094,7 +1434,7 @@ ORDER_PP
 #endif
 ```
 Output:
-```C
+```c
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ % % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 ~ ~ ~ ~ ~ ~ % % % % % % % % % % ~ ~ ~ ~ ~ ~
 ~ ~ ~ ~ % % % % % % % % % % % % % % ~ ~ ~ ~
@@ -1118,216 +1458,6 @@ Output:
 ~ ~ ~ ~ ~ ~ % % % % % % % % % % ~ ~ ~ ~ ~ ~
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ % % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 ```
-
-# The abyss
-
-
-## Single Instruction/Continuation Multiple Data
-
-Some algorithms can be sped up a lot by processing multiple elements of data in a single continuation, since continuations have a comparatively large overhead.
-
-Reversing tuple for example can be easily done 8 elements at a time:
-
-```c
-#define E4(...) E3(E3(E3(E3(E3(E3(E3(E3(E3(E3(__VA_ARGS__))))))))))
-#define E3(...) E2(E2(E2(E2(E2(E2(E2(E2(E2(E2(__VA_ARGS__))))))))))
-#define E2(...) E1(E1(E1(E1(E1(E1(E1(E1(E1(E1(__VA_ARGS__))))))))))
-#define E1(...) __VA_ARGS__
-
-#define EMPTY()
-#define CAT(a,b) CAT_(a,b)
-#define CAT_(a,b) a##b
-#define FX(f,x) f(x)
-#define TUPLE_TAIL(x,...) (__VA_ARGS__)
-#define TUPLE_AT_1(x,y,...) y
-#define CHECK(...) TUPLE_AT_1(__VA_ARGS__,)
-
-// reverse 8 arguments at a time, defer to LOOP is there are less then 8 arguments
-#define SIMD_() SIMD
-#define SIMD_END_END ,SIMD1
-#define SIMD(a,b,c,d,e,f,g,h,...) CHECK(SIMD_END_##h,SIMD0)(a,b,c,d,e,f,g,h,__VA_ARGS__)
-#define SIMD1 LOOP
-#define SIMD0(a,b,c,d,e,f,g,h,...) SIMD_ EMPTY() ()(__VA_ARGS__),h,g,f,e,d,c,b,a
-
-// reverse 1 argument at a time
-#define LOOP_() LOOP
-#define LOOP_END_END ,LOOP1
-#define LOOP(x,...) CHECK(LOOP_END_##x,LOOP0)(x,__VA_ARGS__)
-#define LOOP1(x,...) 
-#define LOOP0(x,...) LOOP_ EMPTY() ()(__VA_ARGS__),x
-
-#define REVERSE(...) FX(TUPLE_TAIL,E4(SIMD(__VA_ARGS__,END,END,END,END,END,END,END,END)))
-
-REVERSE(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
-//     (15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)
-```
-
-## `ICE_P()`
-
-You can overload a function depending on one of the argument being a constant expression.
-
-It works by abusing the fact that the return type of the ternary expression `1 ? (void*)1 : (int*)1` has the type `int*`, but `1 ? (void*)0 : (int*)1` has the type `void*`:
-
-> [...] if one operand is a null pointer constant, the result has the type of the other operand; otherwise, one operand is a pointer to void or a qualified version of void, in which case the result type is a pointer to an appropriately qualified version of void.
-
-(https://port70.net/~nsz/c/c11/n1570.html#6.5.15p6)
-
-Since any constant expression that evaluates to zero is a null pointer constant, you can e.g. do the following:
-
-```c
-#define ICE_P(x) _Generic((1 ? ((void*)!(x)) : &(int){1}), int*: 1, void*: 0)
-#define pow(x,p) (ICE_P(p==1 || p==2) ? (p==1 ? x : (p==2 ? x*x : 0)) : pow(x, p))
-
-pow(x,1); // (x)
-pow(x,2); // (x*x)
-pow(x,y); // pow(x,y)
-```
-
-(https://godbolt.org/z/bjo5TcnbT)
-
-
-## macro expansion can be recursive (extension)
-GCC exploit up to version 11.3
-
-Macros can be recursive through the macro revival mechanism (term coined by Foundry). This mechanism clears the recursion inhibiting paint. This can be pushed much further like demonstrated in the now deprecated [Grail-pp](https://github.com/JadLevesque/Grail-pp)
-```C
-#2""3
-
-#define PRAGMA(...) _Pragma(#__VA_ARGS__)
-#define REVIVE(m) PRAGMA(push_macro(#m))PRAGMA(pop_macro(#m))
-#define DEC(n,...) (__VA_ARGS__)
-#define FX(f,x) REVIVE(FX) f x
-#define HOW_MANY_ARGS(...) REVIVE(HOW_MANY_ARGS) \
-    __VA_OPT__(+1 FX(HOW_MANY_ARGS, DEC(__VA_ARGS__)))
-
-int main () {
-    printf("%i", HOW_MANY_ARGS(1,2,3,4,5)); // 5
-}
-```
-
-## [`#include` custom filesystem](https://github.com/camel-cdr/execfs)
-
-## `F(x,y)y)y)y)y)`
-
-A guide is a group of adjacent elements separated by closing parentheses, e.g. `1)2)3))(),w,())awoo()),())`.
-
-Guides are often constructed in place or from a [preprocessor sequence](#sequence-datastructure):
-
-```c
-#define SEQ_TERM(...) SEQ_TERM_(__VA_ARGS__)
-#define SEQ_TERM_(...) __VA_ARGS__##_RM
-
-#define EMPTY()
-#define RPAREN() )
-
-#define TO_GUIDE_A(...) __VA_ARGS__ RPAREN EMPTY()()TO_GUIDE_B
-#define TO_GUIDE_B(...) __VA_ARGS__ RPAREN EMPTY()()TO_GUIDE_A
-#define TO_GUIDE_A_RM
-#define TO_GUIDE_B_RM
-#define TO_GUIDE(seq) SEQ_TERM(TO_GUIDE_A seq)
-
-TO_GUIDE((1)(2)(3)(4)(5)) // 1 )2 )3 )4 )5 )
-```
-
-The main advantage of the using guides is that they allow for fast iteration, very similar to the sequence iteration, but they also support passing a context between iterations, e.g.:
-
-```c
-#define TUPLE_AT_1(x,y,...) y
-#define CHECK(...) TUPLE_AT_1(__VA_ARGS__,)
-
-#define CAT_GUIDE_END_END ,CAT_GUIDE_END
-#define CAT_GUIDE_A(ctx,x) CHECK(CAT_GUIDE_END_##x,CAT_GUIDE_NEXT)(ctx,x,B)
-#define CAT_GUIDE_B(ctx,x) CHECK(CAT_GUIDE_END_##x,CAT_GUIDE_NEXT)(ctx,x,A)
-#define CAT_GUIDE_NEXT(ctx,x,next) CAT_GUIDE_##next(ctx##x,
-#define CAT_GUIDE_END(ctx,x,next) ctx
-
-#define CAT_GUIDE(guide) CAT_GUIDE_A(,guide
-#define CAT_SEQ(seq)  CAT_GUIDE(TO_GUIDE(seq(END)))
-
-CAT_SEQ((1)(2)(3)(4)(5)) // 12345
-```
-
-
-The above has the same portability problems as [preprocessor sequence](#sequence-datastructure), as in it may be interpreted as a nested expansion and hence may not work on all preprocessors (although all major ones support it).
-
-But guides can also be used, probably, by using a fixed length chain of iteration macros. The following code showcases this by implementing 8-bit integer addition:
-
-```c
-#define ADD_000(f) 0 f(0,
-#define ADD_001(f) 1 f(0,
-#define ADD_010(f) 1 f(0,
-#define ADD_011(f) 0 f(1,
-#define ADD_100(f) 1 f(0,
-#define ADD_101(f) 0 f(1,
-#define ADD_110(f) 0 f(1,
-#define ADD_111(f) 1 f(1,
-#define ADD_(c,x,y,n) ADD_##c##x##y(ADD_##n)
-
-#define ADD_8(c,x,y) ADD_(c,x,y,7)
-#define ADD_7(c,x,y) ,ADD_(c,x,y,6)
-#define ADD_6(c,x,y) ,ADD_(c,x,y,5)
-#define ADD_5(c,x,y) ,ADD_(c,x,y,4)
-#define ADD_4(c,x,y) ,ADD_(c,x,y,3)
-#define ADD_3(c,x,y) ,ADD_(c,x,y,2)
-#define ADD_2(c,x,y) ,ADD_(c,x,y,1)
-#define ADD_1(c,x,y) ,ADD_(c,x,y,0)
-#define ADD_0(c,x,y) 
-
-#define FX(f,...) f(__VA_ARGS__)
-#define SCAN(...) __VA_ARGS__
-#define ADD_8BIT(x,y) (FX(ADD_8BIT_,SCAN x, SCAN y))
-#define ADD_8BIT_(x0,x1,x2,x3,x4,x5,x6,x7,y0,y1,y2,y3,y4,y5,y6,y7) \
-    ADD_8(0,x0,y0)x1,y1)x2,y2)x3,y3)x4,y4)x5,y5)x6,y6)x7,y7),)
-
-// bits are reversed (LSB,...,MSB):
-ADD_8BIT((0,1,0,1,0,1,0,0),(0,0,1,0,0,1,1,0)) // (0,1,1,1,0,0,0,1)
-//        0 0 1 0 1 0 1 0 + 0 1 1 0 0 1 0 0     = 1 0 0 0 1 1 1 0
-//        42              + 100                 = 142
-```
-
-## integer arithmetics
-
-* [boline](https://github.com/camel-cdr/boline/blob/main/boline/boline.c) (8/16/32/64 bit integer arithmetics, base 16)
-* [order-pp](https://github.com/rofl0r/chaos-pp/tree/master/chaos/preprocessor/arbitrary) (arbitrary integer arithmetics, base 10)
-
-
-## [`#for #endfor`](http://www2.open-std.org/JTC1/SC22/WG14/www/docs/n1410.pdf) rejected C proposal
-
-
-## file-function table
-
-`#include` is a file-function table.
-
-Firstly, a file-function depends on a set of Named External Arguments (NEA), which are macros defined prior to the inclusion of the file. A good example of this are Chaos-pp slots, which take `CHAOS_PP_VALUE` as a NEA. The slot assignment file-function then defines 21 macros to produce a memorization of an integer literal.
-
-Secondly, `#include` accepts a macro translation unit (MTU). The of values of the set of macros considered by this MTU is the domain of the function. The codomain is the set of paths the MTU produces. A good (if extreme) example of this is [`#include __DATE__`](https://github.com/JadLevesque/my-ppmptd).
-
-Finally, we can understand a file inclusion as being an MTU indexed function table where the arguments to the function called are all global.
-
-Example with Chaos-pp slots
-```c
-#define CHAOS_PP_VALUE 5 + 6       // ENA
-#include CHAOS_PP_ASSIGN_SLOT (1) // File-function table indexed at slot number 1
-CHAOS_PP_SLOT (1)                // 11
-```
-
-## tcc's non-recursive expansion is recursive
-
-```c
-#define A(x) x B
-#define B(x) x A
-A(1)(1)(1)(1)
-```
-
-The standard say that it's implementation defined if in the above code the macro expansions are nested or not. (see https://port70.net/~nsz/c/c11/n1570.html#6.10.3.4p4 and "When a fully expanded..." in Annex J)
-So an implementation could expand the above either to "1 1 A(1)(1)..." or "1 1 1 1 A".
-
-gcc, clang, tcc and all otherwise valid preprocessor implementation I know of expand it to "1 1 1 1 A", which is great for preprocessor meta programming.
-
-But the problem is, whiles tcc expands the macros as though the expansion isn't nested, this isn't reflected in the tcc code.
-Meaning, if instead of 4 iterations you have e.g. 20000 of them tcc segfaults, and the backtrace indicates that it's a stack overflow because of too many recursive calls.
-
-So tcc implements non-recursive expansion recursively.
 
 
 ## file stack
@@ -1486,7 +1616,7 @@ The file stack line accumulator exploits a behaviour of the pop linemarker to co
 
 Possible operations include reseting the accumulator (`#line somevalue`), incrementation (newline), multiplication (multiple nested addition, line slot, reseting accum with current line and concatenated zeros for pow 10). Substraction is possible through overflowing addition.
 
-```C
+```c
 #0"stdio.h"3
 /***************
  * They say comments don't affect the result of compilation...
@@ -1757,126 +1887,3 @@ Possible operations include reseting the accumulator (`#line somevalue`), increm
 #endif
 ```
 
-## operator overloading
-
-<table>
-<tr><td><b>"main.c"</b></td><td><b>"calc.c"</b></td></tr>
-<tr><td>
-
-```c
-#define SLOT (2,==,2)
-#include "calc.c"
-VAL // 1
-
-#define SLOT (1,<=>,12)
-#include "calc.c"
-VAL // -1
-#define SLOT (12,<=>,12)
-#include "calc.c"
-VAL // 0
-#define SLOT (12,<=>,1)
-#include "calc.c"
-VAL // 1
-```
-
-</td><td>
-
-```c
-#undef VAL
-#define SLOT_1(a,b,c) a
-#define SLOT_2(a,b,c) #b
-#define SLOT_3(a,b,c) c
-
-#define SCAN(...) __VA_ARGS__
-#define LHS SCAN(SLOT_1 SLOT)
-#define RHS SCAN(SLOT_3 SLOT)
-#include SCAN(SLOT_2 SLOT)
-
-#undef SLOT
-```
-
-</td></tr>
-<tr><td><b>"&lt;=&gt;"</b></td><td><b>"=="</b></td></tr>
-<tr><td>
-
-```c
-#if LHS < RHS
-#define VAL -1
-#elif LHS == RHS
-#define VAL 0
-#else
-#define VAL 1
-#endif
-```
-
-</td><td>
-
-```c
-#if LHS == RHS
-#define VAL 1
-#else
-#define VAL 0
-#endif
-```
-
-</td></tr>
-</table>
-
-
-
-## `__COUNTER__` reset
-
-
-```C
-#define EAT(...)
-#define DUMP(...) EAT(__VA_ARGS__)
-
-#define SEQ_TERMINATE(...) __VA_ARGS__##0
-#define INC_A() DUMP(__COUNTER__) INC_B
-#define INC_B() DUMP(__COUNTER__) INC_A
-#define INC_A0
-#define INC_B0
-
-#define FX(f,x) f x
-
-#define MEMORISE(n) FX(SEQ_TERMINATE, (INC_A n))
-
-#define LIT_0
-#define LIT_1 ()
-#define LIT_2 ()()
-#define LIT_3 ()()()
-#define LIT_4 ()()()()
-#define LIT_5 ()()()()()
-#define LIT_6 ()()()()()()
-#define LIT_7 ()()()()()()()
-#define LIT_8 ()()()()()()()()
-#define LIT_9 ()()()()()()()()()
-#define LIT_10 ()()()()()()()()()()
-
-#define MUL_0(x)
-#define MUL_1(x) x
-#define MUL_2(x) x x
-#define MUL_3(x) x x x
-#define MUL_4(x) x x x x
-#define MUL_5(x) x x x x x
-#define MUL_6(x) x x x x x x
-#define MUL_7(x) x x x x x x x
-#define MUL_8(x) x x x x x x x x
-#define MUL_9(x) x x x x x x x x x
-#define MUL_10(x) x x x x x x x x x x
-
-#define MUL(x,y) MUL_##x(LIT_##y)
-
-int main() {
-
-    MEMORISE(MUL(2,3))
-    printf ("%i\n", __COUNTER__);
-
-    // safe line setting
-    #0""1
-    #line __COUNTER__
-    MEMORISE(MUL(9,5))
-    printf ("%i\n", __COUNTER__ - __LINE__);
-    #0""2
-}
-```
