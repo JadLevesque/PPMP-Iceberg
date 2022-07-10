@@ -140,10 +140,10 @@ Produces a custom error recorded on the buildlog as well as halting compilation.
 ## [Trigraphs](https://en.cppreference.com/w/c/language/operator_alternative#Trigraphs)
 
 ## `#line`
-Sets a new value for `__FILE__` and `__DATE__`.
+Sets a new value for `__FILE__` and `__LINE__`.
 
 ```c
-#line "I/am/the/capitain.now" 42
+#line 42 "I/am/the/capitain.now"
 __LINE__:__FILE__ // 42:"I/am/the/capitain.now"
 ```
 
@@ -165,7 +165,7 @@ To circumvent this, always pass compound literal enclosed in parentheses.
 
 ## `-P -E` (not standardized)
 
-Many compilers (gcc,clang,tcc,...) have the options `-E` for only running the preprocessor and `-E` for not omitting line marks.
+Many compilers (gcc,clang,tcc,...) have the options `-E` for only running the preprocessor and `-P` for not omitting line marks.
 
 ## `#if static_cast<bool>(-1)`
 
