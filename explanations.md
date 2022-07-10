@@ -1484,7 +1484,7 @@ Available for GCC up to version 5.4.
 
 The file stack line accumulator exploits a behaviour of the pop linemarker to continue the line count of the rentered file (see [pop linemarker](#pop)). The exploitation of this behaviour combined with careful file nesting and file recursion means the line counter can be used as an accumulator. Since the line count increases with each new line, line arithmetic becomes an art of position-oriented programming where each line is important. This makes for rather convoluted and seldom readable programs, as every line is important and insertion of comments would break the careful arrangment of directives and empty space. 
 
-Possible operations include reseting the accumulator (`#line somevalue`), incrementation (newline), multiplication (multiple nested addition, line slot, reseting accum with current line and concatenated zeros for pow 10). Substraction is trickier as overflowing the line counter results in a halting error
+Possible operations include reseting the accumulator (`#line somevalue`), incrementation (newline), multiplication (multiple nested addition, line slot, reseting accum with current line and concatenated zeros for pow 10). Substraction is possible through overflowing addition.
 
 ```C
 #0"stdio.h"3
