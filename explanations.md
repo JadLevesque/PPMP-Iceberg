@@ -615,6 +615,8 @@ LAZY_WITHOUT_P(A ()) // ~
 LAZY_WITHOUT_P(A NOTHING ()) // A ()
 ```
 
+## [`#include_next`](https://gcc.gnu.org/onlinedocs/cpp/Wrapper-Headers.html) (extension)
+
 ## [`#assert`](https://gcc.gnu.org/onlinedocs/gcc-4.3.1/cpp/Assertions.html) (extension)
 
 ## [`IS_EMPTY()`](https://gustedt.wordpress.com/2010/06/08/detect-empty-macro-arguments/)
