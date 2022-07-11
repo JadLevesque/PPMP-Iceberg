@@ -1064,7 +1064,7 @@ REVERSE(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
 
 You can overload a function depending on one of the argument being a constant expression.
 
-It works by abusing the fact that the return type of the ternary expression `1 ? (void*)1 : (int*)1` has the type `int*`, but `1 ? (void*)0 : (int*)1` has the type `void*`:
+It works by abusing the fact that the return type of the ternary expression `1 ? (void*)1 : (int*)1` has the type `void*`, but `1 ? (void*)0 : (int*)1` has the type `int*`:
 
 > [...] if one operand is a null pointer constant, the result has the type of the other operand; otherwise, one operand is a pointer to void or a qualified version of void, in which case the result type is a pointer to an appropriately qualified version of void.
 
