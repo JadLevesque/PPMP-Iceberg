@@ -57,12 +57,17 @@ A somewhat better solution is to enclose the code in a compound-statement:
             (f) ((a)[i]); \
         } \
     }
-// this works now!
+// this works now
 for (int i = 0; i < 10; ++i)
     FOR_EACH(f,a[i]);
-//                  ^ 
+//                  ^
+// but this doesn't
+if (cnd)
+    FOR_EACH(f,A);
+else
+     ...
 ```
-This works, but some compilers warn about the highlighted useless semicolon. The canonical way to get rid of this warning to use a `do {} while (0)` block:
+This does work in more cases, but not in every case. The canonical way to fix this is to use a `do {} while (0)` block:
 ```c
 #define FOR_EACH(f,a) \
     do { \
@@ -74,6 +79,13 @@ This works, but some compilers warn about the highlighted useless semicolon. The
 // this still works
 for (int i = 0; i < 10; ++i)
     FOR_EACH(f,a[i]);
+//                  ^
+// this works now!
+if (cnd)
+    FOR_EACH(f,A);
+else
+     ...
+
 ```
 
 ## [`ARRAY_LEN()`](https://www.ashn.dev/blog/2020-01-06-c-array-length.html)
@@ -502,7 +514,7 @@ LIST_IS_END((9,))          // 0
 LIST_IS_END(LIST_TAIL(9,)) // 1
 ```
 
-## `#2""3`
+## `#2""3` (extension)
 
 The first five characters of a preprocessor prototyping test file, that remove most warnings and shortens the current file name to nothing.
 Under GCC, this is called a line marker. This one sets the line under it as `2` and the file name as nothing (some systems will
