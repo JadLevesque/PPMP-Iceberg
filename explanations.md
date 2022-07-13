@@ -720,6 +720,8 @@ SEQ_TERM(A(1)(2)(3)(4)(5)) // f(1),f(2),f(3),f(4),f(5),
 
 ## Order-pp
 
+[Order-pp](https://github.com/rofl0r/order-pp)
+
 ```c
 #include <stdio.h>
 #include <string.h>
@@ -759,8 +761,6 @@ int main () {
     return 0;
 }
 ```
-
-[order-pp](https://github.com/rofl0r/order-pp)
 
 ## [chaos-pp](https://github.com/rofl0r/chaos-pp)
 
