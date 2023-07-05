@@ -1276,7 +1276,7 @@ VAL // 1
 A(1)(1)(1)(1)
 ```
 
-The standard say that it's implementation defined if in the above code the macro expansions are nested or not. (see https://port70.net/~nsz/c/c11/n1570.html#6.10.3.4p4 and "When a fully expanded..." in Annex J)
+The standard says that it's implementation defined if in the above code the macro expansions are nested or not. (see https://port70.net/~nsz/c/c11/n1570.html#6.10.3.4p4 and "When a fully expanded..." in Annex J)
 So an implementation could expand the above either to "1 1 A(1)(1)..." or "1 1 1 1 A".
 
 gcc, clang, tcc and all otherwise valid preprocessor implementation I know of expand it to "1 1 1 1 A", which is great for preprocessor meta programming.
