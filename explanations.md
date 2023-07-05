@@ -597,7 +597,7 @@ CHECK(,NOT_PROBE,not found) // not found
 
 ## pp-num prefix
 
-When a library uses identifiers that will later be concatenated with a macro, it's advisory for them to prefix these with a pp-numer.
+When a library uses identifiers that will later be concatenated with a macro, it's advisory for them to prefix these with a pp-number.
 E.g. [order-pp](#order-pp) uses this extensively:
 
 ```c
