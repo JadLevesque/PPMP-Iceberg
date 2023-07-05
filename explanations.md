@@ -204,7 +204,7 @@ Hence, it's not possible to generate preprocessor directives using standard macr
 
 ## `__COUNTER__` (extension)
 
-Most of widespread compilers (clang, gcc, msvc, icc, lcc, tinyc, chibic and some other) offer the language extension `__COUNTER__`, expands to an integer value starting at `0` and incrementing the value after every expansion:
+Most of widespread compilers (clang, gcc, msvc, icc, lcc, tinyc, chibic and some other) offer the language extension `__COUNTER__`, expanding to an integer value starting at `0` and incrementing the value after every expansion:
 ```c
 __COUNTER__ // 0
 __COUNTER__ // 1
