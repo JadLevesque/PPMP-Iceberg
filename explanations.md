@@ -23,7 +23,7 @@ ADD(x, y; z);
 w = (2 + ADD(x, y) + z);
 w = (ADD(x, y) + z);
 ```
-To solve these problems make sure to parenthesize arguments, and the complete expression: w
+To solve these problems make sure to parenthesize arguments, and the complete expression:
 ```c
 #define ADD(a, b) ((a) += (b))
 ```
