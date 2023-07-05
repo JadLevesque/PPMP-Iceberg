@@ -335,7 +335,7 @@ foo(1)     // foo(1,2,3)
 
 # Bottom of the iceberg
 
-## [Microsoft took 30 years to implement a standard complaint preprocessor](https://docs.microsoft.com/en-us/cpp/preprocessor/preprocessor-experimental-overview?view=msvc-170)
+## [Microsoft took 30 years to implement a standard compliant preprocessor](https://docs.microsoft.com/en-us/cpp/preprocessor/preprocessor-experimental-overview?view=msvc-170)
 
 ## no argument means one argument
 
