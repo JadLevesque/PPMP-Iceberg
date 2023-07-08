@@ -772,7 +772,7 @@ int main () {
 
 Extension on multiple preprocessors (GCC, CLang, MSVC,...)
 
-Macro definitions can be stacked using the `push_macro` and `pop_macro` pragmas. This is very useful for cross-macro translation unit (MTU) memory.
+Macro definitions can be stacked using the `push_macro` and `pop_macro` pragmas. This is very useful for cross-MTU (macro translation unit) memory.
 
 ```c
 #2""3
