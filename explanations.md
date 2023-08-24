@@ -324,8 +324,8 @@ void foo(int a, int b, float c);
 #define GET_ARGS(_1,_2,_3,x,...) x
 #define foo(...) GET_ARGS(__VA_ARGS__, \
                           foo(__VA_ARGS__), \
-                          foo(__VA_ARGS__,2), \
-                          foo(__VA_ARGS__,2,3))
+                          foo(__VA_ARGS__,3), \
+                          foo(__VA_ARGS__,2,3),)
 foo(1,2,3) // foo(1,2,3)
 foo(1,2)   // foo(1,2,3)
 foo(1)     // foo(1,2,3)
