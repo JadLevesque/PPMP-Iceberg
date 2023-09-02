@@ -23,7 +23,7 @@ ADD(x, y; z);
 w = (2 + ADD(x, y) + z);
 w = (ADD(x, y) + z);
 ```
-To solve these problems make sure to parenthesize arguments, and the complete expression: w
+To solve these problems make sure to parenthesize arguments, and the complete expression:
 ```c
 #define ADD(a, b) ((a) += (b))
 ```
@@ -204,7 +204,7 @@ Hence, it's not possible to generate preprocessor directives using standard macr
 
 ## `__COUNTER__` (extension)
 
-Most of widespread compilers (clang, gcc, msvc, icc, lcc, tinyc, chibic and some other) offer the language extension `__COUNTER__`, expands to an integer value starting at `0` and incrementing the value after every expansion:
+Most of widespread compilers (clang, gcc, msvc, icc, lcc, tinyc, chibic and some other) offer the language extension `__COUNTER__`, expanding to an integer value starting at `0` and incrementing the value after every expansion:
 ```c
 __COUNTER__ // 0
 __COUNTER__ // 1
@@ -335,7 +335,7 @@ foo(1)     // foo(1,2,3)
 
 # Bottom of the iceberg
 
-## [Microsoft took 30 years to implement a standard complaint preprocessor](https://docs.microsoft.com/en-us/cpp/preprocessor/preprocessor-experimental-overview?view=msvc-170)
+## [Microsoft took 30 years to implement a standard compliant preprocessor](https://docs.microsoft.com/en-us/cpp/preprocessor/preprocessor-experimental-overview?view=msvc-170)
 
 ## no argument means one argument
 
@@ -597,7 +597,7 @@ CHECK(,NOT_PROBE,not found) // not found
 
 ## pp-num prefix
 
-When a library uses identifiers that will later be concatenated with a macro, it's advisory for them to prefix these with a pp-numer.
+When a library uses identifiers that will later be concatenated with a macro, it's advisory for them to prefix these with a pp-number.
 E.g. [order-pp](#order-pp) uses this extensively:
 
 ```c
@@ -772,7 +772,7 @@ int main () {
 
 Extension on multiple preprocessors (GCC, CLang, MSVC,...)
 
-Macro definitions can be stacked using the `push_macro` and `pop_macro` pragmas. This is very useful for cross-MTU memory.
+Macro definitions can be stacked using the `push_macro` and `pop_macro` pragmas. This is very useful for cross-MTU (macro translation unit) memory.
 
 ```c
 #2""3
@@ -1011,7 +1011,7 @@ int main() {
 
 Firstly, a file-function depends on a set of Named External Arguments (NEA), which are macros defined prior to the inclusion of the file. A good example of this are Chaos-pp slots, which take `CHAOS_PP_VALUE` as a NEA. The slot assignment file-function then defines 21 macros to produce a memorization of an integer literal.
 
-Secondly, `#include` accepts a macro translation unit (MTU). The of values of the set of macros considered by this MTU is the domain of the function. The codomain is the set of paths the MTU produces. A good (if extreme) example of this is `#include __DATE__` see [my-ppmptd](https://github.com/JadLevesque/my-ppmptd).
+Secondly, `#include` accepts an MTU. The set of macros considered by this MTU is the domain of the function. The codomain is the set of paths the MTU produces. A good (if extreme) example of this is `#include __DATE__` see [my-ppmptd](https://github.com/JadLevesque/my-ppmptd).
 
 Finally, we can understand a file inclusion as being an MTU indexed function table where the arguments to the function called are all global.
 
@@ -1276,7 +1276,7 @@ VAL // 1
 A(1)(1)(1)(1)
 ```
 
-The standard say that it's implementation defined if in the above code the macro expansions are nested or not. (see https://port70.net/~nsz/c/c11/n1570.html#6.10.3.4p4 and "When a fully expanded..." in Annex J)
+The standard says that it's implementation defined if in the above code the macro expansions are nested or not. (see https://port70.net/~nsz/c/c11/n1570.html#6.10.3.4p4 and "When a fully expanded..." in Annex J)
 So an implementation could expand the above either to "1 1 A(1)(1)..." or "1 1 1 1 A".
 
 gcc, clang, tcc and all otherwise valid preprocessor implementation I know of expand it to "1 1 1 1 A", which is great for preprocessor meta programming.
